@@ -7,7 +7,7 @@ app.use(exp.json())
 require('dotenv').config()
 //assign port numnrt
 const port=process.env.PORT||5000;
-app.listen(port, () => console.log("server listening on port 4500..."));
+app.listen(port, () => console.log("server listening on port 5000..."));
 const path=require("path")
 
 //connect react build
@@ -45,7 +45,7 @@ const mclient=require('mongodb').MongoClient
 
 mclient.connect('mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.9.1')
 .then((dbRef)=>{
-    const dbObj=dbRef.db("webportal")
+    const dbObj=dbRef.db("faculty-portal")
     const userCollectionObj=dbObj.collection("userCollection")
     app.set("userCollectionObj",userCollectionObj)
     const facultyListObj=dbObj.collection("facultyListCollection")
