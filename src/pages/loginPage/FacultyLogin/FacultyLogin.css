@@ -1,0 +1,16 @@
+.admin-card{
+    border: solid 10px;
+    border-radius: 30px !important;
+}
+.image{
+    border-radius: 40px !important;
+}
+@media screen and (max-width:800px) {
+    #second{
+        display: none!important;
+    }
+    #first{
+        border-radius: 20px;
+        margin-bottom: 60px!important;
+    }
+}

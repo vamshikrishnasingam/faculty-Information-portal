@@ -1,0 +1,7 @@
+table,th,td,tbody{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    border: 2px solid rgb(41, 36, 36);
+    border-collapse: collapse;
+    padding: 10px 15px;
+    text-align: center;
+}

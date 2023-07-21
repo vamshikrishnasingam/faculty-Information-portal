@@ -1,0 +1,12 @@
+.modal2{
+    display:flex;
+    flex-direction: row;
+}
+
+.element{
+    flex:1;
+}
+.space{
+    width:16px;
+    margin-top: 20px;
+}

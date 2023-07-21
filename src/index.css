@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@350;400&display=swap');
+
+
+
+body {
+  background-image: url(https://img.freepik.com/free-photo/hand-painted-watercolor-background-with-sky-clouds-shape_24972-1095.jpg?w=1380&t=st=1682626322~exp=1682626922~hmac=32a75761434d41f0215341ad0f5277ed05c2800db121271477b2c62cc3979053);
+  background-size: cover;
+  margin: 0;
+  font-family: 'Barlow Condensed', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+
+.content-container {
+  min-height: calc(95vh - 34px);
+}
+
+.footer-container {
+  position: relative;
+  left: 0;
+  bottom: 0;
+}
+.menu ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0
+}
+
+.menu li {
+	cursor: pointer;
+	padding: 1em;
+	margin-bottom: .8em;
+	background-color: #CFD8DC;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+	-webkit-transition: all .25s ease;
+	-moz-transition: all .25s ease;
+	-ms-transition: all .25s ease;
+	-o-transition: all .25s ease;
+	transition: all .25s ease;
+	font-weight: bold;
+}
+
+.menu li:hover {
+	background-color: #680000;
+	color: #fff;
+}
+
+.menu a {
+	color: #333;
+	padding: 0;
+	margin: 0;
+    text-decoration: none;
+}
+.menu a{
+	text-decoration: none;
+}
+
+.menu .fa {
+	margin: 0 1em;
+}
+
