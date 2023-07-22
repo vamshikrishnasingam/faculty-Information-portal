@@ -45,7 +45,7 @@ const mclient=require('mongodb').MongoClient
 
 mclient.connect('mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.9.1')
 .then((dbRef)=>{
-    const dbObj=dbRef.db("faculty-portal")
+    const dbObj=dbRef.db("portal")
     const userCollectionObj=dbObj.collection("userCollection")
     app.set("userCollectionObj",userCollectionObj)
     const facultyListObj=dbObj.collection("facultyListCollection")
