@@ -16,7 +16,7 @@ function AdminLogin() {
     }
   }
   return (
-    <div className="container p-3">
+    <div className="p-3">
       <div className="row">
       <div className="col-lg-6 col-md-6 col-sm-6">
           <img
@@ -56,7 +56,7 @@ function AdminLogin() {
                   </FloatingLabel>
                   {errors.password?.message && <p className="text-danger">{errors.password?.message}</p>}
                 </div>
-                <p>Faculty?<NavLink className='p-3' to="/faculty-login">Login here</NavLink></p>
+                <p>Forget Password?<NavLink className='p-3' to="/admin-login">Reset here</NavLink></p>
                 <div className='p-2 text-center '>
                   {loginErr.length !== 0 && <p className='text-danger text-left text-center'>{loginErr}</p>}
                   <button type='submit' className="btn btn-primary">Login</button>

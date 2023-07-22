@@ -3,8 +3,8 @@
 
 
 body {
-  background-image: url(https://img.freepik.com/free-photo/hand-painted-watercolor-background-with-sky-clouds-shape_24972-1095.jpg?w=1380&t=st=1682626322~exp=1682626922~hmac=32a75761434d41f0215341ad0f5277ed05c2800db121271477b2c62cc3979053);
-  background-size: cover;
+  /* background-image: url(https://img.freepik.com/free-photo/hand-painted-watercolor-background-with-sky-clouds-shape_24972-1095.jpg?w=1380&t=st=1682626322~exp=1682626922~hmac=32a75761434d41f0215341ad0f5277ed05c2800db121271477b2c62cc3979053);
+  background-size: cover; */
   margin: 0;
   font-family: 'Barlow Condensed', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -47,7 +47,7 @@ code {
 }
 
 .menu li:hover {
-	background-color: #680000;
+	background-color: #82001a;
 	color: #fff;
 }
 
@@ -65,3 +65,25 @@ code {
 	margin: 0 1em;
 }
 
+
+
+td,th {
+	border: 1px solid #ddd;
+	padding: 8px;
+}
+
+tr:nth-child(even) {
+	background-color: #f2f2f2;
+}
+
+tr:hover {
+	background-color: #ddd;
+}
+
+th {
+	padding-top: 12px;
+	padding-bottom: 12px;
+	text-align: left;
+	background-color: #04AA6D;
+	color: white;
+}

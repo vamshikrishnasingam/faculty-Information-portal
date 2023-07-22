@@ -7,16 +7,16 @@ import Others from './pages/Others/Others'
 import Othersclass from './pages/Others/othersclass';
 import Home from './pages/Home/Home'
 import Profile from './pages/Profile/Profile';
-import UserData from './pages/AdminPage/UserData'
+import UserData from './pages/Admin-Page/UserData'
 import ContactUs from './pages/contactus/ContactUs'
 import ClassTimeTable from './pages/TimeTables/ClassTimeTable';
 import FacultyTimeTable from './pages/TimeTables/FacultyTimeTable';
 import AdminLogin from './pages/loginPage/AdminLogin/AdminLogin'
 import FacultyLogin from './pages/loginPage/FacultyLogin/FacultyLogin'
 import FacultyData from './pages/FacultyPage/FacultyData'
-import Update from './pages/AdminPage/Update';
-import AdminHome from './pages/AdminPage/AdminHome';
-import FreeHoursclient from './pages/AdminPage/FreeHoursClient';
+import Update from './pages/Admin-Page/Update';
+import AdminHome from './pages/Admin-Page/AdminHome';
+import FreeHoursclient from './pages/Admin-Page/FreeHoursClient';
 import ReplaceFaculty from './pages/Professors/ReplaceFaculty';
 import Search from './pages/Others/Search';
 function App() {

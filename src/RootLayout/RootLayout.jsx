@@ -7,7 +7,7 @@ function RouteLayout() {
       <div>
           <div className="content-container">
             <NavigationBar />
-            <div>
+            <div className='container'>
                 <Outlet/>
             </div>
           </div>

@@ -170,14 +170,14 @@ function ClassTimeTable() {
         <h1>CLASS TIME TABLES</h1>
       </div>
       <div className='row m-2'>
-        <div className='col-lg-2 col-sm-8 col-mg-8 mx-auto p-3'>
+        <div className='col-lg-2 col-sm-10 col-md-3 mx-auto p-3'>
           <Form.Select value={graduation} onChange={handlechangegraduation}>
             <option>select course</option>
             <option value="UG">UG</option>
             <option value="PG">PG</option>
           </Form.Select>
         </div>
-        <div className='col-lg-2 col-sm-8 col-mg-8 mx-auto p-3'>
+        <div className='col-lg-2 col-sm-10 col-md-3 mx-auto p-3'>
           <Form.Select value={year} onChange={handlechangeyear}>
             <option>select year</option>
             <option value="1">I</option>
@@ -190,7 +190,7 @@ function ClassTimeTable() {
             )}
           </Form.Select>
         </div>
-        <div className='col-lg-2 col-sm-8 col-mg-8 mx-auto p-3'>
+        <div className='col-lg-2 col-sm-10 col-md-3 mx-auto p-3'>
           <Form.Select value={branch} onChange={handlechangebranch}>
             <option>select branch</option>
             <option value="aiml">AIML</option>
@@ -206,7 +206,7 @@ function ClassTimeTable() {
             <option value="mech">MECH</option>
           </Form.Select>
         </div>
-        <div className='col-lg-2 col-sm-8 col-mg-8 mx-auto p-3'>
+        <div className='col-lg-2 col-sm-10 col-md-3 mx-auto p-3'>
           <Form.Select value={sec} onChange={handlechangesec}>
             <option>select section</option>
             <option value="1">A</option>
@@ -215,9 +215,9 @@ function ClassTimeTable() {
             <option value="4">D</option>
           </Form.Select>
         </div>
-        <div className='col-lg-4 col-sm-8 col-mg-8 mx-auto p-3' >
-          <Button className='col-lg-5 btn-success' style={{ marginRight: '20px' }} onClick={handlechanges}>SEARCH</Button>
-          <Button className='col-lg-5  btn-danger' onClick={goingback}>GOBACK</Button>
+        <div className='col-lg-4 col-sm-10 col-mg-8 mx-auto p-3' >
+          <Button className='col-lg-5 col-sm-6  btn-success' style={{ marginRight: '30px' }} onClick={handlechanges}>SEARCH</Button>
+          <Button className='col-lg-5 col-sm-5  btn-danger' onClick={goingback}>GOBACK</Button>
         </div>
       </div>
       {displayvalue === 1 && (
