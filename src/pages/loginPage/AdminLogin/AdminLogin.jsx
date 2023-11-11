@@ -58,7 +58,7 @@ function AdminLogin() {
                   </FloatingLabel>
                   {errors.password?.message && <p className="text-danger">{errors.password?.message}</p>}
                 </div>
-                <p>Forget Password?<NavLink className='p-3' to="/admin-login">Reset here</NavLink></p>
+                <p>Forget Password?<NavLink className='p-3' to="/pw-change">Reset here</NavLink></p>
                 <p>Faculty?<NavLink className='p-3' to="/faculty-login">Login here</NavLink></p>
                 <div className='p-2 text-center '>
                   {loginErr.length !== 0 && <p className='text-danger text-left text-center'>{loginErr}</p>}

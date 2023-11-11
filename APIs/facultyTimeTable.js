@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const exp = require("express")
 const facultytimetableApp = exp.Router()
 let days = ['9-10', '10-11', '11-12', '12-1', '12.40-1.40', '1.40-2.40', '2.40-3.40', '3.40-4.40']
@@ -7,13 +8,34 @@ const { Code } = require("mongodb")
 
 facultytimetableApp.get("/faculty-data/:type", expressAsyncHandler(async (req, res) => {
     const facultyTimeTableObj = req.app.get("facultyTimeTableObj")
-    console.log("hii")
+    console.log(facultyTimeTableObj)
     const type = req.params.type;
     console.log(type)
     const matchedfaculty = await facultyTimeTableObj.find({ facultytype: type }).toArray()
     console.log(matchedfaculty)
     res.json(matchedfaculty)
 }))
+
+// facultytimetableApp.get("/faculty-data-total", expressAsyncHandler(async (req, res) => {
+//     const facultyTimeTableObj = req.app.get("facultyTimeTableObj")
+//     console.log("hii")
+//     const type = req.params.type;
+//     console.log(type)
+//     const matchedfaculty = await facultyTimeTableObj.find({ facultytype: type }).toArray()
+//     console.log(matchedfaculty)
+//     res.json(matchedfaculty)
+// }))
+facultytimetableApp.get(
+  "/faculty-data-total",
+  expressAsyncHandler(async (req, res) => {
+    const facultyTimeTableObj = req.app.get("facultyTimeTableObj");
+    const doc = await facultyTimeTableObj.find({}).toArray(function (err, result) {
+      if (err) throw err;
+    });
+    console.log(doc);
+    res.json(doc);
+  })
+);
 
 facultytimetableApp.get(
   "/classfaculty-data/:id",

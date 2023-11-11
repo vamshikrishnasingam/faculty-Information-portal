@@ -1,0 +1,31 @@
+/* CSS for Search Input */
+.search-container1 {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.search-input1 {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px;
+  width: 250px;
+  box-sizing: border-box;
+}
+
+.search-button1 {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: #45a049;
+}

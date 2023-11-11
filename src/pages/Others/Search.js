@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Tab } from "react-bootstrap";
-import './othersclass.css';
 import axios from 'axios';
 let times1 = ['9-10', '10-11', '11-12', '12.40-1.40', '1.40-2.40', '2.40-3.40']
 let times2 = ['10-11', '11-12', '12-1', '1.40-2.40', '2.40-3.40', '3.40-4.40']

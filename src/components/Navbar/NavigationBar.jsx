@@ -1,12 +1,13 @@
-import React, { useContext } from 'react'
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import { NavLink } from 'react-router-dom'
-import './Navigationbar.css'
-import { loginContext } from '../../contexts/loginContext';
+import React, { useContext } from "react";
+import Container from "react-bootstrap/Container";
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
+import { NavLink } from "react-router-dom";
+import "./Navigationbar.css";
+import { loginContext } from "../../contexts/loginContext";
 function NavigationBar() {
-  let [currentUser, loginUser, userLoginStatus, loginErr, logoutUser] = useContext(loginContext)
+  let [currentUser, loginUser, userLoginStatus, loginErr, logoutUser] =
+    useContext(loginContext);
   return (
     <>
       {["lg"].map((expand) => (
@@ -30,28 +31,45 @@ function NavigationBar() {
             <Navbar.Toggle />
             <Navbar.Collapse className="collapse-nav">
               <Nav className="ms-auto p-3">
-                <NavLink
-                  to="/"
-                  className="fa nav-link text-white btn btn-success m-2"
-                >
-                  <i className="fa fa-home fa-fw"></i>HOME
-                </NavLink>
+                <div>
+                  <NavLink
+                    to="/"
+                    className="fa nav-link text-white btn btn-success m-2"
+                  >
+                    <i className="fa fa-home fa-fw"></i>HOME
+                  </NavLink>
+                </div>
                 {userLoginStatus ? (
-                  <NavLink
-                    to="/admin-login"
-                    className="fa text-white nav-link btn btn-success m-2"
-                    onClick={logoutUser}
-                  >
-                    <i className="fa fa-sign-in fa-fw "></i>
-                    LOGOUT
-                  </NavLink>
+                  <>
+                    <div>
+                      <NavLink
+                        to="/adminpage"
+                        className="fa text-white nav-link btn btn-success m-2"
+                      >
+                        <i className="fa fa-sign-in fa-fw "></i>
+                        ADMINPAGE
+                      </NavLink>
+                    </div>
+                    <div>
+                      <NavLink
+                        to="/admin-login"
+                        className="fa text-white nav-link btn btn-success m-2"
+                        onClick={logoutUser}
+                      >
+                        <i className="fa fa-sign-in fa-fw "></i>
+                        LOGOUT
+                      </NavLink>
+                    </div>
+                  </>
                 ) : (
-                  <NavLink
-                    to="/admin-login"
-                    className="fa text-white nav-link btn btn-success m-2"
-                  >
-                    <i className="fa fa-user fa-fw "></i>ADMIN-LOGIN
-                  </NavLink>
+                  <div>
+                    <NavLink
+                      to="/admin-login"
+                      className="fa text-white nav-link btn btn-success m-2"
+                    >
+                      <i className="fa fa-user fa-fw "></i>ADMIN-LOGIN
+                    </NavLink>
+                  </div>
                 )}
                 {/* <NavLink to="/admin-login" className="fa text-white nav-link btn btn-success m-2"><i className="fa fa-sign-in fa-fw "></i>LOGIN</NavLink> */}
                 {/* <NavLink to="/contactus" className='fa nav-link text-white  btn btn-success m-2'><i className="fa fa-users fa-fw"></i>CONTACT</NavLink> */}

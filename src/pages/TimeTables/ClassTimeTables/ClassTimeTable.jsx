@@ -2,30 +2,29 @@
 import React, { useState, useContext, useEffect } from 'react'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Modal, Form, Button } from 'react-bootstrap'
+import { OverlayTrigger, Popover, Form, Button } from 'react-bootstrap'
 import { loginContext } from '../../../contexts/loginContext';
-
-
 let times1 = ['9-10', '10-11', '11-12', '12.40-1.40', '1.40-2.40', '2.40-3.40']
 let times2 = ['10-11', '11-12', '12-1', '1.40-2.40', '2.40-3.40', '3.40-4.40']
 let times;
-
 let days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat']
-let phoenix = []
-let setclassid;
-
 function ClassTimeTable() {
-  let [currentUser, loginUser, userLoginStatus, loginErr, logoutUser] = useContext(loginContext)
-  let navigate = useNavigate();
 
-  let [graduation, setgraduation] = useState("")
-  let [year, setyear] = useState("")
-  let [branch, setbranch] = useState("")
-  let [sec, setsec] = useState("")
-  let [classid, setclassid] = useState("")
+  const [currentUser, loginUser, userLoginStatus, loginErr, logoutUser] = useContext(loginContext)
+  const navigate = useNavigate();
+  const [checkid, setcheckid] = useState("")
+  const [graduation, setgraduation] = useState("")
+  const [year, setyear] = useState("")
+  const [branch, setbranch] = useState("")
+  const [sec, setsec] = useState("")
+  const [classid, setclassid] = useState("")
+  const [academicyear, setacademicyear] = useState("");
+  const [sem, setsem] = useState("")
   let [graduatevalue, setgraduatevalue] = useState(0)
+  const [phoenix, setphoenix] = useState([])
+
   const [classdata, setDataclass] = useState(null);
-  const [facultydata, setDatafaculty] = useState(null);
+  const [facultydata, setfacultydata] = useState(null);
   const [rowactiveIndex, setrowIndex] = useState(null);
   const [colactiveIndex, setcolIndex] = useState(null);
   const [cellvalue, setcellvalue] = useState(false);
@@ -33,32 +32,45 @@ function ClassTimeTable() {
   const [labvalue, setlabvalue] = useState(false)
   const [cellobjectlab, setlabobject] = useState(null)
   const [displayvalue, setdisplayvalue] = useState(0)
+  const [errorvalue,seterrorvalue]=useState(0)
+  const [semester, setsemester] = useState("")
+  let mainKeys = []
+  let columnKeys = []
+
   let [show, setShow] = useState(false);
   let showModal = () => setShow(true);
   let closeModal = () => setShow(false);
-
+  const [showText, setShowText] = useState(false)
+  const handleenter = e => {
+    setShowText(true)
+  }
+  const handleLeave = e => {
+    setShowText(false)
+  }
   const setcellobjectvalue = async (a) => {
-    const facultydatainfo = facultydata[a]
     let aa = a.trim();
-    if (facultydatainfo) {
-      setlabvalue(false)
-      setcellobject(facultydatainfo)
-      setcellvalue(true);
-    }
-    else if (aa.includes('lab')) {
-      setlabvalue(true);
-      setcellvalue(false);
+    const facultydatainfo = facultydata[aa]
+    if (aa.includes('lab')) {
       let x = aa.split(' ')
       let y = x[0].split('/')
       let arr = [facultydata[y[0]], facultydata[y[0] + ' lab'], facultydata[y[1]], facultydata[y[1] + ' lab']]
       setlabobject(arr)
+      setlabvalue(true);
+      setcellvalue(false);
+    }
+    else if (facultydatainfo) {
+      setlabvalue(false)
+      setcellobject(facultydatainfo)
+      setcellvalue(true);
     }
     else {
-      setcellobject(null)
-      setlabobject(null)
+      const obj = {};
+      obj.username = ' ';
+      obj.name = ' ';
+      setcellobject(obj)
+      setlabobject([obj, obj, obj, obj]);
     }
   }
-
   const handleMouseEnter = (index) => {
     setrowIndex(index[0]);
     setcolIndex(index[1]);
@@ -75,109 +87,151 @@ function ClassTimeTable() {
     setlabvalue(false);
   }
 
+  const MyPopoverContent = (cell) => (
+    <Popover id="popover-basic">
+      <Popover.Body>
+        {/* <p>SUBJECT-NAME: {cell.subjectname}</p> */}
+        {!cell.subject.includes('/') && (
+          <div>
+         <p>ID :{cell.username}</p>
+          <p>NAME :{cell.name}</p>
+          </div>
+        )}
+        {cell.subject.includes('/') && (
+          <p>lab data not available yet..!!</p>
+        )}
+      </Popover.Body>
+    </Popover>
+  );
+
   useEffect(() => {
-    // This useEffect hook will be triggered whenever the 'data' state changes
-    // Call the function only if 'data' is not null (i.e., data is set)
-    if (facultydata !== null && classdata !== null) {
+    if (classid !== "" && sem !== "" && academicyear !== "")
+      handleSearch();
+  }, [classid, sem, academicyear, graduation]);
+
+  useEffect(() => {
+    if (classdata !== null) {
       printdata();
     }
-  }, [facultydata, classdata]);
+    else{
+      setdisplayvalue(0);
+    }
+  }, [classdata]);
+
+  useEffect(() => {
+    if (phoenix.length > 0)
+      setdisplayvalue(1);
+    else
+      setdisplayvalue(0)
+  }, [phoenix])
 
   const printdata = () => {
-    let unicorn = []
-    if (setclassid === '1')
+    if (checkid === '1')
       times = times1;
     else
       times = times2;
-    for (let i = 0; i < 6; i++) {
+    const classdt = classdata[classid][academicyear][graduation][sem]  
+      const mainKeysextra = Object.keys(classdt);
+      mainKeys = mainKeysextra;
+      const columnKeysextra = mainKeys.length > 0 ? Object.keys(classdt[mainKeys[0]]) : [];
+      columnKeys = columnKeysextra
+      console.log(classdt, mainKeys, columnKeys)
       let b = [];
-      b.push(days[i])
-      const l = classdata.hasOwnProperty(days[i])
-      if (l) {
+      for (let i = 0; i < 6; i++)
+        b.push(columnKeys[i]);
+      let unicorn = [];
+      for (let i = 0; i < 6; i++) {
+        b = [];
+        b.push({ 'subject': mainKeys[i] })
         for (let j = 0; j < 6; j++) {
-          const a = classdata[days[i]].hasOwnProperty(times[j])
-          if (a)
-            b.push(classdata[days[i]][times[j]])
-          else
-            b.push(b[j])
+          b.push(classdt[mainKeys[i]][columnKeys[j]])
         }
+        unicorn.push(b);
       }
-      unicorn.push(b);
-    }
-    phoenix = unicorn;
-    setdisplayvalue(1);
+      setphoenix(unicorn);
   }
 
-  const handleSearch = async () => {
-    try {
-      const response = await axios.get(`/classtimetable-api/classtt-data/${classid}`);
-      setDataclass(response.data);
-      setclassid = classid[0];
-    }
-    catch (error) {
-      console.log(error);
-    }
-    try {
-      const response = await axios.get(`/classfaculty-api/classfaculty-data/${classid}`);
-      setDatafaculty(response.data);
-    }
-    catch (error) {
-      console.log(error);
-    }
-  };
 
+  const handleSearch = async () => {
+    console.log(academicyear, classid, sem, graduation)
+    console.log('api call')
+      await axios.get(`/classtimetable-api/classtt-data/${classid}/${academicyear}/${graduation}/${sem}`)
+      .then((response) => {
+        console.log('api ca;; : ',response.data)
+        setDataclass(response.data)
+      })
+      .catch((error) => {
+        setDataclass(null)
+        console.log(error)
+      });
+  };
 
   const handlechangegraduation = (e) => {
     console.log(e.target.value)
-    if (e.target.value === "UG")
+    if (e.target.value === "Btech")
       setgraduatevalue(1);
     else
       setgraduatevalue(0);
     setgraduation(e.target.value)
-    console.log(e.target.value)
-    console.log(graduation)
   }
+
+  const handlechangeacademicyear = (e) => {
+    setacademicyear(e.target.value);
+  }
+
   const handlechangeyear = (e) => {
     setyear(e.target.value);
-    console.log(e.target.value)
-    console.log(year)
+    setcheckid(e.target.value);
   }
+
   const handlechangebranch = (e) => {
     setbranch(e.target.value);
-    console.log(e.target.value)
-    console.log(branch)
   }
+
   const handlechangesec = (e) => {
     setsec(e.target.value);
-    console.log(e.target.value)
-    console.log(sec)
   }
+
+  const handlechangesem = (e) => {
+    let x = e.target.value
+    x = year + "-" + x
+    setsem(x);
+    setsemester(e.target.value)
+  }
+
   const handlechanges = () => {
     const id = year + branch + sec;
     setclassid(id);
-    console.log(year, branch, sec, classid);
-    handleSearch();
   }
+
   const goingback = () => {
     if (userLoginStatus)
       navigate('/adminpage')
     else
       navigate('/')
   }
+
   return (
     <div className='container'>
       <div className='text-center m-4'>
         <h1>CLASS TIME TABLES</h1>
       </div>
       <div className='row m-2'>
-        <div className='col-lg-2 col-sm-10 col-md-3 mx-auto p-3'>
-          <Form.Select value={graduation} onChange={handlechangegraduation}>
-            <option>select course</option>
-            <option value="UG">UG</option>
-            <option value="PG">PG</option>
+        <div className='col-lg-2 col-sm-8 col-mg-8 mx-auto p-3'>
+          <Form.Select value={academicyear} onChange={handlechangeacademicyear}>
+            <option>Academic year</option>
+            <option value='2023-2024'>2023-2024</option>
+            <option value='2024-2025'>2024-2025</option>
           </Form.Select>
         </div>
-        <div className='col-lg-2 col-sm-10 col-md-3 mx-auto p-3'>
+        <div className='col-lg-2 col-sm-8 col-mg-8 mx-auto p-3'>
+          <Form.Select value={graduation} onChange={handlechangegraduation}>
+            <option>select course</option>
+            <option value="Btech">UG</option>
+            <option value="Mtech">PG</option>
+          </Form.Select>
+        </div>
+        <div className='col-lg-2 col-sm-8 col-mg-8 mx-auto p-3'>
           <Form.Select value={year} onChange={handlechangeyear}>
             <option>select year</option>
             <option value="1">I</option>
@@ -190,7 +244,7 @@ function ClassTimeTable() {
             )}
           </Form.Select>
         </div>
-        <div className='col-lg-2 col-sm-10 col-md-3 mx-auto p-3'>
+        <div className='col-lg-2 col-sm-8 col-mg-8 mx-auto p-3'>
           <Form.Select value={branch} onChange={handlechangebranch}>
             <option>select branch</option>
             <option value="aiml">AIML</option>
@@ -206,7 +260,14 @@ function ClassTimeTable() {
             <option value="mech">MECH</option>
           </Form.Select>
         </div>
-        <div className='col-lg-2 col-sm-10 col-md-3 mx-auto p-3'>
+        <div className='col-lg-2 col-sm-8 col-mg-8 mx-auto p-3'>
+          <Form.Select value={semester} onChange={handlechangesem}>
+            <option>select sem</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+          </Form.Select>
+        </div>
+        <div className='col-lg-2 col-sm-8 col-mg-8 mx-auto p-3'>
           <Form.Select value={sec} onChange={handlechangesec}>
             <option>select section</option>
             <option value="1">A</option>
@@ -215,85 +276,94 @@ function ClassTimeTable() {
             <option value="4">D</option>
           </Form.Select>
         </div>
-        <div className='col-lg-4 col-sm-10 col-mg-8 mx-auto p-3' >
-          <Button className='col-lg-5 col-sm-6  btn-success' style={{ marginRight: '30px' }} onClick={handlechanges}>SEARCH</Button>
-          <Button className='col-lg-5 col-sm-5  btn-danger' onClick={goingback}>GOBACK</Button>
+
+        <div className='col-lg-4 col-sm-8 col-mg-8 mx-auto p-3' style={{ position: 'relative' }} >
+          <Button
+            onMouseEnter={handleenter}
+            onMouseLeave={handleLeave}
+            className=' col-lg-5 btn-success' style={{ marginRight: '20px' }} onClick={handlechanges}>SEARCH</Button>
+          {/* <Button className='col-lg-5  btn-danger' onClick={goingback}>GOBACK</Button> */}
         </div>
       </div>
-      {displayvalue === 1 && (
+      {displayvalue === 1 && errorvalue==0 && (
         <div className='row'>
-          <div className='container m-3' style={{"overflow-x":'auto'}}> 
+          <div className='container m-3' style={{ "overflow-x": 'auto' }}>
             <table className='mx-auto w-75 '>
               <thead>
                 <tr>
                   <th>Day</th>
-                  {setclassid === '1' && (<th>9-10</th>)}
+                  {checkid === '1' && (<th>9-10</th>)}
                   <th>10-11</th>
                   <th>11-12</th>
-                  {setclassid !== '1' && (<th>12-1</th>)}
-                  {setclassid === '1' && (<th>12.40-1.40</th>)}
+                  {checkid !== '1' && (<th>12-1</th>)}
+                  {checkid === '1' && (<th>12.40-1.40</th>)}
                   <th>1.40-2.40</th>
                   <th>2.40-3.40</th>
-                  {setclassid !== '1' && (<th>3.40-4.40</th>)}
+                  {checkid !== '1' && (<th>3.40-4.40</th>)}
                 </tr>
               </thead>
               <tbody>
                 {phoenix.map((row, rowIndex) => (
                   <tr key={rowIndex}>
+                    {console.log(row)}
                     {row.map((cell, cellIndex) => (
-                      <td
-                        key={cellIndex}
-                        onMouseEnter={() => handleMouseEnter([rowIndex, cellIndex, cell])}
-                        onMouseLeave={handleMouseLeave}>
-                        {cell}
-                        {rowactiveIndex === rowIndex && colactiveIndex === cellIndex && cellobject && cellvalue && (
-                          <Modal show={show} onHide={closeModal} backdrop="true" centered className='modal1'>
-                            <Modal.Body >
-                              {/* <table className='w-100'>
-                                <thead>
-                                  <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  <tr>
-                                    <td>{cellobject.username}</td>
-                                    <td>{cellobject.name}</td>
-                                  </tr>
-                                </tbody>
-                              </table> */}
-                            <p>ID       :{cellobject.username}</p>
-                              <p>name  :{cellobject.name}</p>
-                            </Modal.Body>
-                          </Modal>
-                        )}
-                        {rowactiveIndex === rowIndex && colactiveIndex === cellIndex && cellobjectlab && labvalue && (
-                          <Modal
-                            
-                            show={show} onHide={closeModal} backdrop="true" centered className='modal'>
-                            <Modal.Body>
-                              <div className='modal2'>
-                                <div className='element'>
-                                  <p>LAB-1</p>
-                                  <p>ID:{cellobjectlab[0].username}</p>
-                                  <p>name:{cellobjectlab[0].name}</p>
-                                  <p>ID:{cellobjectlab[1].username}</p>
-                                  <p>name:{cellobjectlab[1].name}</p>
-                                </div>
-                                <div className='space'></div>
-                                <div className='element'>
-                                  <p>LAB-2</p>
-                                  <p>ID:{cellobjectlab[2].username}</p>
-                                  <p>name:{cellobjectlab[2].name}</p>
-                                  <p>ID:{cellobjectlab[3].username}</p>
-                                  <p>name:{cellobjectlab[3].name}</p>
-                                </div>
-                              </div>
-                            </Modal.Body>
-                          </Modal>
-                        )}
-                      </td>
+                      <td key={cellIndex}>
+                      {cellIndex === 0 && cell && Object.keys(cell).length > 0 && (
+                        <div className="cell-content">
+                          <p>{cell.subject}</p>
+                        </div>
+                      )}
+                      {cellIndex !== 0 && cell && Object.keys(cell).length > 0 && (
+                        <div className="cell-content">
+                          <OverlayTrigger
+                            trigger="hover"
+                            placement="right"
+                            overlay={MyPopoverContent(cell)}
+                          >
+                            <p className="popover-button">{cell.subject}</p>
+                          </OverlayTrigger>
+                        </div>
+                      )}
+                    </td>
+                      // <td
+                      //   key={cellIndex}
+                      // // onMouseEnter={() => handleMouseEnter([rowIndex, cellIndex, cell])}
+                      // // onMouseLeave={handleMouseLeave}
+                      // >
+                      //   <tr>{cell.subjectname}</tr>
+                      //   {/* {rowactiveIndex === rowIndex && colactiveIndex === cellIndex && cellobject && cellvalue && (
+                      //     <Modal show={show} onHide={closeModal} backdrop="true" centered className='modal1'>
+                      //       <Modal.Body >
+                      //       <p>ID       :{cellobject.username}</p>
+                      //         <p>name  :{cellobject.name}</p>
+                      //       </Modal.Body>
+                      //     </Modal>
+                      //   )}
+                      //   {rowactiveIndex === rowIndex && colactiveIndex === cellIndex && cellobjectlab && labvalue && (
+                      //     <Modal
+                      //       show={show} onHide={closeModal} backdrop="true"  centered className='modal'>
+                      //       <Modal.Body>
+                      //         <div className='modal2'>
+                      //           <div className='element'>
+                      //             <p>LAB-1</p>
+                      //             <p>ID:{cellobjectlab[0].username}</p>
+                      //             <p>name:{cellobjectlab[0].name}</p>
+                      //             <p>ID:{cellobjectlab[1].username}</p>
+                      //             <p>name:{cellobjectlab[1].name}</p>
+                      //           </div>
+                      //           <div className='space'></div>
+                      //           <div className='element'>
+                      //             <p>LAB-2</p>
+                      //             <p>ID:{cellobjectlab[2].username}</p>
+                      //             <p>name:{cellobjectlab[2].name}</p>
+                      //             <p>ID:{cellobjectlab[3].username}</p>
+                      //             <p>name:{cellobjectlab[3].name}</p>
+                      //           </div>
+                      //         </div>
+                      //       </Modal.Body>
+                      //     </Modal>
+                      //   )} */}
+                      // </td>
                     ))}
                   </tr>
                 ))}
@@ -302,10 +372,13 @@ function ClassTimeTable() {
           </div>
         </div>
       )}
+      {errorvalue ===1 && (
+        <div>no data found</div>
+      )}
 
     </div>
 
   )
 }
 
-export default ClassTimeTable
+export default ClassTimeTable;

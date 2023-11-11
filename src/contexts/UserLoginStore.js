@@ -21,7 +21,7 @@ function UserLoginStore({children}){
                 setLoginErr(response.data.message)
             }
             //navigate to user profile
-            console.log("navigated to user profile")
+            //console.log("navigated to user profile")
         })
         .catch((err)=>{
             console.log("err in user login:",err)
@@ -65,7 +65,7 @@ function UserLoginStore({children}){
             const user = userDataResponse.data.payload;
             setUserLoginStatus(true);
             setCurrentUser(user)
-            console.log(user)
+            // console.log(user)
             // return user;
           } else {
             // Token verification failed, return null
