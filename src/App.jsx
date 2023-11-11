@@ -1,37 +1,34 @@
 import './App.css';
 import RootLayout from './RootLayout/RootLayout';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Login from './pages/loginPage/Login';
 import Professor from './pages/Professors/Professor'
 import Others from './pages/Others/Others'
 import Othersclass from './pages/Others/othersclass';
 import Home from './pages/Home/Home'
 import Profile from './pages/Profile/Profile';
-import UserData from './pages/Admin-Page/UserData'
-import ContactUs from './pages/contactus/ContactUs'
-import ClassTimeTable from './pages/TimeTables/ClassTimeTable';
-import FacultyTimeTable from './pages/TimeTables/FacultyTimeTable';
+import UserData from './pages/Admin-Page/AdminMain-page/UserData';
+import ClassTimeTable from './pages/TimeTables/ClassTimeTables/ClassTimeTable';
+import FacultyTimeTable from './pages/TimeTables/FacultyTimeTables/FacultyTimeTable';
 import AdminLogin from './pages/loginPage/AdminLogin/AdminLogin'
 import FacultyLogin from './pages/loginPage/FacultyLogin/FacultyLogin'
 import FacultyData from './pages/FacultyPage/FacultyData'
-import Update from './pages/Admin-Page/Update';
+import Update from './pages/Admin-Page/Update/Update';
 import AdminHome from './pages/Admin-Page/AdminHome';
-import FreeHoursclient from './pages/Admin-Page/FreeHoursClient';
-import ReplaceFaculty from './pages/Professors/ReplaceFaculty';
+import FreeHoursclient from './pages/Freehours/FreeHoursClient';
+import ReplaceFaculty from './pages/ReplaceFaculty/ReplaceFaculty';
 import Search from './pages/Others/Search';
+import ErrorPage from './pages/Errorpage/ErrorPage';
 function App() {
+  
   const router = createBrowserRouter([
     {
       path: "/",
       element: <RootLayout />,
+      errorElement: <ErrorPage />,
       children: [
         {
           path: "/",
           element: <Home />
-        },
-        {
-          path: "/login",
-          element: <Login />
         },
         {
           path: "/admin-login",
@@ -43,15 +40,21 @@ function App() {
         },
         {
           path: "/adminpage",
-          element: <UserData />
+          element: <UserData /> ,
+          children: [
+            {
+              path: '',
+              element: <AdminHome />
+            },
+          ]
         },
         {
           path: "/update",
           element: <Update />
         },
         {
-          path : "/freehours",
-          element : <FreeHoursclient/>
+          path: "/freehours",
+          element: <FreeHoursclient />
         },
         {
           path: "/search",
@@ -77,11 +80,11 @@ function App() {
         },
         {
           path: "/facultytt",
-          element: <FacultyTimeTable />,
+          element: <Professor />,
           children: [
             {
-              path:'',
-              element:<AdminHome/>
+              path: '',
+              element: <AdminHome />
             },
             {
               path: "professors",
@@ -89,7 +92,7 @@ function App() {
             },
             {
               path: "replace",
-              element: <ReplaceFaculty/>
+              element: <ReplaceFaculty />
             },
             {
               path: "others",
@@ -100,21 +103,17 @@ function App() {
         {
           path: '/classtt',
           element: <ClassTimeTable />,
-          children:[
+          children: [
             {
-              path:'',
-              element:<AdminHome/>
+              path: '',
+              element: <AdminHome />
             },
-             {
+            {
               path: 'othersclass',
-              element: <Othersclass/>
+              element: <Othersclass />
             },
           ]
         },
-        {
-          path: "/contactus",
-          element: <ContactUs />
-        }
 
       ]
     }

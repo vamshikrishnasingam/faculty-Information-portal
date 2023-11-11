@@ -107,8 +107,10 @@ const Others = () => {
                 {cell && Object.keys(cell).length > 0 && (
                   <div className="cell-content">
                     {cell.classtype}
-                    {rowactiveIndex === rowIndex && colactiveIndex === cellIndex && Object.keys(cell).length > 1 && cell && (
-                      <Modal show={show} onHide={closeModal}  backdrop="true" centered className='modal'>
+                    {rowactiveIndex === rowIndex && colactiveIndex === cellIndex &&
+                      Object.keys(cell).length > 1 && cell && (
+                      <Modal show={show} onHide={closeModal}
+                        backdrop="true" centered className='modal'>
                       <Modal.Body>
                       <p>CLASS       :{cell.class}</p>
                       <p>ROOM-NO     :{cell.roomno}</p>

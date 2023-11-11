@@ -127,20 +127,20 @@ const ExcelToJsonConverterTimeTable = () => {
     <div className="container p-5">
       <h1 className='text-center'>Insert Excel Sheets</h1>
       <div className='row '>
-      <div className="col-lg-4 col-sm-10 p-4 mx-auto">
+      <div className="col-lg-4 col-sm-10 p-4">
         <div className="form-floating">
           <input type="file" className="form-control" id="floatingInput1" onChange={handleFile1Change} />
           <label htmlFor="floatingInput1">CLASSTIMETABLE</label>
         </div>
       </div>
-      <div className="col-lg-4 col-sm-10 p-4 mx-auto">
+      <div className="col-lg-4 col-sm-10 p-4">
         <div className="form-floating">
           <input type="file" className="form-control" id="floatingInput2" onChange={handleFile2Change} />
           <label htmlFor='floatingInput2'>CLASS FACULTY INFO</label>
         </div>
       </div>
-      <div className="col-lg-2 col-sm-10 p-3 m-3 mx-auto">
-        <Button onClick={convertFileSToJson}>UPLOAD DATA</Button>
+      <div className="col-lg-2 col-sm-10 p-4 ml-4">
+        <Button className="p-3 col-lg-12"onClick={convertFileSToJson}>UPLOAD DATA</Button>
       </div>
 
     </div>

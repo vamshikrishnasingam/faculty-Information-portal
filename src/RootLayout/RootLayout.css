@@ -1,0 +1,16 @@
+
+/* Defining the animation keyframes */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Applying the animation to an element */
+.rot{
+    animation: fadeIn 1s ease-in;
+}

@@ -12,6 +12,8 @@ let bcryptjs = require("bcryptjs")
 //body parser
 userApp.use(exp.json())
 
+const verifyToken = require("./middlewares/verifyToken")
+
 
 //create user
 userApp.post("/user-signup", expressAsyncHandler(async (req, res) => {
@@ -70,5 +72,16 @@ userApp.post('/user-login', expressAsyncHandler(async (request, response) => {
     }
 }))
 
+// receive verify token request directly andd check
+userApp.post('/verify-token', verifyToken, (req, res) => {
+  res.status(200).json({ message: 'Token is valid' });
+});
+
+//get userinfo for page refresh
+userApp.get('/get-user-info', verifyToken, (req, res) => {
+  // You can access the user information from the request object (req.user)
+  const user = req.user;
+  res.status(200).json({ payload: user });
+});
 //export express app
 module.exports = userApp;

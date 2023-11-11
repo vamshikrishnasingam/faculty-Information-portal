@@ -4,13 +4,15 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { loginContext } from '../../../contexts/loginContext'
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
+import './AdminLogin.css'
+import { Button } from 'react-bootstrap';
 
 function AdminLogin() {
   let [, loginUser, userLoginStatus, loginErr,logoutUSer] = useContext(loginContext)
   const navigate = useNavigate()
   let { register, handleSubmit, formState: { errors } } = useForm()
   let submitForm = async (userCredObj) => {
-    await loginUser(userCredObj)
+    await loginUser(userCredObj);
     if (userLoginStatus) {
       navigate('/adminpage')
     }
@@ -18,14 +20,14 @@ function AdminLogin() {
   return (
     <div className="p-3">
       <div className="row">
-      <div className="col-lg-6 col-md-6 col-sm-6">
+      <div className="col-lg-6 col-md-6 col-sm-12">
           <img
             className="image w-100 h-100"
             src="media/UserData.png"
             alt="Card"
           />
         </div>
-        <div className="col-lg-6 col-md-6 col-sm-6 p-3 border border-2" id='first'>
+        <div className="col-lg-6 col-md-6 col-sm-12 p-3 border border-2" id='first'>
           <div className="card-body">
             <div className='text-center'>
               <h2 className='text-center fs-1'>Administrator</h2>
@@ -57,9 +59,10 @@ function AdminLogin() {
                   {errors.password?.message && <p className="text-danger">{errors.password?.message}</p>}
                 </div>
                 <p>Forget Password?<NavLink className='p-3' to="/admin-login">Reset here</NavLink></p>
+                <p>Faculty?<NavLink className='p-3' to="/faculty-login">Login here</NavLink></p>
                 <div className='p-2 text-center '>
                   {loginErr.length !== 0 && <p className='text-danger text-left text-center'>{loginErr}</p>}
-                  <button type='submit' className="btn btn-primary">Login</button>
+                <Button type='submit' className='col-lg-3 bg-primary border-success fw-bold'>Login</Button>
                 </div>
               </form>
             </div>

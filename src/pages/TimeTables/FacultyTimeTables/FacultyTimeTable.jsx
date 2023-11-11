@@ -6,7 +6,7 @@ import { Outlet } from 'react-router-dom'
 function FacultyTimeTable() {
   return (
       <div className='row p-4'>
-        <div class="col-sm-6 col-lg-3 col-md-5 menu">
+        <div class="col-sm-10 mx-auto col-lg-4 col-md-6 menu">
           <ul>
             <Link to=""><li><i class="fa fa-user"></i><NavLink className="fs-5 fw-bold" to="professors">PROFESSORS</NavLink></li></Link>
             <Link to=""><li><i class="fa fa-book"></i><NavLink className="fs-5 fw-bold" to="assistentprofessors">ASSISTENT PROFESSORS</NavLink></li></Link>
@@ -18,7 +18,7 @@ function FacultyTimeTable() {
             <Link to="/"><li><i class="fa fa-sign-out"></i><NavLink className="fw-bold fs-5" to="/">GOBACK</NavLink></li></Link>
           </ul>
         </div>
-        <div className='col-lg-9 col-sm-6 col-md-7 p-4'>
+      <div className='col-lg-8 col-md-6 p-4'>
           <Outlet />
         </div>
       </div>

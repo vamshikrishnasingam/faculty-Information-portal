@@ -5,12 +5,28 @@ let keys = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat']
 const expressAsyncHandler = require("express-async-handler")
 const { Code } = require("mongodb")
 
-facultytimetableApp.get("/facultytt-data/:id", expressAsyncHandler(async (req, res) => {
+facultytimetableApp.get("/faculty-data/:type", expressAsyncHandler(async (req, res) => {
     const facultyTimeTableObj = req.app.get("facultyTimeTableObj")
-    const ids = req.params.id;
-    const matchedfaculty = await facultyTimeTableObj.findOne({ username: ids })
+    console.log("hii")
+    const type = req.params.type;
+    console.log(type)
+    const matchedfaculty = await facultyTimeTableObj.find({ facultytype: type }).toArray()
+    console.log(matchedfaculty)
     res.json(matchedfaculty)
 }))
+
+facultytimetableApp.get(
+  "/classfaculty-data/:id",
+  expressAsyncHandler(async (req, res) => {
+    const facultyTimeTableObj= req.app.get("facultyTimeTableObj");
+    const ids = req.params.id;
+    console.log(ids);
+    console.log("hii")
+    const matchedfaculty = await facultyTimeTableObj.findOne({ username: ids })
+    console.log(matchedfaculty);
+    res.json(matchedfaculty);
+  })
+);
 
 facultytimetableApp.post("/facultytt-insert", expressAsyncHandler(async (req, res) => {
     //get user collection object

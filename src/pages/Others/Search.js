@@ -121,7 +121,8 @@ const Search = ({data}) => {
   return (
     <div className='table-container'>
       <h1>function called</h1>
-      { displayvalue===1 &&  (
+      {displayvalue && (
+        
         <div className='table-container'>
           <table>
             <thead>

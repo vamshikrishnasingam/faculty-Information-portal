@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useContext, useEffect } from 'react'
 import axios from 'axios';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Modal, Form, Button } from 'react-bootstrap'
-import { loginContext } from '../../contexts/loginContext';
+import { loginContext } from '../../../contexts/loginContext';
 
 
 let times1 = ['9-10', '10-11', '11-12', '12.40-1.40', '1.40-2.40', '2.40-3.40']
@@ -84,7 +84,7 @@ function ClassTimeTable() {
   }, [facultydata, classdata]);
 
   const printdata = () => {
-    let unicorn=[]
+    let unicorn = []
     if (setclassid === '1')
       times = times1;
     else
@@ -104,7 +104,7 @@ function ClassTimeTable() {
       }
       unicorn.push(b);
     }
-    phoenix=unicorn;
+    phoenix = unicorn;
     setdisplayvalue(1);
   }
 
@@ -222,67 +222,83 @@ function ClassTimeTable() {
       </div>
       {displayvalue === 1 && (
         <div className='row'>
-          <div className='container m-3'>
-              <table className='mx-auto w-75 '>
-                <thead>
-                  <tr>
-                    <th>Day</th>
-                    {setclassid === '1' && (<th>9-10</th>)}
-                    <th>10-11</th>
-                    <th>11-12</th>
-                    {setclassid !== '1' && (<th>12-1</th>)}
-                    {setclassid === '1' && (<th>12.40-1.40</th>)}
-                    <th>1.40-2.40</th>
-                    <th>2.40-3.40</th>
-                    {setclassid !== '1' && (<th>3.40-4.40</th>)}
-                  </tr>
-                </thead>
-                <tbody>
-                  {phoenix.map((row, rowIndex) => (
-                    <tr key={rowIndex}>
-                      {row.map((cell, cellIndex) => (
-                        <td
-                          key={cellIndex}
-                          onMouseEnter={() => handleMouseEnter([rowIndex, cellIndex, cell])}
-                          onMouseLeave={handleMouseLeave}>
-                          {cell}
-                          {rowactiveIndex === rowIndex && colactiveIndex === cellIndex && cellobject && cellvalue && (
-                            <Modal show={show} onHide={closeModal} backdrop="true" centered className='modal1'>
-                              <Modal.Body>
-                                <p>ID       :{cellobject.username}</p>
-                                <p>name  :{cellobject.name}</p>
-                              </Modal.Body>
-                            </Modal>
-                          )}
-                          {rowactiveIndex === rowIndex && colactiveIndex === cellIndex && cellobjectlab && labvalue && (
-                            <Modal show={show} onHide={closeModal} backdrop="true" centered className='modal'>
-                              <Modal.Body>
-                                <div className='modal2'>
-                                  <div className='element'>
-                                    <p>LAB-1</p>
-                                    <p>ID:{cellobjectlab[0].username}</p>
-                                    <p>name:{cellobjectlab[0].name}</p>
-                                    <p>ID:{cellobjectlab[1].username}</p>
-                                    <p>name:{cellobjectlab[1].name}</p>
-                                  </div>
-                                  <div className='space'></div>
-                                  <div className='element'>
-                                    <p>LAB-2</p>
-                                    <p>ID:{cellobjectlab[2].username}</p>
-                                    <p>name:{cellobjectlab[2].name}</p>
-                                    <p>ID:{cellobjectlab[3].username}</p>
-                                    <p>name:{cellobjectlab[3].name}</p>
-                                  </div>
+          <div className='container m-3' style={{"overflow-x":'auto'}}> 
+            <table className='mx-auto w-75 '>
+              <thead>
+                <tr>
+                  <th>Day</th>
+                  {setclassid === '1' && (<th>9-10</th>)}
+                  <th>10-11</th>
+                  <th>11-12</th>
+                  {setclassid !== '1' && (<th>12-1</th>)}
+                  {setclassid === '1' && (<th>12.40-1.40</th>)}
+                  <th>1.40-2.40</th>
+                  <th>2.40-3.40</th>
+                  {setclassid !== '1' && (<th>3.40-4.40</th>)}
+                </tr>
+              </thead>
+              <tbody>
+                {phoenix.map((row, rowIndex) => (
+                  <tr key={rowIndex}>
+                    {row.map((cell, cellIndex) => (
+                      <td
+                        key={cellIndex}
+                        onMouseEnter={() => handleMouseEnter([rowIndex, cellIndex, cell])}
+                        onMouseLeave={handleMouseLeave}>
+                        {cell}
+                        {rowactiveIndex === rowIndex && colactiveIndex === cellIndex && cellobject && cellvalue && (
+                          <Modal show={show} onHide={closeModal} backdrop="true" centered className='modal1'>
+                            <Modal.Body >
+                              {/* <table className='w-100'>
+                                <thead>
+                                  <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td>{cellobject.username}</td>
+                                    <td>{cellobject.name}</td>
+                                  </tr>
+                                </tbody>
+                              </table> */}
+                            <p>ID       :{cellobject.username}</p>
+                              <p>name  :{cellobject.name}</p>
+                            </Modal.Body>
+                          </Modal>
+                        )}
+                        {rowactiveIndex === rowIndex && colactiveIndex === cellIndex && cellobjectlab && labvalue && (
+                          <Modal
+                            
+                            show={show} onHide={closeModal} backdrop="true" centered className='modal'>
+                            <Modal.Body>
+                              <div className='modal2'>
+                                <div className='element'>
+                                  <p>LAB-1</p>
+                                  <p>ID:{cellobjectlab[0].username}</p>
+                                  <p>name:{cellobjectlab[0].name}</p>
+                                  <p>ID:{cellobjectlab[1].username}</p>
+                                  <p>name:{cellobjectlab[1].name}</p>
                                 </div>
-                              </Modal.Body>
-                            </Modal>
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                                <div className='space'></div>
+                                <div className='element'>
+                                  <p>LAB-2</p>
+                                  <p>ID:{cellobjectlab[2].username}</p>
+                                  <p>name:{cellobjectlab[2].name}</p>
+                                  <p>ID:{cellobjectlab[3].username}</p>
+                                  <p>name:{cellobjectlab[3].name}</p>
+                                </div>
+                              </div>
+                            </Modal.Body>
+                          </Modal>
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
