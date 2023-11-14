@@ -43,7 +43,7 @@ app.use("/freehours-api",freehoursApp)
 //connect to mongoclient
 const mclient=require('mongodb').MongoClient
 
-mclient.connect('mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.9.1')
+mclient.connect('mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.8.0')
 .then((dbRef)=>{
     const dbObj=dbRef.db("faculty-portal")
     const userCollectionObj=dbObj.collection("userCollection")
@@ -58,7 +58,6 @@ mclient.connect('mongodb://127.0.0.1:27017/?directConnection=true&serverSelectio
     app.set("classFacultyObj",classFacultyObj)
     const freeHoursObj=dbObj.collection("freeHours")
     app.set("freeHoursObj",freeHoursObj)
-
     console.log("Connection to Test DB - Success")
 })
 .catch((err)=>console.log("Connection to Test DB - Failed"))

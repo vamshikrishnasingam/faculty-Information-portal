@@ -3,6 +3,20 @@ Content-Type: application/json
 
 {
     "username":"vamshi@12",
-    "password":"singam123"
+    "password":"singam123",
+    "type":"admin",
+    "email":"21071A05J2@vnrvjiet.in"
+}
+
+###
+
+POST http://localhost:5000/user-api/user-signup
+Content-Type: application/json
+
+{
+    "username":"shashidhar",
+    "password":"shashi123",
+    "type":"super-admin",
+    "email":"21071A05F2@vnrvjiet.in"
 }
 

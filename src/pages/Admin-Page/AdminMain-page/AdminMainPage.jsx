@@ -6,7 +6,7 @@ import { loginContext } from "../../../contexts/loginContext";
 import { useContext } from "react";
 import Button from "react-bootstrap/Button";
 function AdminMainPage() {
-  let [, , userLoginStatus, , logoutUser] = useContext(loginContext);
+  let [currentUser,, userLoginStatus,,logoutUser] = useContext(loginContext);
   return (
     <div className="d-flex row m-5">
       {userLoginStatus ? (
@@ -73,7 +73,8 @@ function AdminMainPage() {
                   </NavLink>
                 </li>
               </Link>
-              <Link to="/admin-access">
+                {(currentUser.type==="super-admin"||currentUser.type==="admin")
+                &&<Link to="/admin-access">
                 <li>
                   <i className="fa fa-users"></i>
                   <NavLink
@@ -83,7 +84,7 @@ function AdminMainPage() {
                     ADMIN-ACCESS
                   </NavLink>
                 </li>
-              </Link>
+              </Link>}
               {/* <Link to="/admin-login" onClick={logoutUser}>
                 <li>
                   <i className="fa fa-sign-out"></i>

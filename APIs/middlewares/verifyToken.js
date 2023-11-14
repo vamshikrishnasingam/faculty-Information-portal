@@ -1,31 +1,29 @@
 //verifyToken.js middleware
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
+require("dotenv").config()
 
 const verifyToken = (request, response, next) => {
-  //token verification logic
+  // Token verification logic
 
-  //get bearer token from headers of req
+  // Get bearer token from headers of req
   let bearerToken = request.headers.authorization;
-  //if bearer token is not exsited, unauthorised req
+
+  // If bearer token is not existed, unauthorized req
   if (bearerToken === undefined) {
-    response.send({ message: "Unauthorized request" });
-  }
-  //if bearer token is existed,get token
-  else {
-    const token = bearerToken.split(" ")[1];
-    //verify token using secret key
-    try {
-      const decodedUser = jwt.verify(token, process.env.SECRET_KEY);
-      request.user = decodedUser;
-      next();
-    } catch (err) {
-      response.send({ message: err.message });
-    }
+    return response.status(401).json({ message: "Unauthorized request" });
   }
 
-  //if token is valid, allow to access protected route
-  //else, ask to login again
+  // If bearer token is existed, get token
+  const token = bearerToken.split(" ")[1];
+
+  // Verify token using the secret key
+  try {
+    const decodedUser = jwt.verify(token, process.env.SECRET_KEY);
+    request.user = decodedUser;
+    next(); // If token is valid, allow access to the protected route
+  } catch (err) {
+    return response.status(401).json({ message: "Token verification failed", error: err.message });
+  }
 };
 
 module.exports = verifyToken;
