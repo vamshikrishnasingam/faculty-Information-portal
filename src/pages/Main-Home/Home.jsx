@@ -1,30 +1,95 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
+import { useSpring, animated } from "react-spring";
+import Carousel from "react-bootstrap/Carousel";
 function Home() {
+  const fadeIn = useSpring({
+    opacity: 1,
+    from: { opacity: 0 },
+    config: { duration: 1000 },
+  });
+
+  const slideIn = useSpring({
+    transform: "translateX(0%)",
+    from: { transform: "translateX(-100%)" },
+    config: { duration: 800 },
+  });
+
+  const scaleHeading = useSpring({
+    transform: "scale(1)",
+    from: { transform: "scale(0.9)" },
+    config: { duration: 600 },
+  });
+
+  const scaleMenu = useSpring({
+    to: { transform: "scale(1)" },
+    from: { transform: "scale(0.9)" },
+    config: { duration: 600 },
+  });
+
   return (
-    <>
-      {/* <div className="p-4 text-white "> */}
+    <animated.div style={fadeIn}>
       <div className="p-2">
-        <h1 className=" p-2 text-center display-5">
+        <animated.h1
+          style={{ ...scaleHeading }}
+          className="p-2 text-center display-5"
+        >
           Faculty Information System
-        </h1>
+        </animated.h1>
         <hr />
         <div className="row">
-          <div className="col-lg-8  col-sm-12 ">
-            <img
-              src="media/home.png"
-              typeof="image"
-              alt="Card"
-              width="100%"
-              height="100%"
-            />
-          </div>
-          <div className="col-lg-4 col-sm-12 menu p-3">
+          <animated.div style={fadeIn} className="col-lg-8 col-sm-12">
+            <Carousel>
+              <Carousel.Item interval={2000}>
+                <img
+                  src="media/home.png"
+                  typeof="image"
+                  alt="Card"
+                  width="100%"
+                  height="100%"
+                />
+                <Carousel.Caption>
+                  <h3>Faculty Information System</h3>
+                  <p>Welcome to FIS Vnrvjiet. </p>
+                </Carousel.Caption>
+              </Carousel.Item>
+              <Carousel.Item interval={2000}>
+                <img
+                  src="media/home.png"
+                  typeof="image"
+                  alt="Card"
+                  width="100%"
+                  height="100%"
+                />
+                <Carousel.Caption>
+                  <h3>Faculty Information System</h3>
+                  <p>Welcome to FIS Vnrvjiet.</p>
+                </Carousel.Caption>
+              </Carousel.Item>
+              <Carousel.Item interval={2000}>
+                <img
+                  src="media/home.png"
+                  typeof="image"
+                  alt="Card"
+                  width="100%"
+                  height="100%"
+                />
+                <Carousel.Caption>
+                  <h3>Faculty Information System</h3>
+                  <p>Welcome to FIS Vnrvjiet</p>
+                </Carousel.Caption>
+              </Carousel.Item>
+            </Carousel>
+          </animated.div>
+          <animated.div
+            style={{ ...slideIn, ...scaleMenu }}
+            className="col-lg-4 col-sm-12 menu p-3"
+          >
             <h1 className="p-3 text-center display-5">WELCOME!!!</h1>
             <ul>
               <Link to="/classtt">
                 <li>
-                  <i className="fa fa-book"></i>
+                  <animated.i className="fa fa-book"></animated.i>
                   <NavLink className="fw-bold fs-5" to="/classtt">
                     CLASS TIME TABLES
                   </NavLink>
@@ -32,7 +97,7 @@ function Home() {
               </Link>
               <Link to="/facultytt">
                 <li>
-                  <i className="fa fa-graduation-cap"></i>
+                  <animated.i className="fa fa-graduation-cap"></animated.i>
                   <NavLink
                     className="fw-bold fs-5 text-decoration-none"
                     to="/facultytt"
@@ -43,7 +108,7 @@ function Home() {
               </Link>
               <Link to="/fac-list">
                 <li>
-                  <i className="fa fa-book"></i>
+                  <animated.i className="fa fa-book"></animated.i>
                   <NavLink className="text fw-bold fs-5" to="/fac-list">
                     FACULTY LIST
                   </NavLink>
@@ -51,7 +116,7 @@ function Home() {
               </Link>
               <Link to="/freehours">
                 <li>
-                  <i className="fa fa-address-book"></i>
+                  <animated.i className="fa fa-address-book"></animated.i>
                   <NavLink
                     className="fw-bold fs-5 text-decoration-none"
                     to="/freehours"
@@ -62,7 +127,7 @@ function Home() {
               </Link>
               <Link to="/history">
                 <li>
-                  <i className="fa fa-users"></i>
+                  <animated.i className="fa fa-users"></animated.i>
                   <NavLink
                     className="fw-bold fs-5 text-decoration-none"
                     to="/history"
@@ -71,31 +136,9 @@ function Home() {
                   </NavLink>
                 </li>
               </Link>
-              {/* <Link to="/admin-login">
-                <li>
-                  <i className="fa fa-user"></i>
-                  <NavLink
-                    className="fw-bold fs-5 text-decoration-none"
-                    to="/admin-login"
-                  >
-                    ADMIN LOGIN
-                  </NavLink>
-                </li>
-              </Link> */}
-              {/* <Link to="/replacefac">
-                <li>
-                  <i className="fa fa-user"></i>
-                  <NavLink
-                    className="fw-bold fs-5 text-decoration-none"
-                    to="/replacefac"
-                  >
-                    Search
-                  </NavLink>
-                </li>
-              </Link> */}
               <Link to="https://vnrvjiet.ac.in/">
                 <li>
-                  <i className="fa fa-paper-plane"></i>
+                  <animated.i className="fa fa-paper-plane"></animated.i>
                   <NavLink
                     className="fw-bold fs-5 text-decoration-none"
                     to="https://vnrvjiet.ac.in/"
@@ -105,10 +148,10 @@ function Home() {
                 </li>
               </Link>
             </ul>
-          </div>
+          </animated.div>
         </div>
       </div>
-    </>
+    </animated.div>
   );
 }
 

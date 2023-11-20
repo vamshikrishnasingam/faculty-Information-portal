@@ -3,13 +3,22 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { NavLink } from "react-router-dom";
+import { useSpring, animated } from "react-spring";
 import "./Navigationbar.css";
 import { loginContext } from "../../contexts/loginContext";
+
 function NavigationBar() {
+  const animationProps = useSpring({
+    from: { opacity: 0, transform: "translateY(-30px)" },
+    to: { opacity: 1, transform: "translateY(0)" },
+    config: { duration: 500 },
+  });
+
   let [currentUser, loginUser, userLoginStatus, loginErr, logoutUser] =
     useContext(loginContext);
+
   return (
-    <>
+    <animated.div style={animationProps}>
       {["lg"].map((expand) => (
         <Navbar
           key={expand}
@@ -71,14 +80,12 @@ function NavigationBar() {
                     </NavLink>
                   </div>
                 )}
-                {/* <NavLink to="/admin-login" className="fa text-white nav-link btn btn-success m-2"><i className="fa fa-sign-in fa-fw "></i>LOGIN</NavLink> */}
-                {/* <NavLink to="/contactus" className='fa nav-link text-white  btn btn-success m-2'><i className="fa fa-users fa-fw"></i>CONTACT</NavLink> */}
               </Nav>
             </Navbar.Collapse>
           </Container>
         </Navbar>
       ))}
-    </>
+    </animated.div>
   );
 }
 

@@ -6,7 +6,7 @@ import { loginContext } from '../../contexts/loginContext'
 import { useContext } from 'react'
 import Button from 'react-bootstrap/Button';
 function FacultyData() {
-  let [, loginUser, userLoginStatus, loginErr, logoutUser] = useContext(loginContext)
+  let [,, userLoginStatus,, logoutUser] = useContext(loginContext)
 
   return (
     <div className='d-flex row m-4 mt-5'>

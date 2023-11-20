@@ -6,7 +6,7 @@ import { loginContext } from "../../../contexts/loginContext";
 import { useContext } from "react";
 import Button from "react-bootstrap/Button";
 function AdminMainPage() {
-  let [, , userLoginStatus, , logoutUser] = useContext(loginContext);
+  let [, , userLoginStatus, ,] = useContext(loginContext);
   return (
     <div className="d-flex row m-5">
       {userLoginStatus ? (
