@@ -1,30 +1,30 @@
-import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { loginContext } from "../../../contexts/loginContext";
-import { useNavigate } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
-
+import { useNavigate } from "react-router-dom";
+import { Button, Form } from "react-bootstrap";
 function Admin() {
   const [userDetails, setUserDetails] = useState({});
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [editing, setEditing] = useState(true); // State to track whether user is in editing mode
   const [refresh, setRefresh] = useState(true);
-  let [currentUser, , , , logoutUser] = useContext(loginContext)
+  let [currentUser, , , , logoutUser] = useContext(loginContext);
   // Use the useNavigate hook to get the navigate function
   const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch user details from the server
-    const token = localStorage.getItem('token');
-    axios.get('http://localhost:5000/user-api/get-user-info', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    const token = localStorage.getItem("token");
+    axios
+      .get("http://localhost:5000/user-api/get-user-info", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         // Add the new field 'newusername' and set it to the current username
         const userDetailsWithNewUsername = {
@@ -34,18 +34,23 @@ function Admin() {
         };
         setUserDetails(userDetailsWithNewUsername);
       })
-      .catch(error => {
-        console.error('Error fetching user details:', error);
+      .catch((error) => {
+        console.error("Error fetching user details:", error);
       });
   }, [refresh]);
 
   const handlePasswordChange = async () => {
     try {
       // Perform password change logic
-      console.log('Change password:', oldPassword, newPassword, confirmNewPassword);
+      console.log(
+        "Change password:",
+        oldPassword,
+        newPassword,
+        confirmNewPassword
+      );
 
       // Example: You may want to send an API request to change the password
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       await axios.put(
         `http://localhost:5000/user-api/change-password/${userDetails.username}`,
         {
@@ -61,34 +66,34 @@ function Admin() {
       );
 
       // Clear the password fields after changing the password
-      setOldPassword('');
-      setNewPassword('');
-      setConfirmNewPassword('');
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmNewPassword("");
 
       // Notify the user about the success
-      toast.success('Password changed successfully', {
-        position: 'top-center',
+      toast.success("Password changed successfully", {
+        position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: 'light',
+        theme: "light",
       });
     } catch (error) {
-      console.error('Error changing password:', error);
+      console.error("Error changing password:", error);
 
       // Notify the user about the failure
-      toast.error('Error changing password', {
-        position: 'top-center',
+      toast.error("Error changing password", {
+        position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: 'light',
+        theme: "light",
       });
     }
   };
@@ -100,95 +105,89 @@ function Admin() {
   const handleSaveChanges = async () => {
     try {
       // Perform save changes logic
-      console.log('Save changes:', userDetails);
+      console.log("Save changes:", userDetails);
 
       // Example: You may want to send an API request to update user data
-      const token = localStorage.getItem('token');
-      await axios.put(
-        'http://localhost:5000/user-api/update',
-        userDetails,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const token = localStorage.getItem("token");
+      await axios.put("http://localhost:5000/user-api/update", userDetails, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       // Notify the user about the success
-      toast.success('Changes saved successfully', {
-        position: 'top-center',
+      toast.success("Changes saved successfully", {
+        position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: 'light',
+        theme: "light",
       });
 
       if (userDetails.newusername !== userDetails.username) {
         // Notify the user about the success
-        toast.error('Username Change Detected', {
-          position: 'top-center',
+        toast.error("Username Change Detected", {
+          position: "top-center",
           autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: 'light',
+          theme: "light",
         });
 
-        toast.error('Please Login again', {
-          position: 'top-center',
+        toast.error("Please Login again", {
+          position: "top-center",
           autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: 'light',
+          theme: "light",
         });
 
         // Delay for 4 seconds before logging out and navigating
         setTimeout(() => {
           logoutUser();
-          navigate('../admin-login');
+          navigate("../admin-login");
         }, 4000);
       }
 
-      if (userDetails.type != currentUser.type) {
-        toast.error('User Type modified', {
-          position: 'top-center',
+      if (userDetails.type !== currentUser.type) {
+        toast.error("User Type modified", {
+          position: "top-center",
           autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: 'light',
+          theme: "light",
         });
-        setTimeout(() => {
-
-        }, 4000);
+        setTimeout(() => {}, 4000);
       }
 
-      setRefresh(!refresh)
+      setRefresh(!refresh);
 
       // Exit edit mode after saving changes
       setEditing(!editing);
     } catch (error) {
-      console.error('Error saving changes:', error);
+      console.error("Error saving changes:", error);
 
       // Notify the user about the failure
-      toast.error('Error saving changes', {
-        position: 'top-center',
+      toast.error("Error saving changes", {
+        position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: 'light',
+        theme: "light",
       });
     }
   };
@@ -201,14 +200,24 @@ function Admin() {
 
         {editing ? (
           <>
-            <p><strong>Username:</strong> {userDetails.username}</p>
-            <p><strong>Email:</strong> {userDetails.email}</p>
-            {userDetails.oldusertype === "super-admin" && <p><strong>Type:</strong> {userDetails.type}</p>}
-            <Button className='btn btn-success' onClick={handleEdit}>Edit Details</Button>
+            <p>
+              <strong>Username:</strong> {userDetails.username}
+            </p>
+            <p>
+              <strong>Email:</strong> {userDetails.email}
+            </p>
+            {userDetails.oldusertype === "super-admin" && (
+              <p>
+                <strong>Type:</strong> {userDetails.type}
+              </p>
+            )}
+            <Button className="btn btn-success" onClick={handleEdit}>
+              Edit Details
+            </Button>
           </>
         ) : (
-          <div className='row'>
-            <div className='col-lg-3'>
+          <div className="row">
+            <div className="col-lg-3">
               <label htmlFor="username">Username:</label>
               <input
                 type="text"
@@ -216,10 +225,15 @@ function Admin() {
                 className="search-input form-control me-2"
                 placeholder="Username"
                 value={userDetails.newusername}
-                onChange={(e) => setUserDetails({ ...userDetails, newusername: e.target.value })}
+                onChange={(e) =>
+                  setUserDetails({
+                    ...userDetails,
+                    newusername: e.target.value,
+                  })
+                }
               />
             </div>
-            <div className='col-lg-3'>
+            <div className="col-lg-3">
               <label htmlFor="email">Email:</label>
               <input
                 type="text"
@@ -227,35 +241,52 @@ function Admin() {
                 className="search-input form-control me-2"
                 placeholder="Email"
                 value={userDetails.email}
-                onChange={(e) => setUserDetails({ ...userDetails, email: e.target.value })}
+                onChange={(e) =>
+                  setUserDetails({ ...userDetails, email: e.target.value })
+                }
               />
             </div>
-            <div className='col-lg-3'>
-              {userDetails.oldusertype === "super-admin" &&
+            <div className="col-lg-3">
+              {userDetails.oldusertype === "super-admin" && (
                 <div>
                   <label htmlFor="type">Type:</label>
-                  <select
+                  <div>
+                    <Form.Select
+                      id="type"
+                      value={userDetails.type}
+                      onChange={(e) =>
+                        setUserDetails({ ...userDetails, type: e.target.value })
+                      }
+                    >
+                      <option value="admin">Admin</option>
+                      <option value="super-admin">Super Admin</option>
+                    </Form.Select>
+                  </div>
+                  {/* <select
                     id="type"
                     className="search-input form-control me-2"
                     value={userDetails.type}
-                    onChange={(e) => setUserDetails({ ...userDetails, type: e.target.value })}
+                    onChange={(e) =>
+                      setUserDetails({ ...userDetails, type: e.target.value })
+                    }
                   >
                     <option value="admin">Admin</option>
                     <option value="super-admin">Super Admin</option>
-                  </select>
+                  </select> */}
                 </div>
-              }
+              )}
             </div>
-            <div className='col-lg-2 p-4'>
-              <Button className='btn btn-success'onClick={handleSaveChanges}>Save Changes</Button>
+            <div className="col-lg-2 p-4">
+              <Button className="btn btn-success" onClick={handleSaveChanges}>
+                Save Changes
+              </Button>
             </div>
           </div>
-
         )}
       </div>
       <h2>Change Password</h2>
-      <div className='row'>
-        <div className='col-lg-3'>
+      <div className="row">
+        <div className="col-lg-3">
           <label htmlFor="oldPassword">Old Password:</label>
           <input
             type="password"
@@ -266,7 +297,7 @@ function Admin() {
             onChange={(e) => setOldPassword(e.target.value)}
           />
         </div>
-        <div className='col-lg-3'>
+        <div className="col-lg-3">
           <label htmlFor="newPassword">New Password:</label>
           <input
             type="password"
@@ -277,7 +308,7 @@ function Admin() {
             onChange={(e) => setNewPassword(e.target.value)}
           />
         </div>
-        <div className='col-lg-3'> 
+        <div className="col-lg-3">
           <label htmlFor="confirmNewPassword">Confirm New Password:</label>
           <input
             type="password"
@@ -288,8 +319,10 @@ function Admin() {
             onChange={(e) => setConfirmNewPassword(e.target.value)}
           />
         </div>
-        <div className='col-lg-2 p-4'>
-          <Button className='btn btn-success' onClick={handlePasswordChange}>Change Password</Button>
+        <div className="col-lg-2 p-4">
+          <Button className="btn btn-success" onClick={handlePasswordChange}>
+            Change Password
+          </Button>
         </div>
       </div>
       <ToastContainer />

@@ -223,7 +223,7 @@ userApp.put('/update',verifyToken,expressAsyncHandler(async(req,res)=>{
     //get user collection object
     const userCollectionObj=req.app.get("userCollectionObj")
     //get modified user from client
-    console.log(req.body)
+    // console.log(req.body)
     let modifiedUser=req.body
     let oldusername=modifiedUser.username;
     //if username update required
@@ -232,9 +232,9 @@ userApp.put('/update',verifyToken,expressAsyncHandler(async(req,res)=>{
         await delete modifiedUser.newusername
         // console.log(modifiedUser)
     }
-    if(typeof(modifiedUser.oldtype)!='undefined'){
-        await delete modifiedUser.oldusertype
-        // console.log(modifiedUser)
+    if (typeof modifiedUser.oldusertype != "undefined") {
+      await delete modifiedUser.oldusertype;
+      // console.log(modifiedUser)
     }
     await delete modifiedUser._id;
     //get user from db

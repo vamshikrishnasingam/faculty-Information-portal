@@ -4,7 +4,7 @@ Content-Type: application/json
 {
     "username":"vamshi@12",
     "password":"singam123",
-    "type":"admin",
+    "type":"super-admin",
     "email":"21071A05J2@vnrvjiet.in"
 }
 
