@@ -1,46 +1,42 @@
-import React, { useEffect ,useState } from 'react'
+import React, { useContext , useEffect , useState } from 'react'
 import axios from "axios";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { loginContext } from "../../../contexts/loginContext";
 
 function SuperAdmin() {
+    let [currentUser,,,,]=useContext(loginContext);
     const [users, setUsers] = useState([]);
     const [editMode, setEditMode] = useState({});
     const [editedData, setEditedData] = useState({});
     const [refresh,setRefresh] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterType, setFilterType] = useState(''); // '' for all, 'admin', or 'super-admin'
+
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
           // No token, return null indicating no authenticated user
           return null;
         }
-      //   axios.get('http://localhost:5000/user-api/get-users', {
-      //             headers: {
-      //               Authorization: `Bearer ${token}`,
-      //             },
-      //           })
-      //           .then((response) => {
-      //             // Update the state with the fetched users
-      //             setUsers(response.data.payload);
-      //           })
-      //           .catch(error => {
-      //             console.error('Error fetching users:', error);
-      //           })
         axios.get('http://localhost:5000/user-api/get-users', {
           headers: {
-              Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {
-            // Update the state with the fetched users
-            const usersWithNewUsername = response.data.payload.map(user => ({
-                ...user,
-                newusername: user.username, // Adding new field newUsername
-            }));
-            setUsers(usersWithNewUsername);
+          // Filter out the current user from the list
+          const filteredUsers = response.data.payload.filter(user => user.username !== currentUser.username);
+
+          // Update the state with the filtered users
+          const usersWithNewUsername = filteredUsers.map(user => ({
+            ...user,
+            newusername: user.username, // Adding new field newUsername
+          }));
+          setUsers(usersWithNewUsername);
         })
         .catch(error => {
-            console.error('Error fetching users:', error);
+          console.error('Error fetching users:', error);
         });
       }, [refresh]);
       const handleEdit = (user) => {
@@ -56,6 +52,25 @@ function SuperAdmin() {
           [user._id]: { ...user },
         });
       };
+
+      const filteredUsers = users.filter((user) => {
+        // Filter users based on the search term (case-insensitive)
+        const usernameMatch = user.newusername
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
+    
+        // Filter users based on email
+        const emailMatch = user.email
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
+    
+        // Filter users based on type
+        const typeMatch =
+          filterType === '' || user.type === filterType.toLowerCase();
+    
+        // return usernameMatch ;
+        return usernameMatch || emailMatch || typeMatch;
+      });
   
       const handleInputChange = (userId, field, value) => {
         // Update the edited data when input fields change
@@ -204,6 +219,24 @@ function SuperAdmin() {
     <div>
         <ToastContainer />
         <h2>User List</h2>
+        <div style={{ marginBottom: '10px' }}>
+          <label htmlFor="search">Search: </label>
+          <input
+            type="text"
+            id="search"
+            className="search-input form-control me-2"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <select
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+          >
+            <option value="">All</option>
+            <option value="admin">Admin</option>
+            <option value="super-admin">Super Admin</option>
+          </select>
+        </div>
         <table>
             <thead>
             <tr>
@@ -231,7 +264,7 @@ function SuperAdmin() {
             ))}
             </tbody> */}
             <tbody>
-            {users?.map((user) => (
+              {filteredUsers?.map((user) => (
                 <tr key={user._id}>
                 <td>
                     {editMode[user._id] ? (

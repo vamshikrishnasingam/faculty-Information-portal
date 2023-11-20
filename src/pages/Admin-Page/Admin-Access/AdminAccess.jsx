@@ -8,8 +8,12 @@ import Admin from './Admin';
     const [currentUser,,,,] = useContext(loginContext);
     return (
       <div>
-        {currentUser.type === 'super-admin' ? (
-          <SuperAdmin/>):
+        {(currentUser.type === 'super-admin') ? (
+          <div>
+            <Admin/>
+            <SuperAdmin/>
+          </div>
+          ):
           (currentUser.type === 'admin') ? (
             <Admin/>
           ):

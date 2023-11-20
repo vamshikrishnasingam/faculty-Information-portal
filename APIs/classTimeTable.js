@@ -41,7 +41,7 @@ const freehrs = async (year, day, time, dat, freeHoursObj) => {
         const a = await freeHoursObj.updateOne({ username: ele.trim() }, res1)
     })
 }
-const fun = async (year, day, timings, fac, facttobj) => {
+const fun = async (year, day, timings, fac, facttobj,sem) => {
     const week = { 'M': 'mon', 'T': 'tue', 'W': 'wed', 'Th': 'thu', 'F': 'fri', 'S': 'sat' }
    // console.log("fun : ",fac)
     ids = fac.username.split('/')
@@ -67,9 +67,9 @@ const fun = async (year, day, timings, fac, facttobj) => {
                     return;
             }
         }
-        const timingsKey = `${year.trim()}.${day.trim()}.${timings.replace(/\./g, '_').trim()}`;
+        const timingsKey = `${sem.trim()}.${day.trim()}.${timings.replace(/\./g, '_').trim()}`;
         const updateObj = {};
-        updateObj[timingsKey] = faccopy;
+        updateObj[`${year}.${timingsKey}`] = faccopy;         
         const res1 = {
             $set: updateObj
         };
@@ -97,6 +97,7 @@ classtimetableApp.post("/class-insert", expressAsyncHandler(async (req, res) => 
             x[1] = x[1].trim()
             p.push(x)
         })
+        const sem=p[0][1].split('-')[1]
         const facultydata = {};
         for (let j = 1; j < facultyinfo.length; j++) {
             const f = {}
@@ -105,7 +106,6 @@ classtimetableApp.post("/class-insert", expressAsyncHandler(async (req, res) => 
             }
             facultydata[facultyinfo[j][0]] = f
         }
-       // console.log("skdkgvjhvWJHCVwchj JWHC JHw cjh : ,",sheetname)
         const classdata = {};
         for (let i = 1; i < 7; i++) {
             const day = classinfo[i][0].trim();
@@ -139,7 +139,7 @@ classtimetableApp.post("/class-insert", expressAsyncHandler(async (req, res) => 
                                 fac['class']=sheetname
                                 fac['classtype'] = 'Lab'
                                 freehrs(sheetname[0], day, timings, fac, freeHoursObj)
-                                fun(p[2][1], day, timings, fac, facultyTimeTableObj)
+                                fun(p[2][1], day, timings, fac, facultyTimeTableObj,sem)
                                 i += 1;
                             }
                         })
@@ -154,7 +154,7 @@ classtimetableApp.post("/class-insert", expressAsyncHandler(async (req, res) => 
                         fac['classtype'] = 'Lab'
                         fac['class']=sheetname
                         freehrs(sheetname[0], day, timings, fac, freeHoursObj)
-                        fun(p[2][1], day, timings, fac, facultyTimeTableObj)
+                        fun(p[2][1], day, timings, fac, facultyTimeTableObj,sem)
                         obj[timings] = insertobj
 
                     }
@@ -170,7 +170,7 @@ classtimetableApp.post("/class-insert", expressAsyncHandler(async (req, res) => 
                         fac['class']=sheetname
                         obj[timings] = insertobj
                         freehrs(sheetname[0], day, timings, fac, freeHoursObj)
-                        fun(p[2][1], day, timings, fac, facultyTimeTableObj)
+                        fun(p[2][1], day, timings, fac, facultyTimeTableObj,sem)
                     }
                     else {
                         const insertobj = {}
@@ -181,7 +181,6 @@ classtimetableApp.post("/class-insert", expressAsyncHandler(async (req, res) => 
                 }
             }
             classdata[day] = obj;
-            //console.log("CLASSDATA : ",classdata);
         }
         const key3 = {}
         key3[p[0][1]] = classdata

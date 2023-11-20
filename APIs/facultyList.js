@@ -4,19 +4,23 @@ const userApp = exp.Router()
 
 const expressAsyncHandler = require("express-async-handler")
 
-userApp.post("/facultylist-insert", expressAsyncHandler(async (req, res) => {
+userApp.post("/facultydata", expressAsyncHandler(async (req, res) => {
     //get user collection object
     const newUser = req.body
     const facultyListObj = req.app.get("facultyListObj")
     const facultyTimeTableObj = req.app.get("facultyTimeTableObj")
     const freeHoursObj = req.app.get("freeHoursObj")
-    //get new user from request
-    await facultyListObj.deleteOne({ username: newUser.username })
-    await facultyListObj.insertOne(newUser)
-    await facultyTimeTableObj.deleteOne({ username: newUser.username })
-    await facultyTimeTableObj.insertOne(newUser)
-    await freeHoursObj.deleteOne({ username: newUser.username })
-    await freeHoursObj.insertOne(newUser)
+
+    newUser.forEach(async(element) => {
+        a = await facultyListObj.findOne({ username: element.username })
+        //get new user from request
+        if (!a) {
+            await facultyListObj.insertOne(element)
+            await facultyTimeTableObj.insertOne(element)
+            await freeHoursObj.insertOne(element)
+            console.log(a)
+        }
+    })
     res.status(201).send({ message: "User Created", payload: req.body })
 }))
 
@@ -101,8 +105,8 @@ userApp.post("/facultycheck", expressAsyncHandler(async (req, res) => {
                         obj[timings] = insertobj
                     }
                     else {
-                        const insertobj={}
-                        insertobj['subject']=sub
+                        const insertobj = {}
+                        insertobj['subject'] = sub
                         obj[timings] = insertobj
 
                     }
@@ -110,10 +114,10 @@ userApp.post("/facultycheck", expressAsyncHandler(async (req, res) => {
             }
             classdata[day] = obj;
         }
-        const a1={}
-        a1[p[0][1]]=classdata
-        const b1={}
-        b1[p[1][1]]=a1
+        const a1 = {}
+        a1[p[0][1]] = classdata
+        const b1 = {}
+        b1[p[1][1]] = a1
         classarray[p[2][1]] = b1;
         console.log(classarray)
     });

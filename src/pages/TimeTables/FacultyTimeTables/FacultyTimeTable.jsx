@@ -19,6 +19,7 @@ const FacultyTimeTable = () => {
   const [searchId, setSearchId] = useState("");
   const [data, setData] = useState(null);
   const [year, setYear] = useState("");
+  const [sem,setSem]=useState(1);
   const [message, setMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -36,9 +37,7 @@ const FacultyTimeTable = () => {
       }
     };
 
-    fetchlist(); // Call the async function inside useEffect
-
-    // Specify any dependencies if needed
+    fetchlist();
   }, []);
 
   const handleSearch = async (e) => {
@@ -62,8 +61,10 @@ const FacultyTimeTable = () => {
 
   const MyPopoverContent = (cell) => (
     <Popover id="popover-basic">
+      {console.log(cell)}
       <Popover.Body>
         <p>SUBJECT: {cell.subject}</p>
+        <p>CLASS: {cell.class}</p>
         <p>ROOM-NO: {cell.roomno}</p>
       </Popover.Body>
     </Popover>
@@ -73,19 +74,20 @@ const FacultyTimeTable = () => {
     if (data) {
       printData();
     }
-  }, [year, data]);
+  }, [year, data,sem]);
 
   const printData = () => {
     const y = year || Object.keys(data)[Object.keys(data).length - 1];
+    console.log("factimetabel : ",data)
     const unicorn = [];
     for (const day of days) {
       const b = [{ classtype: day }];
-      const l = data[y]?.hasOwnProperty(day);
+      const l = data[y][sem]?.hasOwnProperty(day);
       if (l) {
         for (const time of times) {
-          const a = data[y][day]?.hasOwnProperty(time.replace(/\./g, "_"));
+          const a = data[y][sem][day]?.hasOwnProperty(time.replace(/\./g, "_"));
           if (a) {
-            b.push(data[y][day][time.replace(/\./g, "_")]);
+            b.push(data[y][sem][day][time.replace(/\./g, "_")]);
           } else {
             b.push({ name: "null", roomno: "null", subjectname: "null" });
           }
@@ -103,6 +105,8 @@ const FacultyTimeTable = () => {
   const handleSearchInputChange = (event) => {
     const term = event.target.value;
     setSearchTerm(term);
+    setSelectedResult(term);
+    setSearchId(term);
   };
 
   const handleSelectResult = (result) => {
@@ -121,26 +125,6 @@ const FacultyTimeTable = () => {
   return (
     <div className="container p-5">
       <h3 className="mb-5">Please enter FacultyID for their Time Tables!!!</h3>
-      {/* <div className="row">
-        <div className="col-lg-3 col-sm-7 p-2">
-          <input
-            className="form-control me-2"
-            type="text"
-            value={searchId}
-            onChange={(e) => setSearchId(e.target.value)}
-            placeholder="Enter ID"
-          />
-        </div>
-        <div className="col-lg-3 col-sm-5 p-2">
-          <Button
-            className="btn btn-success w-50"
-            type="submit"
-            onClick={handleSearch}
-          >
-            Search
-          </Button>
-        </div>
-      </div> */}
       <div className="row">
         <div className="col-lg-3 col-sm-6 col-md-6 p-3">
           <div className="search-bar-container">
@@ -156,12 +140,9 @@ const FacultyTimeTable = () => {
                 {filteredResults.map((user) => (
                   <div
                     key={user._id.$oid}
-                    className={`search-result-item ${
-                      selectedResult === user ? "selected" : ""
-                    }`}
+                    className={`search-result-item ${selectedResult === user ? "selected" : ""}`}
                     value={user.username}
-                    onClick={() => handleSelectResult(user)}
-                  >
+                    onClick={() => handleSelectResult(user)}>
                     {user.username} - {user.name} - {user.facultytype}
                   </div>
                 ))}
@@ -183,7 +164,8 @@ const FacultyTimeTable = () => {
         <div className="table-container">
           <table className="m-3 mx-auto">
             <thead>
-              <tr className="col-lg-4 col-sm-12 col-md-6 p-3">
+              <div className="row">
+              <tr className="col-lg-6 col-sm-12 col-md-6 p-3">
                 <Form.Select
                   value={year}
                   onChange={(e) => setYear(e.target.value)}
@@ -209,6 +191,15 @@ const FacultyTimeTable = () => {
                     ))}
                 </Form.Select>
               </tr>
+              <tr className="col-lg-6 col-sm-12 col-md-6 p-3">
+                <Form.Select value={sem} onChange={(e) => setSem(e.target.value)}>
+                  <option>select SEM</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                </Form.Select>
+              </tr>
+              </div>
+             
               <tr>
                 <th>Day</th>
                 {times.map((time) => (

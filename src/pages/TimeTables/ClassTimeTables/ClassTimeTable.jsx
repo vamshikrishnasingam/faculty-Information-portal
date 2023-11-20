@@ -293,45 +293,6 @@ function ClassTimeTable() {
                           </div>
                         )}
                       </td>
-                      // <td
-                      //   key={cellIndex}
-                      // // onMouseEnter={() => handleMouseEnter([rowIndex, cellIndex, cell])}
-                      // // onMouseLeave={handleMouseLeave}
-                      // >
-                      //   <tr>{cell.subjectname}</tr>
-                      //   {/* {rowactiveIndex === rowIndex && colactiveIndex === cellIndex && cellobject && cellvalue && (
-                      //     <Modal show={show} onHide={closeModal} backdrop="true" centered className='modal1'>
-                      //       <Modal.Body >
-                      //       <p>ID       :{cellobject.username}</p>
-                      //         <p>name  :{cellobject.name}</p>
-                      //       </Modal.Body>
-                      //     </Modal>
-                      //   )}
-                      //   {rowactiveIndex === rowIndex && colactiveIndex === cellIndex && cellobjectlab && labvalue && (
-                      //     <Modal
-                      //       show={show} onHide={closeModal} backdrop="true"  centered className='modal'>
-                      //       <Modal.Body>
-                      //         <div className='modal2'>
-                      //           <div className='element'>
-                      //             <p>LAB-1</p>
-                      //             <p>ID:{cellobjectlab[0].username}</p>
-                      //             <p>name:{cellobjectlab[0].name}</p>
-                      //             <p>ID:{cellobjectlab[1].username}</p>
-                      //             <p>name:{cellobjectlab[1].name}</p>
-                      //           </div>
-                      //           <div className='space'></div>
-                      //           <div className='element'>
-                      //             <p>LAB-2</p>
-                      //             <p>ID:{cellobjectlab[2].username}</p>
-                      //             <p>name:{cellobjectlab[2].name}</p>
-                      //             <p>ID:{cellobjectlab[3].username}</p>
-                      //             <p>name:{cellobjectlab[3].name}</p>
-                      //           </div>
-                      //         </div>
-                      //       </Modal.Body>
-                      //     </Modal>
-                      //   )} */}
-                      // </td>
                     ))}
                   </tr>
                 ))}
