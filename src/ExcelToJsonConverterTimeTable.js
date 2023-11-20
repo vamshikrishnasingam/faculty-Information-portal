@@ -11,9 +11,30 @@ function ExcelUploader() {
   let sheetcount = 0;
   let tabledata = [];
 
+  const updatedata = async (dt1, dt2) => {
+    const obj = {};
+    const dtp = JSON.parse(JSON.stringify(dt2));
+    for (let i = 0; i < dt2.length; i++) {
+      for (let j = 0; j < dt2[i].length; j++) {
+        if (dt2[i][j] === -1)
+          dtp[i][j]=dtp[i][j-1]
+      }
+    }
+    console.log(dtp,dt2)
+    obj['dt1'] = dt1
+    obj['dt2'] = dtp
+    await axios
+      .post("http://localhost:5000/classfaculty-api/classtt-insert", obj)
+      .then((response) => {
+        console.log("insertion into classtimtable api is success : ");
+      })
+      .catch((err) => {
+        console.log("err in user login:", err);
+      });
+  }
   const dataupdate = async () => {
     await axios
-      .post("http://localhost:5000/classtimetable-api/classtt-insert", table)
+      .post("http://localhost:5000/classtimetable-api/class-insert", table)
       .then((response) => {
         console.log("insertion into classtimtable api is success : ");
       })
@@ -103,6 +124,7 @@ function ExcelUploader() {
         const dt2 = td2.map((rowData) => {
           return Object.values(rowData).slice(0, 4);
         });
+        updatedata(dt, dt1);
         dataArray.push(dt, dt1, dt2);
         tabledata.push({ sheetname, data: dataArray });
         if (len === sheetcount) setTable(tabledata);

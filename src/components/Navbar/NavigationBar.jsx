@@ -14,7 +14,7 @@ function NavigationBar() {
     config: { duration: 500 },
   });
 
-  let [currentUser, loginUser, userLoginStatus, loginErr, logoutUser] =
+  let [, , userLoginStatus, , logoutUser] =
     useContext(loginContext);
 
   return (

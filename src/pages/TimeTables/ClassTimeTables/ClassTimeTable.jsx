@@ -1,11 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useContext, useEffect, useRef } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { OverlayTrigger, Popover, Form, Button } from "react-bootstrap";
-import { loginContext } from "../../../contexts/loginContext";
-let times1 = ["9-10", "10-11", "11-12", "12.40-1.40", "1.40-2.40", "2.40-3.40"];
-let times2 = ["10-11", "11-12", "12-1", "1.40-2.40", "2.40-3.40", "3.40-4.40"];
+import React, { useState, useContext, useEffect } from 'react'
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { OverlayTrigger, Popover, Form, Button } from 'react-bootstrap'
+import { loginContext } from '../../../contexts/loginContext';
+let times1 = ['9-10', '10-11', '11-12', '12.40-1.40', '1.40-2.40', '2.40-3.40']
+let times2 = ['10-11', '11-12', '12-1', '1.40-2.40', '2.40-3.40', '3.40-4.40']
 let times;
 let days = ["mon", "tue", "wed", "thu", "fri", "sat"];
 function ClassTimeTable() {
@@ -19,62 +19,87 @@ function ClassTimeTable() {
   const [sec, setsec] = useState("");
   const [classid, setclassid] = useState("");
   const [academicyear, setacademicyear] = useState("");
-  const [sem, setsem] = useState("");
-  const [graduatevalue, setgraduatevalue] = useState(0);
-  const [phoenix, setphoenix] = useState([]);
+  const [sem, setsem] = useState("")
+  let [graduatevalue, setgraduatevalue] = useState(0)
+  const [phoenix, setphoenix] = useState([])
+
   const [classdata, setDataclass] = useState(null);
   const [facultydata, setfacultydata] = useState(null);
-  const [displayvalue, setdisplayvalue] = useState(0);
-  const [errorvalue, seterrorvalue] = useState(0);
-  const [semester, setsemester] = useState("");
+  const [rowactiveIndex, setrowIndex] = useState(null);
+  const [colactiveIndex, setcolIndex] = useState(null);
+  const [cellvalue, setcellvalue] = useState(false);
+  const [cellobject, setcellobject] = useState(null)
+  const [labvalue, setlabvalue] = useState(false)
+  const [cellobjectlab, setlabobject] = useState(null)
+  const [displayvalue, setdisplayvalue] = useState(0)
+  const [errorvalue,seterrorvalue]=useState(0)
+  const [semester, setsemester] = useState("")
+  let mainKeys = []
+  let columnKeys = []
 
-  let mainKeys = [];
-  let columnKeys = [];
-
-  const initialRender = useRef(true);
-
-  useEffect(() => {
-    // Skip the effect on the initial render
-    if (initialRender.current) {
-      initialRender.current = false;
-      return;
+  let [show, setShow] = useState(false);
+  let showModal = () => setShow(true);
+  let closeModal = () => setShow(false);
+  const [showText, setShowText] = useState(false)
+  const handleenter = e => {
+    setShowText(true)
+  }
+  const handleLeave = e => {
+    setShowText(false)
+  }
+  const setcellobjectvalue = async (a) => {
+    let aa = a.trim();
+    const facultydatainfo = facultydata[aa]
+    if (aa.includes('lab')) {
+      let x = aa.split(' ')
+      let y = x[0].split('/')
+      let arr = [facultydata[y[0]], facultydata[y[0] + ' lab'], facultydata[y[1]], facultydata[y[1] + ' lab']]
+      setlabobject(arr)
+      setlabvalue(true);
+      setcellvalue(false);
     }
-    if (classdata !== null) {
-      printdata();
-    } else {
-      setdisplayvalue(0);
+    else if (facultydatainfo) {
+      setlabvalue(false)
+      setcellobject(facultydatainfo)
+      setcellvalue(true);
     }
-  }, [classdata]);
+    else {
+      const obj = {};
+      obj.username = ' ';
+      obj.name = ' ';
+      setcellobject(obj)
+      setlabobject([obj, obj, obj, obj]);
+    }
+  }
+  const handleMouseEnter = (index) => {
+    setrowIndex(index[0]);
+    setcolIndex(index[1]);
+    setcellobjectvalue(index[2]);
+    showModal();
+  }
+  const handleMouseLeave = () => {
+    closeModal();
+    setrowIndex(null);
+    setcolIndex(null);
+    setcellobject(null);
+    setlabobject(null)
+    setcellvalue(false);
+    setlabvalue(false);
+  }
 
-  // Rest of your component cod
   const MyPopoverContent = (cell) => (
     <Popover id="popover-basic">
       <Popover.Body>
-        {!cell.subject.includes("/") && (
+        {/* <p>SUBJECT-NAME: {cell.subjectname}</p> */}
+        {!cell.subject.includes('/') && (
           <div>
             <p>ID :{cell.username}</p>
             <p>NAME :{cell.name}</p>
             <p>ROOM NO :{cell.roomno}</p>
           </div>
         )}
-        {cell.subject.includes("/") && cell.hasOwnProperty("labA") && (
-          <div>
-            <div>
-              <p>LAB : {cell["labA"].subject}</p>
-              <p>ID :{cell["labA"].username}</p>
-              <p>NAME :{cell["labA"].name}</p>
-              <p>ROOM NO :{cell["labA"].roomno}</p>
-            </div>
-            <div>
-              <p>------------------------</p>
-            </div>
-            <div>
-              <p>LAB : {cell["labB"].subject}</p>
-              <p>ID :{cell["labB"].username}</p>
-              <p>NAME :{cell["labB"].name}</p>
-              <p>ROOM NO :{cell["labB"].roomno}</p>
-            </div>
-          </div>
+        {cell.subject.includes('/') && (
+          <p>lab data not available yet..!!</p>
         )}
       </Popover.Body>
     </Popover>
@@ -102,20 +127,18 @@ function ClassTimeTable() {
   };
 
   useEffect(() => {
-    console.log(sem, academicyear, sec, classid);
-    const handlechanges = () => {
-      const id = year + branch + sec;
-      setclassid(id);
-    };
-    handlechanges();
-  }, [semester, year, sec, academicyear, graduation, branch]);
+    if (classid !== "" && sem !== "" && academicyear !== "")
+      handleSearch();
+  }, [classid, sem, academicyear, graduation]);
 
   useEffect(() => {
-    if (semester !== "" && year !== "") {
-      let x = year + "-" + semester;
-      setsem(x);
+    if (classdata !== null) {
+      printdata();
     }
-  }, [semester, year]);
+    else{
+      setdisplayvalue(0);
+    }
+  }, [classdata]);
 
   useEffect(() => {
     if (phoenix.length > 0) setdisplayvalue(1);
@@ -123,39 +146,39 @@ function ClassTimeTable() {
   }, [phoenix]);
 
   const printdata = () => {
-    if (checkid === "1") times = times1;
-    else times = times2;
-    const classdt = classdata[classid][academicyear][graduation][sem];
-    const mainKeysextra = Object.keys(classdt);
-    mainKeys = mainKeysextra;
-    const columnKeysextra =
-      mainKeys.length > 0 ? Object.keys(classdt[mainKeys[0]]) : [];
-    columnKeys = columnKeysextra;
-    console.log(classdt, mainKeys, columnKeys);
-    let b = [];
-    for (let i = 0; i < 6; i++) b.push(columnKeys[i]);
-    let unicorn = [];
-    for (let i = 0; i < 6; i++) {
-      b = [];
-      b.push({ subject: mainKeys[i] });
-      for (let j = 0; j < 6; j++) {
-        b.push(classdt[mainKeys[i]][columnKeys[j]]);
+    if (checkid === '1')
+      times = times1;
+    else
+      times = times2;
+    const classdt = classdata[classid][academicyear][graduation][sem]  
+      const mainKeysextra = Object.keys(classdt);
+      mainKeys = mainKeysextra;
+      const columnKeysextra = mainKeys.length > 0 ? Object.keys(classdt[mainKeys[0]]) : [];
+      columnKeys = columnKeysextra
+      console.log(classdt, mainKeys, columnKeys)
+      let b = [];
+      for (let i = 0; i < 6; i++)
+        b.push(columnKeys[i]);
+      let unicorn = [];
+      for (let i = 0; i < 6; i++) {
+        b = [];
+        b.push({ 'subject': mainKeys[i] })
+        for (let j = 0; j < 6; j++) {
+          b.push(classdt[mainKeys[i]][columnKeys[j]])
+        }
+        unicorn.push(b);
       }
-      unicorn.push(b);
-    }
-    console.log("data: ", unicorn);
-    setphoenix(unicorn);
-  };
+      setphoenix(unicorn);
+  }
+
 
   const handleSearch = async () => {
-    console.log(academicyear, classid, sem, graduation);
-    await axios
-      .get(
-        `/classtimetable-api/classtt-data/${classid}/${academicyear}/${graduation}/${sem}`
-      )
+    console.log(academicyear, classid, sem, graduation)
+    console.log('api call')
+      await axios.get(`/classtimetable-api/classtt-data/${classid}/${academicyear}/${graduation}/${sem}`)
       .then((response) => {
-        console.log("api call : ", response.data);
-        setDataclass(response.data);
+        console.log('api ca;; : ',response.data)
+        setDataclass(response.data)
       })
       .catch((error) => {
         setDataclass(null);
@@ -164,11 +187,42 @@ function ClassTimeTable() {
   };
 
   const handlechangegraduation = (e) => {
-    console.log(e.target.value);
-    if (e.target.value === "Btech") setgraduatevalue(1);
-    else setgraduatevalue(0);
-    setgraduation(e.target.value);
-  };
+    console.log(e.target.value)
+    if (e.target.value === "Btech")
+      setgraduatevalue(1);
+    else
+      setgraduatevalue(0);
+    setgraduation(e.target.value)
+  }
+
+  const handlechangeacademicyear = (e) => {
+    setacademicyear(e.target.value);
+  }
+
+  const handlechangeyear = (e) => {
+    setyear(e.target.value);
+    setcheckid(e.target.value);
+  }
+
+  const handlechangebranch = (e) => {
+    setbranch(e.target.value);
+  }
+
+  const handlechangesec = (e) => {
+    setsec(e.target.value);
+  }
+
+  const handlechangesem = (e) => {
+    let x = e.target.value
+    x = year + "-" + x
+    setsem(x);
+    setsemester(e.target.value)
+  }
+
+  const handlechanges = () => {
+    const id = year + branch + sec;
+    setclassid(id);
+  }
 
   const goingback = () => {
     if (userLoginStatus) navigate("/adminpage");
@@ -246,19 +300,16 @@ function ClassTimeTable() {
           style={{ position: "relative" }}
         >
           <Button
-            className=" col-lg-5 btn-success"
-            style={{ marginRight: "20px" }}
-            onClick={handleSearch}
-          >
-            SEARCH
-          </Button>
+            onMouseEnter={handleenter}
+            onMouseLeave={handleLeave}
+            className=' col-lg-5 btn-success' style={{ marginRight: '20px' }} onClick={handlechanges}>SEARCH</Button>
           {/* <Button className='col-lg-5  btn-danger' onClick={goingback}>GOBACK</Button> */}
         </div>
       </div>
-      {displayvalue === 1 && errorvalue == 0 && (
-        <div className="row">
-          <div className="container m-3" style={{ "overflow-x": "auto" }}>
-            <table className="mx-auto w-75 ">
+      {displayvalue === 1 && errorvalue==0 && (
+        <div className='row'>
+          <div className='container m-3' style={{ "overflow-x": 'auto' }}>
+            <table className='mx-auto w-75 '>
               <thead>
                 <tr>
                   <th>Day</th>
@@ -277,27 +328,23 @@ function ClassTimeTable() {
                   <tr key={rowIndex}>
                     {row.map((cell, cellIndex) => (
                       <td key={cellIndex}>
-                        {cellIndex === 0 &&
-                          cell &&
-                          Object.keys(cell).length > 0 && (
-                            <div className="cell-content">
-                              <p>{cell.subject}</p>
-                            </div>
-                          )}
-                        {cellIndex !== 0 &&
-                          cell &&
-                          Object.keys(cell).length > 0 && (
-                            <div className="cell-content">
-                              <OverlayTrigger
-                                trigger="hover"
-                                placement="right"
-                                overlay={MyPopoverContent(cell)}
-                              >
-                                <p className="popover-button">{cell.subject}</p>
-                              </OverlayTrigger>
-                            </div>
-                          )}
-                      </td>
+                      {cellIndex === 0 && cell && Object.keys(cell).length > 0 && (
+                        <div className="cell-content">
+                          <p>{cell.subject}</p>
+                        </div>
+                      )}
+                      {cellIndex !== 0 && cell && Object.keys(cell).length > 0 && (
+                        <div className="cell-content">
+                          <OverlayTrigger
+                            trigger="hover"
+                            placement="right"
+                            overlay={MyPopoverContent(cell)}
+                          >
+                            <p className="popover-button">{cell.subject}</p>
+                          </OverlayTrigger>
+                        </div>
+                      )}
+                    </td>
                       // <td
                       //   key={cellIndex}
                       // // onMouseEnter={() => handleMouseEnter([rowIndex, cellIndex, cell])}
@@ -345,7 +392,10 @@ function ClassTimeTable() {
           </div>
         </div>
       )}
-      {errorvalue === 1 && <div>no data found</div>}
+      {errorvalue ===1 && (
+        <div>no data found</div>
+      )}
+
     </div>
   );
 }
