@@ -1,87 +1,146 @@
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
 import { useSpring, animated } from "react-spring";
 import Carousel from "react-bootstrap/Carousel";
+import Accordion from "react-bootstrap/Accordion";
+import ListGroup from "react-bootstrap/ListGroup";
+import { useState, useEffect } from "react";
 function Home() {
   const fadeIn = useSpring({
     opacity: 1,
     from: { opacity: 0 },
     config: { duration: 1000 },
   });
+  const textProps = useSpring({
+    from: { width: "50%", color: "white" },
+    to: { width: "100%", color: "blue" },
+    config: { duration: 200 },
+  });
+  const [isVisible, setIsVisible] = useState(true);
+  const welcomeAnimation = useSpring({
+    opacity: isVisible ? 1 : 0.1,
+  });
 
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setIsVisible(!isVisible);
+    }, 500); // Adjust the interval based on your preference
+
+    return () => clearInterval(intervalId);
+  }, [isVisible]);
+
+  const [val, setval] = useState('');
+  const handleChange = () => {
+    // Check if the accordion is already open
+    if (val === 1) {
+      // If it is open, set the value to 0
+      setval(0);
+    } else {
+      // If it is not open, set the value to 1
+      setval(1);
+    }
+  };
   const slideIn = useSpring({
-    transform: "translateX(0%)",
-    from: { transform: "translateX(-100%)" },
-    config: { duration: 800 },
-  });
+     transform: "translateX(0%)",
+     from: { transform: "translateX(-100%)" },
+     config: { duration: 800 },
+   });
 
-  const scaleHeading = useSpring({
-    transform: "scale(1)",
-    from: { transform: "scale(0.9)" },
-    config: { duration: 600 },
-  });
-
-  const scaleMenu = useSpring({
-    to: { transform: "scale(1)" },
-    from: { transform: "scale(0.9)" },
-    config: { duration: 600 },
-  });
 
   return (
     <animated.div style={fadeIn}>
-      <div className="p-2">
-        <animated.h1
-          style={{ ...scaleHeading }}
-          className="p-2 text-center display-5"
-        >
-          Faculty Information System
-        </animated.h1>
-        <hr />
+      <div className="p-3">
         <div className="row">
-          <animated.div style={fadeIn} className="col-lg-8 col-sm-12">
-            <Carousel>
-              <Carousel.Item interval={2000}>
-                <img
-                  src="media/home.png"
-                  typeof="image"
-                  alt="Card"
-                  width="100%"
-                  height="100%"
-                />
-                <Carousel.Caption>
-                  <h3>Faculty Information System</h3>
-                  <p>Welcome to FIS Vnrvjiet. </p>
-                </Carousel.Caption>
-              </Carousel.Item>
-              <Carousel.Item interval={2000}>
-                <img
-                  src="media/home.png"
-                  typeof="image"
-                  alt="Card"
-                  width="100%"
-                  height="100%"
-                />
-                <Carousel.Caption>
-                  <h3>Faculty Information System</h3>
-                  <p>Welcome to FIS Vnrvjiet.</p>
-                </Carousel.Caption>
-              </Carousel.Item>
-              <Carousel.Item interval={2000}>
-                <img
-                  src="media/home.png"
-                  typeof="image"
-                  alt="Card"
-                  width="100%"
-                  height="100%"
-                />
-                <Carousel.Caption>
-                  <h3>Faculty Information System</h3>
-                  <p>Welcome to FIS Vnrvjiet</p>
-                </Carousel.Caption>
-              </Carousel.Item>
-            </Carousel>
+          <animated.div className="col-sm-4">
+            <animated.h1
+              style={welcomeAnimation}
+              className="fw-bold text-center text-white display-5 p-2"
+            >
+              Welcome!!!!
+            </animated.h1>
+            <hr />
+            <animated.h1
+              style={welcomeAnimation}
+              className="mt-1 mb-4 text-center text-white display-6 fw-bold"
+            >
+              Faculty Information System
+            </animated.h1>
+            <div>
+              <Accordion defaultActiveKey="0">
+                <Accordion.Item eventKey="0" className="accord">
+                  <Accordion.Header onClick={handleChange}>
+                    {val === 1 ? (
+                      <h4>Click Here!!!</h4>
+                    ) : (
+                      <i class="fa fa-code fw-2"></i>
+                    )}
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    <animated.div style={textProps}>
+                      <Carousel>
+                        <Carousel.Item interval={5000}>
+                          <img
+                            src="media/caur1.jpg"
+                            typeof="image"
+                            alt="Card"
+                            width="100%"
+                            height="250px"
+                            className="image1"
+                          />
+                        </Carousel.Item>
+                        <Carousel.Item interval={5000}>
+                          <img
+                            src="media/caur2.jpg"
+                            typeof="image"
+                            alt="Card"
+                            width="100%"
+                            height="250px"
+                            className="image1"
+                          />
+                        </Carousel.Item>
+                        <Carousel.Item interval={5000}>
+                          <img
+                            src="media/CSE_image.png"
+                            typeof="image"
+                            alt="Card"
+                            width="100%"
+                            height="250px"
+                            className="image1"
+                          />
+                        </Carousel.Item>
+                      </Carousel>
+                    </animated.div>
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Accordion>
+              {val === 1 ? (
+                <animated.div style={slideIn}>
+                  <img
+                    src="media/CSE_image.png"
+                    typeof="image"
+                    alt="Card"
+                    width="100%"
+                    height="250px"
+                    className="p-1"
+                  />
+                </animated.div>
+              ) : (
+                <></>
+              )}
+            </div>
           </animated.div>
-          <animated.div
+          <animated.div style={fadeIn} className="col-sm-8">
+            <div>
+              <img
+                src="media/home.png"
+                typeof="image"
+                alt="Card"
+                width="100%"
+                height="100%"
+                className=""
+              />
+            </div>
+          </animated.div>
+          {/* <animated.div
             style={{ ...slideIn, ...scaleMenu }}
             className="col-lg-4 col-sm-12 menu p-3"
           >
@@ -148,8 +207,92 @@ function Home() {
                 </li>
               </Link>
             </ul>
-          </animated.div>
+          </animated.div> */}
         </div>
+        <animated.div className="text-white marquee">
+          <div className="marquee-container">
+            <div className="marquee-content d-flex">
+              <div className="divele">
+                <img
+                  src="media/home.png"
+                  typeof="image"
+                  alt="Card"
+                  width="200px"
+                  height="200px"
+                  className="m-2"
+                />
+                <img
+                  src="media/navbg2.jpg"
+                  typeof="image"
+                  alt="Card"
+                  width="200px"
+                  height="200px"
+                  className="m-2"
+                />
+                <img
+                  src="media/navbg.jpg"
+                  typeof="image"
+                  alt="Card"
+                  width="200px"
+                  height="200px"
+                  className="m-2"
+                />
+              </div>
+              <div className="divele">
+                <img
+                  src="media/CSE_image.png"
+                  typeof="image"
+                  alt="Card"
+                  width="200px"
+                  height="200px"
+                  className="m-2"
+                />
+                <img
+                  src="media/caur2.jpg"
+                  typeof="image"
+                  alt="Card"
+                  width="200px"
+                  height="200px"
+                  className="m-2"
+                />
+                <img
+                  src="media/bodyBackground.avif"
+                  typeof="image"
+                  alt="Card"
+                  width="200px"
+                  height="200px"
+                  className="m-2"
+                />
+              </div>
+              <div className="divele">
+                <img
+                  src="media/caur1.jpg"
+                  typeof="image"
+                  alt="Card"
+                  width="200px"
+                  height="200px"
+                  className="m-2"
+                />
+                <img
+                  src="media/navbg3.avif"
+                  typeof="image"
+                  alt="Card"
+                  width="200px"
+                  height="200px"
+                  className="m-2"
+                />
+                <img
+                  src="media/home.png"
+                  typeof="image"
+                  alt="Card"
+                  width="200px"
+                  height="200px"
+                  className="m-2"
+                />
+              </div>
+            </div>
+          </div>
+        </animated.div>
       </div>
     </animated.div>
   );

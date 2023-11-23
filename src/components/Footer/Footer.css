@@ -1,6 +1,7 @@
 footer {
     padding: 20px;
     text-align: center;
+    background-image: url('/public/media/footbg.jpg');
     background-color: #82001a;
     color:azure;
   }

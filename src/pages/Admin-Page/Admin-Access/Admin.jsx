@@ -7,12 +7,9 @@ import { useNavigate } from "react-router-dom";
 import { Button, Form } from "react-bootstrap";
 function Admin() {
   const [userDetails, setUserDetails] = useState({});
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmNewPassword, setConfirmNewPassword] = useState("");
-  const [editing, setEditing] = useState(true); // State to track whether user is in editing mode
+  const [editing, setEditing] = useState(true); // State to track whether the user is in editing mode
   const [refresh, setRefresh] = useState(true);
-  let [currentUser, , , , logoutUser] = useContext(loginContext);
+  const [currentUser, , , , logoutUser] = useContext(loginContext);
   // Use the useNavigate hook to get the navigate function
   const navigate = useNavigate();
 
@@ -38,65 +35,6 @@ function Admin() {
         console.error("Error fetching user details:", error);
       });
   }, [refresh]);
-
-  const handlePasswordChange = async () => {
-    try {
-      // Perform password change logic
-      console.log(
-        "Change password:",
-        oldPassword,
-        newPassword,
-        confirmNewPassword
-      );
-
-      // Example: You may want to send an API request to change the password
-      const token = localStorage.getItem("token");
-      await axios.put(
-        `http://localhost:5000/user-api/change-password/${userDetails.username}`,
-        {
-          oldPassword,
-          newPassword,
-          confirmNewPassword,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      // Clear the password fields after changing the password
-      setOldPassword("");
-      setNewPassword("");
-      setConfirmNewPassword("");
-
-      // Notify the user about the success
-      toast.success("Password changed successfully", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    } catch (error) {
-      console.error("Error changing password:", error);
-
-      // Notify the user about the failure
-      toast.error("Error changing password", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    }
-  };
 
   const handleEdit = () => {
     setEditing(!editing);
@@ -192,6 +130,11 @@ function Admin() {
     }
   };
 
+  const navigateToResetPassword = () => {
+    // Navigate to the reset-password page
+    navigate("/reset-password");
+  };
+
   return (
     <div>
       <h1>Welcome, {userDetails.username}!</h1>
@@ -284,46 +227,10 @@ function Admin() {
           </div>
         )}
       </div>
-      <h2>Change Password</h2>
-      <div className="row">
-        <div className="col-lg-3">
-          <label htmlFor="oldPassword">Old Password:</label>
-          <input
-            type="password"
-            id="oldPassword"
-            placeholder="Old Password"
-            className="search-input form-control me-2"
-            value={oldPassword}
-            onChange={(e) => setOldPassword(e.target.value)}
-          />
-        </div>
-        <div className="col-lg-3">
-          <label htmlFor="newPassword">New Password:</label>
-          <input
-            type="password"
-            id="newPassword"
-            placeholder="New Password"
-            className="search-input form-control me-2"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-        </div>
-        <div className="col-lg-3">
-          <label htmlFor="confirmNewPassword">Confirm New Password:</label>
-          <input
-            type="password"
-            id="confirmNewPassword"
-            className="search-input form-control me-2"
-            placeholder="Confirm New Password"
-            value={confirmNewPassword}
-            onChange={(e) => setConfirmNewPassword(e.target.value)}
-          />
-        </div>
-        <div className="col-lg-2 p-4">
-          <Button className="btn btn-success" onClick={handlePasswordChange}>
-            Change Password
-          </Button>
-        </div>
+      <div>
+        <Button className="btn btn-success" onClick={navigateToResetPassword}>
+          Change Password
+        </Button>
       </div>
       <ToastContainer />
     </div>

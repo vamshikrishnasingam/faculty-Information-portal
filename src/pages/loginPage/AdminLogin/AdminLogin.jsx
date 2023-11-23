@@ -6,9 +6,9 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import './AdminLogin.css'
 import { Button } from 'react-bootstrap';
-
+import { useSpring,animated } from 'react-spring';
 function AdminLogin() {
-  let [, loginUser, userLoginStatus, loginErr,logoutUSer] = useContext(loginContext)
+  let [, loginUser, userLoginStatus, loginErr,] = useContext(loginContext)
   const navigate = useNavigate()
   let { register, handleSubmit, formState: { errors } } = useForm()
   let submitForm = async (userCredObj) => {
@@ -17,61 +17,125 @@ function AdminLogin() {
       navigate('/adminpage')
     }
   }
+  const fadeInFromLeftAnimation = useSpring({
+    to: { opacity: 1, transform: "translateX(0px)" },
+    from: { opacity: 0, transform: "translateX(-20px)" },
+    config: { duration: 500 },
+  });
+  
   return (
-    <div className="p-3">
+    <animated.div style={fadeInFromLeftAnimation} className="container p-3">
       <div className="row">
-      <div className="col-lg-6 col-md-6 col-sm-12">
+        <div className="col-lg-6 col-md-6 col-sm-12">
           <img
             className="image w-100 h-100"
             src="media/UserData.png"
             alt="Card"
           />
         </div>
-        <div className="col-lg-6 col-md-6 col-sm-12 p-3 border border-2" id='first'>
+        <div
+          className="col-lg-6 col-md-6 col-sm-12 p-3 border border-2"
+          id="first"
+        >
           <div className="card-body">
-            <div className='text-center'>
-              <h2 className='text-center fs-1'>Administrator</h2>
-              <h1>Sign In</h1>
-              <p>The key to happiness is to sign in.</p>
+            <div className="text-center">
+              <h2 className="text-center text-white fs-1">Administrator</h2>
+              <h1 className="text-white ">Sign In</h1>
+              <p className="text-white ">The key to happiness is to sign in.</p>
             </div>
-            <div className='d-block p-4'>
+            <div className="d-block p-4">
               <form onSubmit={handleSubmit(submitForm)}>
                 <div className=" mx-auto">
-                  <h5>Username</h5>
+                  <h5 className="text-white ">Username</h5>
                   <FloatingLabel
                     controlId="floatingInput"
                     label="Username"
                     className="mb-3"
                   >
-                    <Form.Control type="text" placeholder="Username" {...register("username", { required: { value: "true", message: "* Username is required" }, minLength: { value: 4, message: "* Username is Too Small" }, maxLength: { value: 12, message: "* Username is Too Big" } })} />
+                    <Form.Control
+                      type="text"
+                      placeholder="Username"
+                      {...register("username", {
+                        required: {
+                          value: "true",
+                          message: "* Username is required",
+                        },
+                        minLength: {
+                          value: 4,
+                          message: "* Username is Too Small",
+                        },
+                        maxLength: {
+                          value: 12,
+                          message: "* Username is Too Big",
+                        },
+                      })}
+                    />
                   </FloatingLabel>
-                  {errors.username?.message && <p className="text-danger">{errors.username?.message}</p>}
+                  {errors.username?.message && (
+                    <p className="text-danger">{errors.username?.message}</p>
+                  )}
                 </div>
                 <div className=" mx-auto">
-                  <h5>password</h5>
+                  <h5 className="text-white">password</h5>
                   <FloatingLabel
                     controlId="floatingInput1"
                     label="Password"
                     className="mb-3"
                   >
-                    <Form.Control type="password" placeholder="Password" {...register("password", { required: { value: "true", message: "* Password is required" }, minLength: { value: 8, message: "* Password is Too Small" }, maxLength: { value: 16, message: "* Password is Too Big" } })} />
+                    <Form.Control
+                      type="password"
+                      placeholder="Password"
+                      {...register("password", {
+                        required: {
+                          value: "true",
+                          message: "* Password is required",
+                        },
+                        minLength: {
+                          value: 8,
+                          message: "* Password is Too Small",
+                        },
+                        maxLength: {
+                          value: 16,
+                          message: "* Password is Too Big",
+                        },
+                      })}
+                    />
                   </FloatingLabel>
-                  {errors.password?.message && <p className="text-danger">{errors.password?.message}</p>}
+                  {errors.password?.message && (
+                    <p className="text-danger">{errors.password?.message}</p>
+                  )}
                 </div>
-                <p>Forget Password?<NavLink className='p-3' to="/pw-change">Reset here</NavLink></p>
-                <p>Faculty?<NavLink className='p-3' to="/faculty-login">Login here</NavLink></p>
-                <div className='p-2 text-center '>
-                  {loginErr.length !== 0 && <p className='text-danger text-left text-center'>{loginErr}</p>}
-                <Button type='submit' className='col-lg-3 bg-primary border-success fw-bold'>Login</Button>
+                <p className="text-white ">
+                  Forget Password?
+                  <NavLink className="p-3" to="/reset-password">
+                    Reset here
+                  </NavLink>
+                </p>
+                {/* <p className="text-white ">
+                  Faculty?
+                  <NavLink className="p-3" to="/faculty-login">
+                    Login here
+                  </NavLink>
+                </p> */}
+                <div className="p-2 text-center ">
+                  {loginErr.length !== 0 && (
+                    <p className="text-danger text-left text-center">
+                      {loginErr}
+                    </p>
+                  )}
+                  <Button
+                    type="submit"
+                    className="col-lg-3 bg-success border-success fw-bold"
+                  >
+                    Login
+                  </Button>
                 </div>
               </form>
             </div>
           </div>
         </div>
       </div>
-    </div>
-
-
-  )
+    </animated.div>
+  );
 }
 export default AdminLogin

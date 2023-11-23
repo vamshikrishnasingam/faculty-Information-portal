@@ -1,6 +1,6 @@
 
 /* Defining the animation keyframes */
-@keyframes fadeIn {
+/* @keyframes fadeIn {
     from {
         opacity: 0;
     }
@@ -8,9 +8,21 @@
     to {
         opacity: 1;
     }
-}
+} */
 
 /* Applying the animation to an element */
-.rot{
+/* .rot{
     animation: fadeIn 1s ease-in;
-}
+} */
+
+
+.sidebar{
+    position: inline;
+  }
+  .page{
+    height: 95vh;
+    width: 100vw;
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }

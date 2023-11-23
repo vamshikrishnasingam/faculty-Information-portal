@@ -4,10 +4,19 @@ import { useContext } from "react";
 import Button from "react-bootstrap/Button";
 import ExcelToJsonConverterTimeTable from '../../../ExcelToJsonConverterTimeTable'
 import { loginContext } from '../../../contexts/loginContext'
+import { useSpring,animated } from 'react-spring';
 const Update = () => {
-  let [, , userLoginStatus,, logoutUser] = useContext(loginContext)
+  let [, , userLoginStatus, , logoutUser] = useContext(loginContext)
+const fadeOutSlideUpAnimation = useSpring({
+  to: async (next) => {
+    await next({ opacity: 1, transform: "translateY(-10px)" });
+  },
+  from: { opacity: 0, transform: "translateY(20px)" },
+  config: { duration: 700 },
+});
+
   return (
-    <div className="container m-5">
+    <animated.div style={fadeOutSlideUpAnimation} className="container m-5 text-white">
       {userLoginStatus ? (
         <ExcelToJsonConverterTimeTable />
       ) : (
@@ -25,7 +34,7 @@ const Update = () => {
           </Button>
         </div>
       )}
-    </div>
+    </animated.div>
   );
 }
 

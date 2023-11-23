@@ -3,7 +3,7 @@ import axios from "axios";
 import { Form, Button } from "react-bootstrap";
 import { loginContext } from "../../contexts/loginContext";
 import { useNavigate } from "react-router-dom";
-
+import { useSpring, animated } from "react-spring";
 function ProfessorsData() {
   const [searchId, setSearchId] = useState("");
   const [type, setType] = useState("");
@@ -106,12 +106,31 @@ function ProfessorsData() {
       navigate("/");
     }
   };
+  const bounceAnimation = useSpring({
+    to: async (next) => {
+      await next({ transform: "translateY(-20px)" });
+      await next({ transform: "translateY(20px)" });
+      await next({ transform: "translateY(-10px)" });
+      await next({ transform: "translateY(10px)" });
+      await next({ transform: "translateY(0px)" });
+    },
+    from: { transform: "translateY(-20px)" },
+    config: { duration: 200 },
+  });
+  const diagonalSlideAnimation = useSpring({
+    to: { transform: "translateX(10px) translateY(10px)" },
+    from: { transform: "translateX(-5px) translateY(-5px)" },
+    config: { duration: 400 },
+  });
+
+
 
   return (
-    <div className="container mx-auto">
+    <animated.div style={diagonalSlideAnimation} className="container mx-auto text-white">
       <div className="row m-4 mx-auto">
-        <div className="col-lg-8 col-sm-10 col-md-12 p-3">
+        <div className="col-lg-8 col-sm-10 col-md-12 p-2">
           <h1>FACULTY INFO</h1>
+          <hr />
         </div>
         <div className="col-lg-4 col-sm-12 col-md-12 p-3">
           <div className="row">
@@ -130,7 +149,7 @@ function ProfessorsData() {
                       <div
                         key={user._id.$oid}
                         className={`search-result-item ${
-                          selectedResult === user ? "selected" : ""
+                          selectedResult === user ? "selected" : "text-dark"
                         }`}
                         value={user.username}
                         onClick={() => handleSelectResult(user)}
@@ -199,11 +218,11 @@ function ProfessorsData() {
                     <td>{row.username}</td>
                     <td>{row.name}</td>
                     <td>{row.facultytype}</td>
-                    {/* <td>
+                    <td>
                       <Button className="btn-success" onClick={handleSearch}>
                         Timetable
                       </Button>
-                    </td> */}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -211,7 +230,7 @@ function ProfessorsData() {
           </div>
         ) : null}
       </div>
-    </div>
+    </animated.div>
   );
 }
 

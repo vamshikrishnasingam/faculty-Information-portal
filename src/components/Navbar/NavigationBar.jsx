@@ -24,7 +24,7 @@ function NavigationBar() {
           key={expand}
           textcolor="#fff"
           expand={expand}
-          className="header sticky-top p-2"
+          className="nav-bar sticky-top p-2"
         >
           <Container fluid>
             <div className="m-3">

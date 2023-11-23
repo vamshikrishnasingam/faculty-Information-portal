@@ -10,6 +10,60 @@ classfacultyApp.get("/classfaculty-data/:id", expressAsyncHandler(async (req, re
     res.json(matchedfaculty)
 }))
 
+classfacultyApp.get("/classtt-data/:keys/:mainkey", expressAsyncHandler(async (req, res) => {
+    const classFacultyObj = req.app.get("classFacultyObj")
+    let returnarray = []
+    let fa = []
+    let nfa = []
+    const class_keys = req.params.keys.split(',');
+    const mainkeys = req.params.mainkey;
+    const mainkey=mainkeys.split('.')
+    for (const key of class_keys) {
+        let a = await classFacultyObj.findOne({ 'class_key': key });
+        let obj = {};
+        console.log(a)
+        if (a) {
+            if (a[mainkey[0]]) {
+                if (a[mainkey[0]][mainkey[1]]) {
+                    if (a[mainkey[0]][mainkey[[1]]][mainkey[2]]) {
+                        returnarray.push({[key] : a[mainkey[0]][mainkey[[1]]][mainkey[2]]})
+                        let dummy_array=mainkeys.split('.')
+                        dummy_array.push(key)
+                        fa.push(dummy_array)
+                    }
+                    else {
+                        let dummy_array=mainkeys.split('.')
+                        dummy_array.push(key)
+                        nfa.push(dummy_array)
+                    }
+                }
+                else {
+                    let dummy_array=mainkeys.split('.')
+                        dummy_array.push(key)
+                        nfa.push(dummy_array)
+                }
+            }
+            else {
+                let dummy_array=mainkeys.split('.')
+                        dummy_array.push(key)
+                        nfa.push(dummy_array)
+            }
+        }
+        else {
+            let dummy_array=mainkeys.split('.')
+                        dummy_array.push(key)
+                        nfa.push(dummy_array)
+        }
+    }
+    
+    const responseObj = {
+        returnarray: returnarray,
+        fa: fa,
+        nfa: nfa
+    };
+    res.json(responseObj)
+}))
+
 classfacultyApp.post("/cf-insert", expressAsyncHandler(async (req, res) => {
     //get user collection object
     const classFacultyObj = req.app.get("classFacultyObj")

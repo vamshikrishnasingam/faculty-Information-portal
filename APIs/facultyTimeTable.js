@@ -42,10 +42,7 @@ facultytimetableApp.get(
   expressAsyncHandler(async (req, res) => {
     const facultyTimeTableObj= req.app.get("facultyTimeTableObj");
     const ids = req.params.id;
-    console.log(ids);
-    console.log("hii")
     const matchedfaculty = await facultyTimeTableObj.findOne({ username: ids })
-    console.log(matchedfaculty);
     res.json(matchedfaculty);
   })
 );

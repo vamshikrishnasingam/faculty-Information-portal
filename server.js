@@ -58,9 +58,9 @@ mclient.connect('mongodb://127.0.0.1:27017/?directConnection=true&serverSelectio
     app.set("classFacultyObj",classFacultyObj)
     const freeHoursObj=dbObj.collection("freeHours")
     app.set("freeHoursObj",freeHoursObj)
-    console.log("Connection to Test DB - Success")
+    console.log("Connection to Faculty-Portal DB - Success")
 })
-.catch((err)=>console.log("Connection to Test DB - Failed"))
+.catch((err)=>console.log("Connection to Faculty-Portal DB - Failed"))
 
 
 //middleware to deal with page refresh

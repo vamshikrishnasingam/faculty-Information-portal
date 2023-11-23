@@ -7,6 +7,7 @@ import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 import { useNavigate } from "react-router-dom";
 import { loginContext } from "../../contexts/loginContext";
+import { useSpring, animated } from "react-spring";
 function FreeFaculty() {
   let [currentUser, loginUser, userLoginStatus, loginErr, logoutUser] =
     useContext(loginContext);
@@ -94,6 +95,7 @@ function FreeFaculty() {
     let eh2 = endHour;
     const em1 = "00";
     const em2 = "40";
+
     const startTotal1 = parseInt(sh1, 10);
     let endTotal1 = parseInt(eh1, 10);
     if (endMinute !== "00") endTotal1 += 1;
@@ -166,8 +168,19 @@ function FreeFaculty() {
       );
     }
   };
+
+  const strobeAnimation = useSpring({
+    to: async (next) => {
+      await next({ opacity: 1 });
+      await next({ opacity: 1 });
+    },
+    from: { opacity: 0 },
+    config: { duration: 900 },
+  });
   return (
-    <div className="p-3">
+    <animated.div style={strobeAnimation} className="p-4">
+      <h1 className="p-2 m-1 text-center text-white">FREE FACULTY</h1>
+      <hr />
       <div className="row p-3 m-4">
         <div className="col-lg-3 col-md-6 p-3">
           <Form.Select
@@ -217,7 +230,7 @@ function FreeFaculty() {
               variant=""
               id="dropdown-basic"
             >
-              Choose Years
+              Examination Years
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Form>
@@ -248,11 +261,6 @@ function FreeFaculty() {
           </Dropdown>
         </div>
         <div className="col-lg-2 col-md-6 col-sm-6 p-3">
-          <Button className="p-3 w-100 btn-danger" onClick={goingback}>
-            GOBACK
-          </Button>
-        </div>
-        <div className="col-lg-2 col-md-6 col-sm-6 p-3 ms-auto">
           <Button
             onClick={handleSearchTime}
             className="p-3 w-100 bg-success border-success"
@@ -304,7 +312,7 @@ function FreeFaculty() {
             </div>
           )}
       </div>
-    </div>
+    </animated.div>
   );
 }
 

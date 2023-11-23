@@ -8,7 +8,7 @@ function RouteLayout() {
       <div>
           <div className="content-container rot">
             <NavigationBar />
-            <div className='container'>
+            <div>
                 <Outlet/>
             </div>
           </div>

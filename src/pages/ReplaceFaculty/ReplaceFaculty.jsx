@@ -1,12 +1,20 @@
 import React, { useState } from 'react'
 import Button from "react-bootstrap/Button";
+import { useSpring,animated } from 'react-spring';
 const ReplaceFaculty = () => {
-  
-const [searchId, setSearchId]=useState('')
+  const [searchId, setSearchId] = useState('')
+   const fadeOutSlideUpAnimation = useSpring({
+     to: async (next) => {
+       await next({ opacity: 1, transform: "translateY(-10px)" });
+     },
+     from: { opacity: 0, transform: "translateY(20px)" },
+     config: { duration: 700 },
+   });
+
 
   return (
-    <div className="table-container">
-      <h3 className="mb-5">Please enter FacultyID for their Time Tables!!!</h3>
+    <animated.div style={fadeOutSlideUpAnimation } className="container p-5">
+      <h3 className="mb-5 text-white">Please enter FacultyID for their Time Tables!!!</h3>
       <div className="row">
         <div className="col-lg-3 col-sm-7 p-2">
           <input
@@ -27,8 +35,7 @@ const [searchId, setSearchId]=useState('')
           </Button>
         </div>
       </div>
-      0
-    </div>
+    </animated.div>
   );
 }
 

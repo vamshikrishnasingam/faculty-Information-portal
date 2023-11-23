@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { OverlayTrigger, Popover, Button, Form } from "react-bootstrap";
 import axios from "axios";
-
+import { useSpring, animated } from "react-spring";
 const days = ["mon", "tue", "wed", "thu", "fri", "sat"];
 const times = [
   "9-10",
@@ -19,7 +19,7 @@ const FacultyTimeTable = () => {
   const [searchId, setSearchId] = useState("");
   const [data, setData] = useState(null);
   const [year, setYear] = useState("");
-  const [sem,setSem]=useState(1);
+  const [sem, setSem] = useState(1);
   const [message, setMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -59,9 +59,12 @@ const FacultyTimeTable = () => {
     }
   };
 
+  useEffect(() => {
+    if (year !== "") handleSearch();
+  }, [sem, year]);
+
   const MyPopoverContent = (cell) => (
     <Popover id="popover-basic">
-      {console.log(cell)}
       <Popover.Body>
         <p>SUBJECT: {cell.subject}</p>
         <p>CLASS: {cell.class}</p>
@@ -74,11 +77,10 @@ const FacultyTimeTable = () => {
     if (data) {
       printData();
     }
-  }, [year, data,sem]);
+  }, [year, data, sem]);
 
   const printData = () => {
     const y = year || Object.keys(data)[Object.keys(data).length - 1];
-    console.log("factimetabel : ",data)
     const unicorn = [];
     for (const day of days) {
       const b = [{ classtype: day }];
@@ -122,9 +124,17 @@ const FacultyTimeTable = () => {
       item.facultytype.toLowerCase().includes(searchTerm.toLowerCase().trim())
   );
 
+  const slideIn = useSpring({
+    transform: "translateX(0%)",
+    from: { transform: "translateX(-100%)" },
+    config: { duration: 800 },
+  });
   return (
-    <div className="container p-5">
-      <h3 className="mb-5">Please enter FacultyID for their Time Tables!!!</h3>
+    <animated.div style={slideIn} className="container p-5 text-white">
+      <h3 className="mb-4 text-center">
+        Please enter FacultyID for their Time Tables!!!
+      </h3>
+      <hr />
       <div className="row">
         <div className="col-lg-3 col-sm-6 col-md-6 p-3">
           <div className="search-bar-container">
@@ -140,9 +150,12 @@ const FacultyTimeTable = () => {
                 {filteredResults.map((user) => (
                   <div
                     key={user._id.$oid}
-                    className={`search-result-item ${selectedResult === user ? "selected" : ""}`}
+                    className={`search-result-item ${
+                      selectedResult === user ? "selected" : ""
+                    }`}
                     value={user.username}
-                    onClick={() => handleSelectResult(user)}>
+                    onClick={() => handleSelectResult(user)}
+                  >
                     {user.username} - {user.name} - {user.facultytype}
                   </div>
                 ))}
@@ -165,41 +178,44 @@ const FacultyTimeTable = () => {
           <table className="m-3 mx-auto">
             <thead>
               <div className="row">
-              <tr className="col-lg-6 col-sm-12 col-md-6 p-3">
-                <Form.Select
-                  value={year}
-                  onChange={(e) => setYear(e.target.value)}
-                >
-                  <option
-                    value={
-                      year === ""
-                        ? Object.keys(data)[Object.keys(data).length - 1]
-                        : ""
-                    }
+                <tr className="col-lg-6 col-sm-12 col-md-6 p-3">
+                  <Form.Select
+                    value={year}
+                    onChange={(e) => setYear(e.target.value)}
                   >
-                    {year === ""
-                      ? Object.keys(data)[Object.keys(data).length - 1]
-                      : "Select Year"}
-                  </option>
+                    <option
+                      value={
+                        year === ""
+                          ? Object.keys(data)[Object.keys(data).length - 1]
+                          : ""
+                      }
+                    >
+                      {year === ""
+                        ? Object.keys(data)[Object.keys(data).length - 1]
+                        : "Select Year"}
+                    </option>
 
-                  {Object.keys(data)
-                    .slice(4)
-                    .map((yearOption) => (
-                      <option key={yearOption} value={yearOption}>
-                        {yearOption}
-                      </option>
-                    ))}
-                </Form.Select>
-              </tr>
-              <tr className="col-lg-6 col-sm-12 col-md-6 p-3">
-                <Form.Select value={sem} onChange={(e) => setSem(e.target.value)}>
-                  <option>select SEM</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                </Form.Select>
-              </tr>
+                    {Object.keys(data)
+                      .slice(4)
+                      .map((yearOption) => (
+                        <option key={yearOption} value={yearOption}>
+                          {yearOption}
+                        </option>
+                      ))}
+                  </Form.Select>
+                </tr>
+                <tr className="col-lg-6 col-sm-12 col-md-6 p-3">
+                  <Form.Select
+                    value={sem}
+                    onChange={(e) => setSem(e.target.value)}
+                  >
+                    <option>select SEM</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                  </Form.Select>
+                </tr>
               </div>
-             
+
               <tr>
                 <th>Day</th>
                 {times.map((time) => (
@@ -240,7 +256,7 @@ const FacultyTimeTable = () => {
           </table>
         </div>
       )}
-    </div>
+    </animated.div>
   );
 };
 

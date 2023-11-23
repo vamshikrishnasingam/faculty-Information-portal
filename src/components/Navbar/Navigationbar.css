@@ -1,7 +1,11 @@
 
-nav{
-    background-color: #82001a;
-    color: azure !important;
+.nav-bar{
+    /* background-color: #82001a; */
+    /* background-image: url("/public/media/navbg2.jpg"); */
+    /* background: linear-gradient(-225deg, #7742B2 0%, #F180FF 52%, #FD8BD9 100%); */
+    background-color: #50d8d7;
+    background-image: linear-gradient(316deg, #50d8d7 0%, #923993 74%);
+    opacity: 70%;
 }
 .collapse-nav{
     text-align: justify;
@@ -17,8 +21,7 @@ nav{
     transition-delay: 1s;
     transition: transform 0.3s ease;
 }
-
 .btn:hover {
-    background-color: rgb(41, 90, 90);
+    background-color: #923993;
     transform: translateY(-10px);
 }

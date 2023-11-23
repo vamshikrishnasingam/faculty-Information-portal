@@ -11,14 +11,30 @@ userApp.post("/facultydata", expressAsyncHandler(async (req, res) => {
     const facultyTimeTableObj = req.app.get("facultyTimeTableObj")
     const freeHoursObj = req.app.get("freeHoursObj")
 
-    newUser.forEach(async(element) => {
+    newUser.forEach(async (element) => {
+        //faculty_list
         a = await facultyListObj.findOne({ username: element.username })
-        //get new user from request
         if (!a) {
             await facultyListObj.insertOne(element)
+        }
+        else {
+            await facultyListObj.updateOne({ username: element.username }, element)
+        }
+        //faculty_time_table
+        a = await facultyTimeTableObj.findOne({ username: element.username })
+        if (!a) {
             await facultyTimeTableObj.insertOne(element)
+        }
+        else {
+            await facultyTimeTableObj.updateOne({ username: element.username }, element)
+        }
+        //free_hours
+        a = await freeHoursObj.findOne({ username: element.username })
+        if (!a) {
             await freeHoursObj.insertOne(element)
-            console.log(a)
+        }
+        else {
+            await freeHoursObj.updateOne({ username: element.username }, element)
         }
     })
     res.status(201).send({ message: "User Created", payload: req.body })

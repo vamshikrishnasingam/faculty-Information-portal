@@ -9,7 +9,6 @@ import UserLoginStore from './contexts/UserLoginStore'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-   
     <UserLoginStore>
          <App />
     </UserLoginStore>

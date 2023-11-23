@@ -146,23 +146,23 @@ userApp.get('/set-default-password/:username',verifyToken,verifySuperToken,expre
           from: process.env.OUTLOOK_EMAIL,
           to: userOfDB.email,
           subject: 'Password Changed for FIS',
-          // text: 'Your Password for FIS has been changed to: welcome123',
-          html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h1 style="color: #0078D4;>Password Reset</h1>
-            <p>Hello,</p>
-            <p>Your username: ${userOfDB.username}</p>
-            <p>Your new password: <strong><em>${defaultPassword}</em></strong></p>
-            <p  style="color: #0078D4;">Thank you!</p>
-          </div>
-        `,
+          text: 'Your Password for FIS has been changed to: welcome123',
+        //   html: `
+        //   <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        //     <h1 style="color: #0078D4;>Password Reset</h1>
+        //     <p>Hello,</p>
+        //     <p>Your username: ${userOfDB.username}</p>
+        //     <p>Your new password: <strong><em>${defaultPassword}</em></strong></p>
+        //     <p  style="color: #0078D4;">Thank you!</p>
+        //   </div>
+        // `,
         };
         //send email
         transporter.sendMail(mailOptions, function (error, info) {
           if (error) {
             console.log(error);
           } else {
-            console.log('Email sent: ' + info.response);
+            // console.log('Email sent: ' + info.response);
           }
         });
         //send res
@@ -174,105 +174,171 @@ userApp.get('/set-default-password/:username',verifyToken,verifySuperToken,expre
     }
 }))
 
-// change password route
+// Change Password Route
 userApp.put('/change-password/:username', verifyToken, expressAsyncHandler(async (req, res) => {
-    try {
-      // get user collection
-      const userCollectionObj = req.app.get('userCollectionObj');
-      // get username from URL
-      const usernameOfUrl = req.params.username;
-      // get old and new passwords from request body
-      const { oldPassword, newPassword, confirmNewPassword } = req.body;
-  
-      // fetch user
-      const user = await userCollectionObj.findOne({ username: usernameOfUrl });
-      if (!user) {
-        res.status(200).send({ message: 'User not found' });
+  try {
+    // get user collection
+    const userCollectionObj = req.app.get('userCollectionObj');
+    // get username from URL
+    const usernameOfUrl = req.params.username;
+    // get old and new passwords from the request body
+    const { oldPassword, newPassword, confirmNewPassword } = req.body;
+
+    // fetch user
+    const user = await userCollectionObj.findOne({ username: usernameOfUrl });
+    if (!user) {
+      res.status(200).send({ message: 'User not found' });
+      return;
+    }
+
+    // compare old password with the stored password
+    const isOldPasswordValid = await bcryptjs.compare(oldPassword, user.password);
+    if (isOldPasswordValid) {
+      if (newPassword !== confirmNewPassword) {
+        res.status().send({ message: 'New Passwords do not match' });
         return;
       }
-  
-      // compare old password with the stored password
-      const isOldPasswordValid = await bcryptjs.compare(oldPassword, user.password);
-      if (isOldPasswordValid) {
-        if(newPassword!==confirmNewPassword){
-            res.status().send({ message: 'New Passwords donot match' });
-            return;
-        }
-        // hash the new password
-        const hashedNewPassword = await bcryptjs.hash(newPassword, 5);
-        // update user's password
-        const result = await userCollectionObj.updateOne({ username: usernameOfUrl }, { $set: { password: hashedNewPassword } });
-  
-        if (result.modifiedCount === 0) {
-          res.status(200).send({ message: 'User not found/Nothing modified' });
-        } else {
-          res.status(200).send({ message: 'Password changed successfully' });
-        }
+
+      // hash the new password
+      const hashedNewPassword = await bcryptjs.hash(newPassword, 5);
+      // update user's password
+      const result = await userCollectionObj.updateOne({ username: usernameOfUrl }, { $set: { password: hashedNewPassword } });
+
+      if (result.modifiedCount === 0) {
+        res.status(200).send({ message: 'User not found/Nothing modified' });
       } else {
-        res.status(200).send({ message: 'Old password is invalid' });
+        // send a password changed email to the user
+        const mailOptions = {
+          from: process.env.OUTLOOK_EMAIL,
+          to: user.email, // Assuming user.email is available in your user object
+          subject: 'Password Changed',
+          text: 'Your password has been changed successfully.',
+        };
+
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.error('Error sending email:', error);
+            res.status(500).json({ message: 'Error sending email' });
+          } else {
+            console.log('Email sent: ' + info.response);
+            res.status(200).json({ message: 'Password changed successfully. Email sent.' });
+          }
+        });
       }
-    } catch (error) {
-      console.error('Error changing password:', error);
-      // Handle error (e.g., send an error response to the client)
-      res.status(500).send({ message: `Error changing password: ${error.message}` });
+    } else {
+      res.status(200).send({ message: 'Old password is invalid' });
     }
+  } catch (error) {
+    console.error('Error changing password:', error);
+    res.status(500).send({ message: `Error changing password: ${error.message}` });
+  }
 }));
 
-//update user credentials
-userApp.put('/update',verifyToken,expressAsyncHandler(async(req,res)=>{
-    //get user collection object
-    const userCollectionObj=req.app.get("userCollectionObj")
-    //get modified user from client
-    // console.log(req.body)
-    let modifiedUser=req.body
-    let oldusername=modifiedUser.username;
-    //if username update required
-    if(typeof(modifiedUser.newusername)!='undefined'){
-        modifiedUser.username=modifiedUser.newusername
-        await delete modifiedUser.newusername
-        // console.log(modifiedUser)
+// Update User Credentials Route
+userApp.put('/update', verifyToken, expressAsyncHandler(async (req, res) => {
+  try {
+    // get user collection object
+    const userCollectionObj = req.app.get("userCollectionObj");
+
+    // get modified user from the client
+    let modifiedUser = req.body;
+    let oldUsername = modifiedUser.username;
+
+    // if username update required
+    if (typeof (modifiedUser.newUsername) !== 'undefined') {
+      modifiedUser.username = modifiedUser.newUsername;
+      delete modifiedUser.newUsername;
     }
-    if (typeof modifiedUser.oldusertype != "undefined") {
-      await delete modifiedUser.oldusertype;
-      // console.log(modifiedUser)
+
+    if (typeof modifiedUser.oldUserType !== "undefined") {
+      delete modifiedUser.oldUserType;
     }
-    await delete modifiedUser._id;
-    //get user from db
-    let userOfDB=await userCollectionObj.findOne({username:oldusername})
-    //if username is invalid
-    if(userOfDB===null){
-        res.status(200).send({message:"Invalid Username"})
-    }
-    //if username is valid
-    else{
-        //hash the password
-        if(typeof(modifiedUser.password)!='undefined'){
-            let hashedPassword=await bcryptjs.hash(modifiedUser.password,5)
-            //replace plain password 
-            modifiedUser.password=hashedPassword;
+
+    delete modifiedUser._id;
+
+    // get user from the database
+    let userOfDB = await userCollectionObj.findOne({ username: oldUsername });
+
+    // if username is invalid
+    if (!userOfDB) {
+      res.status(200).send({ message: "Invalid Username" });
+    } else {
+      // hash the password
+      if (typeof (modifiedUser.password) !== 'undefined') {
+        let hashedPassword = await bcryptjs.hash(modifiedUser.password, 5);
+        // replace plain password 
+        modifiedUser.password = hashedPassword;
+      }
+
+      // update user details in the database
+      await userCollectionObj.updateOne({ username: oldUsername }, { $set: modifiedUser });
+
+      // send an email to the user
+      const mailOptions = {
+        from: process.env.OUTLOOK_EMAIL,
+        to: userOfDB.email, // Assuming user.email is available in your user object
+        subject: 'User Details Modified',
+        text: 'Your user details have been modified.',
+      };
+
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.error('Error sending email:', error);
+          res.status(500).json({ message: 'Error sending email' });
+        } else {
+          console.log('Email sent: ' + info.response);
+          res.status(200).json({ message: 'User details modified. Email sent.' });
         }
-        //insert user
-        await userCollectionObj.updateOne({username:oldusername},{$set:modifiedUser})
-        //send res
-        res.status(200).send({message:"User Modified"})
+      });
     }
-}))
+  } catch (error) {
+    console.error('Error updating user details:', error);
+    res.status(500).json({ message: 'Error updating user details' });
+  }
+}));
 
 //remove user
 userApp.delete("/remove-user/:username",verifyToken,verifySuperToken,expressAsyncHandler(async(req,res)=>{
+  try {
+    // get user collection
+    const userCollectionObj = req.app.get("userCollectionObj");
 
-    //get user collection
-    const userCollectionObj=req.app.get("userCollectionObj")
+    // get username from the URL
+    let usernameOfUrl = req.params.username;
 
-    //get username from url
-    let usernameOfUrl=req.params.username;
+    // find the user by username
+    const user = await userCollectionObj.findOne({ username: usernameOfUrl });
 
-    //delete user by username
-    await userCollectionObj.deleteOne({username:usernameOfUrl})
-    //send res
-    res.status(200).send({message:"User removed"});
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
 
+    // delete user by username
+    await userCollectionObj.deleteOne({ username: usernameOfUrl });
+
+    // send an email to the user
+    let mailOptions = {
+      from: process.env.OUTLOOK_EMAIL,
+      to: user.email,
+      subject: 'Access Removed',
+      text: 'Your access to the admin page has been removed.',
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.error('Error sending email:', error);
+        res.status(500).json({ message: 'Error sending email' });
+      } else {
+        console.log('Email sent: ' + info.response);
+        res.status(200).json({ message: 'User removed. Email sent.' });
+      }
+    });
+  } catch (error) {
+    console.error('Error removing user:', error);
+    res.status(500).json({ message: 'Error removing user' });
+  }
 }))
+
 // receive verify token request directly andd check
 userApp.post('/verify-token', verifyToken, (req, res) => {
     res.status(200).json({ message: 'Token is valid' });
@@ -291,6 +357,157 @@ userApp.get('/get-user-info', verifyToken, expressAsyncHandler(async(req, res) =
   delete user.password;
   delete user._id;
   res.status(200).json({ payload: user });
+}));
+
+// Generate a random OTP
+const generateOTP = () => {
+  return Math.floor(1000 + Math.random() * 9000).toString();
+};
+
+// Store OTPs temporarily (you might want to use a more persistent storage in a real application)
+const otpStorage = {};
+
+// Reset Password Route
+userApp.post('/reset-password', expressAsyncHandler(async (req, res) => {
+  try {
+    // Get user collection object
+    const userCollectionObj = req.app.get("userCollectionObj");
+    // Get user input (email or username)
+    const userInput = req.body.username;
+    // Check if the user exists in the database
+    const user = await userCollectionObj.findOne({
+      $or: [{ username: userInput }, { email: userInput }],
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Generate OTP
+    const otp = generateOTP();
+    // Store OTP temporarily
+    otpStorage[user.username] = otp;
+
+    // Define the email options
+    let mailOptions = {
+      from: process.env.OUTLOOK_EMAIL,
+      to: user.email,
+      subject: 'Password Reset OTP',
+      text: `Your OTP for password reset is: ${otp}`,
+    };
+
+    // Send email
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.error('Error sending OTP email:', error);
+        return res.status(500).json({ message: 'Error sending OTP email' });
+      } else {
+        console.log('OTP email sent: ' + info.response);
+        res.status(200).json({ message: 'OTP sent successfully' });
+      }
+    });
+    // console.log(otpStorage)
+  } catch (error) {
+    console.error('Error resetting password:', error);
+    res.status(500).json({ message: 'Error resetting password' });
+  }
+}));
+
+// Verify OTP Route
+userApp.post('/verify-otp', expressAsyncHandler(async (req, res) => {
+  try {
+    const { username, otp } = req.body;
+    // Check if OTP is valid
+    // console.log(otpStorage)
+    if (otpStorage[username] === otp) {
+      // Clear the OTP after successful verification (for security reasons)
+      delete otpStorage[username];
+      res.status(200).json({ message: 'OTP verified successfully' });
+    } else {
+      res.status(400).json({ message: 'Invalid OTP' });
+    }
+  } catch (error) {
+    console.error('Error verifying OTP:', error);
+    res.status(500).json({ message: 'Error verifying OTP' });
+  }
+}));
+
+// Change Password with OTP Route
+userApp.put('/change-password-with-otp/:username', expressAsyncHandler(async (req, res) => {
+  try {
+    const userCollectionObj = req.app.get("userCollectionObj");
+    let username = req.params.username;
+    let newPassword = req.body.newPassword;
+
+    // Hash the new password
+    const hashedNewPassword = await bcryptjs.hash(newPassword, 5);
+
+    // Update user's password
+    const result = await userCollectionObj.updateOne({ username }, { $set: { password: hashedNewPassword } });
+
+    if (result.modifiedCount === 0) {
+      res.status(404).json({ message: 'User not found/Nothing modified' });
+    } else {
+      // Send email notifying about the password change
+      const mailOptions = {
+        from: process.env.OUTLOOK_EMAIL,
+        to: user.email, // Assuming user.email is available in your user object
+        subject: 'Password Changed',
+        text: 'Your password has been changed successfully.',
+      };
+
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.error('Error sending email:', error);
+          res.status(500).json({ message: 'Error sending email' });
+        } else {
+          console.log('Email sent: ' + info.response);
+          res.status(200).json({ message: 'Password changed successfully. Email sent.' });
+        }
+      });
+    }
+  } catch (error) {
+    console.error('Error changing password with OTP:', error);
+    res.status(500).json({ message: 'Error changing password with OTP' });
+  }
+}));
+
+// Forgot Username Route
+userApp.post('/forgot-username', expressAsyncHandler(async (req, res) => {
+  try {
+    //get user collection
+    const userCollectionObj=req.app.get("userCollectionObj")
+    //get email
+    const email = req.body.email;
+    // console.log(email)
+    // Check if the email exists in the database
+    const user = await userCollectionObj.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Send the username via email
+    const mailOptions = {
+      from: process.env.OUTLOOK_EMAIL,
+      to: user.email,
+      subject: 'Username Retrieval',
+      text: `Your username is: ${user.username}`,
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.error('Error sending email:', error);
+        res.status(500).json({ message: 'Error sending email' });
+      } else {
+        console.log('Email sent: ' + info.response);
+        res.status(200).json({ message: 'Username retrieved successfully. Check your email.' });
+      }
+    });
+  } catch (error) {
+    console.error('Error retrieving username:', error);
+    res.status(500).json({ message: 'Error retrieving username' });
+  }
 }));
 
 //export express app

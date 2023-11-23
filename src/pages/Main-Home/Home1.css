@@ -1,0 +1,8 @@
+.sidebar{
+    position: inline;
+  }
+  .page{
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+}

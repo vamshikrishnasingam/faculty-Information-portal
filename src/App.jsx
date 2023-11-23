@@ -21,6 +21,8 @@ import FacultyUpdate from './pages/Admin-Page/FacultyUpdate/FacultyUpdate'
 import AdminAccess from './pages/Admin-Page/Admin-Access/AdminAccess';
 import ResetPassword from './pages/loginPage/ResetPassword/ResetPassword';
 import History from './pages/History/History';
+import SideNav from './components/SideNav/SideNav';
+import Home1 from './pages/Main-Home/Home1';
 function App() {
   
   const router = createBrowserRouter([
@@ -31,7 +33,34 @@ function App() {
       children: [
         {
           path: "/",
-          element: <Home />,
+          // element: <Home />,
+          element: <Home1 />,
+          children: [
+            {
+              path: "",
+              element: <Home />,
+            },
+            {
+              path: "classtt",
+              element: <ClassTimeTable />,
+            },
+            {
+              path: "facultytt",
+              element: <FacultyTimeTable />,
+            },
+            {
+              path: "fac-list",
+              element: <Professor />,
+            },
+            {
+              path: "history",
+              element: <History />,
+            },
+            {
+              path: "freehours",
+              element: <FreeHoursclient />,
+            },
+          ],
         },
         {
           path: "/admin-login",
@@ -43,11 +72,47 @@ function App() {
         },
         {
           path: "/adminpage",
-          element: <AdminMainpage />,
+          element: <Home1 />,
           children: [
             {
               path: "",
               element: <AdminHome />,
+            },
+            {
+              path: "classtt",
+              element: <ClassTimeTable />,
+            },
+            {
+              path: "facultytt",
+              element: <FacultyTimeTable />,
+            },
+            {
+              path: "fac-list",
+              element: <Professor />,
+            },
+            {
+              path: "history",
+              element: <History />,
+            },
+            {
+              path: "freehours",
+              element: <FreeHoursclient />,
+            },
+            {
+              path: "admin-access",
+              element: <AdminAccess />,
+            },
+            {
+              path: "update",
+              element: <Update />,
+            },
+            {
+              path: "fac-update",
+              element: <FacultyUpdate />,
+            },
+            {
+              path: "fac-replace",
+              element: <ReplaceFaculty />,
             },
           ],
         },
@@ -112,7 +177,7 @@ function App() {
           element: <ClassTimeTable />,
         },
         {
-          path: "/pw-change",
+          path: "/reset-password",
           element: <ResetPassword />,
         },
         {
@@ -121,7 +186,7 @@ function App() {
         },
         {
           path: "/History",
-          element: <History/>,
+          element: <History />,
         },
       ],
     },

@@ -1,0 +1,41 @@
+.link {
+  text-decoration: none;
+}
+#app1 {
+  /* background-color: #5c0113; */
+  /* background-image: url(https://images.unsplash.com/photo-1537202108838-e7072bad1927?q=80&w=1946&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);
+  background-size: cover; */
+  display: flex;
+  height: 95vh;
+}
+.text-col {
+  color: black;
+}
+/* SideNav.css */
+
+.side-nav {
+  background-color: rgb(224, 217, 217);
+  border-radius: 30px !important;
+}
+hr {
+  font-size: large;
+}
+
+.marquee-container {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.marquee-content {
+  display: inline-block;
+  animation: marquee 10s linear infinite;
+}
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-66.6%);
+  }
+}

@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useContext } from "react";
 import { Form, Button } from "react-bootstrap";
-
+import { useSpring, animated } from 'react-spring'
+import { loginContext } from "../../../contexts/loginContext";
+import { NavLink, Link, Outlet } from "react-router-dom";
 const ContactUS = () => {
   const [searchId, setSearchId] = useState("");
   const [facdata, setFacData] = useState(null);
@@ -15,6 +18,8 @@ const ContactUS = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedResult, setSelectedResult] = useState(null);
   const week = ["mon", "tue", "wed", "thu", "fri", "sat"];
+
+  let [, , userLoginStatus, , logoutUser] = useContext(loginContext);
   const times = [
     "9-10",
     "10-11",
@@ -163,139 +168,169 @@ const ContactUS = () => {
       item.facultytype.toLowerCase().includes(searchTerm.toLowerCase().trim())
   );
 
+  const fadeOutSlideUpAnimation = useSpring({
+    to: async (next) => {
+      await next({ opacity: 1, transform: "translateY(-10px)" });
+    },
+    from: { opacity: 0, transform: "translateY(20px)" },
+    config: { duration: 700 },
+  });
+
+
   return (
-    <div className="table-container m-5 p-3">
-      <div className="row">
-        <div className="col-lg-3 col-sm-6 col-md-6 p-3">
-          <div className="search-bar-container">
-            <input
-              type="text"
-              className="search-input form-control me-2"
-              value={searchTerm}
-              onChange={handleSearchInputChange}
-              placeholder="Enter faculty ID"
-            />
-            {searchTerm && (
-              <div className="search-results">
-                {filteredResults.map((user) => (
-                  <div
-                    key={user._id.$oid}
-                    className={`search-result-item ${
-                      selectedResult === user ? "selected" : ""
-                    }`}
-                    value={user.username}
-                    onClick={() => handleSelectResult(user)}
-                  >
-                    {user.username} - {user.name} - {user.facultytype}
+    <animated.div
+      style={fadeOutSlideUpAnimation}
+      className="container text-white m-5 p-3"
+    >
+      {userLoginStatus ? (
+        <div>
+          <div className="row">
+            <div className="col-lg-3 col-sm-6 col-md-6 p-3">
+              <div className="search-bar-container">
+                <input
+                  type="text"
+                  className="search-input form-control me-2"
+                  value={searchTerm}
+                  onChange={handleSearchInputChange}
+                  placeholder="Enter faculty ID"
+                />
+                {searchTerm && (
+                  <div className="search-results text-dark">
+                    {filteredResults.map((user) => (
+                      <div
+                        key={user._id.$oid}
+                        className={`search-result-item ${
+                          selectedResult === user ? "selected" : ""
+                        }`}
+                        value={user.username}
+                        onClick={() => handleSelectResult(user)}
+                      >
+                        {user.username} - {user.name} - {user.facultytype}
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
-            )}
+            </div>
+            <div className="col-lg-2 col-sm-6 col-md-6 p-3">
+              <Button
+                className="btn btn-success w-100"
+                type="submit"
+                onClick={handleSearch}
+              >
+                Search
+              </Button>
+            </div>
           </div>
+          {dv === 1 && (
+            <div className="container m-3" style={{ "overflow-x": "auto" }}>
+              <h3>Fac_Id : {facdata.username}</h3>
+              <h3>Name : {facdata.name}</h3>
+              <h3>Type : {facdata.facultytype}</h3>
+              {wlv === 0 && (
+                <div>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        {times.map((ele) => (
+                          <th key={ele}>{ele}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {week.map((element) => (
+                        <tr key={element}>
+                          <td>{element}</td>
+                          {times.map((ele) => (
+                            <td key={ele}>
+                              {facdata[element] && facdata[element][ele]
+                                ? "Busy"
+                                : "Idle"}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <button onClick={editworkload}>EDIT</button>
+                </div>
+              )}
+              {wlv === 1 && (
+                <div>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        {times.map((ele) => (
+                          <th key={ele}>{ele}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {week.map((day) => (
+                        <tr key={day}>
+                          <td>{day}</td>
+                          {times.map((time) => (
+                            <td key={time}>
+                              <h6
+                                onClick={() => toggleCellState(day, time)}
+                                className={
+                                  cellState[`${day}.${time}`] === "busy"
+                                    ? "busy"
+                                    : "idle"
+                                }
+                              >
+                                {cellState[`${day}.${time}`] === "busy"
+                                  ? "Busy"
+                                  : "Idle"}
+                              </h6>
+                              {cellState[`${day}.${time}`] === "idle" && (
+                                <select
+                                  value={selectedSlots[`${day}.${time}`]}
+                                  onChange={(e) => {
+                                    setSelectedSlots((prevSelectedSlots) => ({
+                                      ...prevSelectedSlots,
+                                      [`${day}.${time}`]: e.target.value,
+                                    }));
+                                  }}
+                                >
+                                  {years.map((year, index) => (
+                                    <option key={index} value={year}>
+                                      {year}
+                                    </option>
+                                  ))}
+                                </select>
+                              )}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <button onClick={saveworkload}>SAVE</button>
+                  <button onClick={cancelworkload}>CANCEL</button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
-        <div className="col-lg-2 col-sm-6 col-md-6 p-3">
-          <Button
-            className="btn btn-success w-100"
-            type="submit"
-            onClick={handleSearch}
-          >
-            Search
+      ) : (
+        <div className="container col-sm-10 col-lg-6 p-5 border bg-secondary bg-opacity-10">
+          <h1 className="display-1 text-danger">You are Logged Out</h1>
+          <p className="display-6">Please Login to continue</p>
+          {/* <p className='display-6'>Please Login to continue</p> */}
+          <Button variant="primary">
+            <NavLink
+              className="fw-bold fs-4 text-decoration-none text-white"
+              to="/admin-login"
+            >
+              Login
+            </NavLink>
           </Button>
         </div>
-      </div>
-      {dv === 1 && (
-        <div className="container m-3" style={{ "overflow-x": "auto" }}>
-          <h3>Fac_Id : {facdata.username}</h3>
-          <h3>Name : {facdata.name}</h3>
-          <h3>Type : {facdata.facultytype}</h3>
-          {wlv === 0 && (
-            <div>
-              <table>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    {times.map((ele) => (
-                      <th key={ele}>{ele}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {week.map((element) => (
-                    <tr key={element}>
-                      <td>{element}</td>
-                      {times.map((ele) => (
-                        <td key={ele}>
-                          {facdata[element] && facdata[element][ele]
-                            ? "Busy"
-                            : "Idle"}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <button onClick={editworkload}>EDIT</button>
-            </div>
-          )}
-          {wlv === 1 && (
-            <div>
-              <table>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    {times.map((ele) => (
-                      <th key={ele}>{ele}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {week.map((day) => (
-                    <tr key={day}>
-                      <td>{day}</td>
-                      {times.map((time) => (
-                        <td key={time}>
-                          <h6
-                            onClick={() => toggleCellState(day, time)}
-                            className={
-                              cellState[`${day}.${time}`] === "busy"
-                                ? "busy"
-                                : "idle"
-                            }
-                          >
-                            {cellState[`${day}.${time}`] === "busy"
-                              ? "Busy"
-                              : "Idle"}
-                          </h6>
-                          {cellState[`${day}.${time}`] === "idle" && (
-                            <select
-                              value={selectedSlots[`${day}.${time}`]}
-                              onChange={(e) => {
-                                setSelectedSlots((prevSelectedSlots) => ({
-                                  ...prevSelectedSlots,
-                                  [`${day}.${time}`]: e.target.value,
-                                }));
-                              }}
-                            >
-                              {years.map((year, index) => (
-                                <option key={index} value={year}>
-                                  {year}
-                                </option>
-                              ))}
-                            </select>
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <button onClick={saveworkload}>SAVE</button>
-              <button onClick={cancelworkload}>CANCEL</button>
-            </div>
-          )}
-        </div>
       )}
-    </div>
+    </animated.div>
   );
 };
 

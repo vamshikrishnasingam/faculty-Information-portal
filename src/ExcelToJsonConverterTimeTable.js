@@ -20,7 +20,6 @@ function ExcelUploader() {
           dtp[i][j]=dtp[i][j-1]
       }
     }
-    console.log(dtp,dt2)
     obj['dt1'] = dt1
     obj['dt2'] = dtp
     await axios
@@ -84,7 +83,7 @@ function ExcelUploader() {
           if (index !== "0") {
             // Assuming you want to skip the first row
             Object.keys(row).forEach((col) => {
-              facObj[data[0][col]] = row[col];
+              facObj[data[0][col]] = row[col].toUpperCase();
             });
             dataArray.push(facObj);
           }
