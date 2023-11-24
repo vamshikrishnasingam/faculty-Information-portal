@@ -8,12 +8,23 @@ const { Code } = require("mongodb")
 
 facultytimetableApp.get("/faculty-data/:type", expressAsyncHandler(async (req, res) => {
     const facultyTimeTableObj = req.app.get("facultyTimeTableObj")
-    console.log(facultyTimeTableObj)
     const type = req.params.type;
     console.log(type)
     const matchedfaculty = await facultyTimeTableObj.find({ facultytype: type }).toArray()
-    console.log(matchedfaculty)
     res.json(matchedfaculty)
+}))
+
+facultytimetableApp.get("/faculty-typearraydata/:type", expressAsyncHandler(async (req, res) => {
+    const facultyTimeTableObj = req.app.get("facultyTimeTableObj")
+    const types = req.params.type.split(',');
+    const promises = types.map(async (element) => {
+      const matchedfaculty = await facultyTimeTableObj.find({ facultytype: element }).toArray();
+      return matchedfaculty;
+    });
+    
+    const returnarray = await Promise.all(promises);
+    console.log(returnarray.flat());
+    res.json(returnarray.flat())    
 }))
 
 // facultytimetableApp.get("/faculty-data-total", expressAsyncHandler(async (req, res) => {

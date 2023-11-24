@@ -177,9 +177,9 @@ function ProfessorsData() {
         <div className="col-lg-4 col-sm-12 col-md-6 p-3">
           <Form.Select value={type} onChange={(e) => setType(e.target.value)}>
             <option value="">Select Type</option>
-            <option value="Professor">Professors</option>
-            <option value="Asst. Prof">Assistant Professors</option>
-            <option value="Assoc.Prof">Associate Professors</option>
+            <option value="PROFESSOR">Professors</option>
+            <option value="ASST. PROF">Assistant Professors</option>
+            <option value="ASSOC.PROF">Associate Professors</option>
           </Form.Select>
         </div>
         <div className="col-lg-8 col-sm-10 col-md-6 mx-auto p-3">
