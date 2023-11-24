@@ -50,11 +50,13 @@ const verifySuperToken = async (req, res, next) => {
 
 
 //create user
-userApp.post("/user-signup", expressAsyncHandler(async (req, res) => {
+userApp.post("/user-signup",verifyToken,verifySuperToken, expressAsyncHandler(async (req, res) => {
     //get user collection object
     const userCollectionObj = req.app.get("userCollectionObj")
     //get new user from request
     const newUser = req.body
+    // convert username to lowercase
+    newUser.username = newUser.username.toLowerCase();
     //check for duplicate user by username
     let userOfDB = await userCollectionObj.findOne({ username: newUser.username })
     //if user already exist, send response to client "User already existed"
@@ -67,6 +69,8 @@ userApp.post("/user-signup", expressAsyncHandler(async (req, res) => {
         let hashedPassword = await bcryptjs.hash(newUser.password, 5)
         //replace plain password 
         newUser.password = hashedPassword
+        // Convert email to lowercase before inserting the user
+        newUser.email = newUser.email.toLowerCase();
         //insert user
         await userCollectionObj.insertOne(newUser)
         //send res
@@ -81,6 +85,8 @@ userApp.post('/user-login', expressAsyncHandler(async (req, res) => {
     const userCollectionObj = req.app.get("userCollectionObj")
     //get user credentials
     const userCredObj = req.body
+    // convert username to lowercase
+    userCredObj.username = userCredObj.username.toLowerCase();
     //verify username
     let userOfDB = await userCollectionObj.findOne({ username: userCredObj.username })
     //if username is invalid
@@ -130,22 +136,27 @@ userApp.get('/set-default-password/:username',verifyToken,verifySuperToken,expre
         const userCollectionObj=req.app.get("userCollectionObj")
         // get username from url
         let usernameOfUrl=req.params.username;
+        // convert username to lowercase
+        usernameOfUrl = usernameOfUrl.toLowerCase();
         //set a default password
         let defaultPassword="welcome123";
         //has default password
         let hashedPassword=await bcryptjs.hash(defaultPassword,5);
         //update user
         let result = await userCollectionObj.updateOne({username:usernameOfUrl},{$set:{ password: hashedPassword }})
-        //find user email
         if(result.modifiedCount===0){
           res.status(200).send({message:"User not found/Nothing Modified"});
         }
-        let userOfDB = await userCollectionObj.findOne({ username: usernameOfUrl })
+        //find user email
+        const userOfDB = await userCollectionObj.findOne(
+          { username : usernameOfUrl },
+          { projection: { email: 1, _id: 0 } }
+        );
         // Define the email options
         let mailOptions = {
           from: process.env.OUTLOOK_EMAIL,
           to: userOfDB.email,
-          subject: 'Password Changed for FIS',
+          subject: 'Password Changed by Super Admin - FIS',
           text: 'Your Password for FIS has been changed to: welcome123',
         //   html: `
         //   <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -162,7 +173,7 @@ userApp.get('/set-default-password/:username',verifyToken,verifySuperToken,expre
           if (error) {
             console.log(error);
           } else {
-            // console.log('Email sent: ' + info.response);
+            console.log('Email sent: ' + info.response);
           }
         });
         //send res
@@ -180,22 +191,24 @@ userApp.put('/change-password/:username', verifyToken, expressAsyncHandler(async
     // get user collection
     const userCollectionObj = req.app.get('userCollectionObj');
     // get username from URL
-    const usernameOfUrl = req.params.username;
+    let usernameOfUrl = req.params.username;
+    // convert username to lowercase
+    usernameOfUrl = usernameOfUrl.toLowerCase();
     // get old and new passwords from the request body
-    const { oldPassword, newPassword, confirmNewPassword } = req.body;
-
-    // fetch user
-    const user = await userCollectionObj.findOne({ username: usernameOfUrl });
+    const oldPassword = req.body.oldPassword;
+    const newPassword = req.body.newPassword;
+    const confirmNewPassword = req.body.confirmNewPassword;
+    // fetch user email
+    const user = await userCollectionObj.findOne({ username : usernameOfUrl });
     if (!user) {
       res.status(200).send({ message: 'User not found' });
       return;
     }
-
     // compare old password with the stored password
     const isOldPasswordValid = await bcryptjs.compare(oldPassword, user.password);
     if (isOldPasswordValid) {
       if (newPassword !== confirmNewPassword) {
-        res.status().send({ message: 'New Passwords do not match' });
+        res.status(403).send({ message: 'New Passwords do not match' });
         return;
       }
 
@@ -211,7 +224,7 @@ userApp.put('/change-password/:username', verifyToken, expressAsyncHandler(async
         const mailOptions = {
           from: process.env.OUTLOOK_EMAIL,
           to: user.email, // Assuming user.email is available in your user object
-          subject: 'Password Changed',
+          subject: 'Password Changed - FIS',
           text: 'Your password has been changed successfully.',
         };
 
@@ -243,21 +256,24 @@ userApp.put('/update', verifyToken, expressAsyncHandler(async (req, res) => {
     // get modified user from the client
     let modifiedUser = req.body;
     let oldUsername = modifiedUser.username;
-
+    oldUsername=oldUsername.toLowerCase();
     // if username update required
-    if (typeof (modifiedUser.newUsername) !== 'undefined') {
-      modifiedUser.username = modifiedUser.newUsername;
-      delete modifiedUser.newUsername;
+    if (typeof(modifiedUser.newusername) !== 'undefined') {
+      modifiedUser.username = modifiedUser.newusername;
+      delete modifiedUser.newusername;
     }
 
-    if (typeof modifiedUser.oldUserType !== "undefined") {
-      delete modifiedUser.oldUserType;
+    if (typeof(modifiedUser.oldusertype) !== "undefined") {
+      delete modifiedUser.oldusertype;
     }
 
     delete modifiedUser._id;
 
     // get user from the database
-    let userOfDB = await userCollectionObj.findOne({ username: oldUsername });
+    let userOfDB = await userCollectionObj.findOne(
+      { username : oldUsername},
+      { projection: { email: 1, _id: 0 } }
+    );
 
     // if username is invalid
     if (!userOfDB) {
@@ -270,14 +286,18 @@ userApp.put('/update', verifyToken, expressAsyncHandler(async (req, res) => {
         modifiedUser.password = hashedPassword;
       }
 
+      // Convert email to lowercase before updating user details
+      const lowercaseEmail = modifiedUser.email.toLowerCase();
+      userOfDB.email=lowercaseEmail;
+
       // update user details in the database
-      await userCollectionObj.updateOne({ username: oldUsername }, { $set: modifiedUser });
+      await userCollectionObj.updateOne({ username: oldUsername }, { $set: { ...modifiedUser, email: lowercaseEmail } });
 
       // send an email to the user
       const mailOptions = {
         from: process.env.OUTLOOK_EMAIL,
         to: userOfDB.email, // Assuming user.email is available in your user object
-        subject: 'User Details Modified',
+        subject: 'User Details Modified - FIS',
         text: 'Your user details have been modified.',
       };
 
@@ -307,7 +327,13 @@ userApp.delete("/remove-user/:username",verifyToken,verifySuperToken,expressAsyn
     let usernameOfUrl = req.params.username;
 
     // find the user by username
-    const user = await userCollectionObj.findOne({ username: usernameOfUrl });
+    const user = await userCollectionObj.findOne(
+      { username : usernameOfUrl },
+      { projection: { email: 1, _id: 0 } }
+    );
+
+    // Convert email to lowercase before sending an email
+    const lowercaseEmail = user.email.toLowerCase();
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -319,8 +345,8 @@ userApp.delete("/remove-user/:username",verifyToken,verifySuperToken,expressAsyn
     // send an email to the user
     let mailOptions = {
       from: process.env.OUTLOOK_EMAIL,
-      to: user.email,
-      subject: 'Access Removed',
+      to: lowercaseEmail,
+      subject: 'Access Removed - FIS',
       text: 'Your access to the admin page has been removed.',
     };
 
@@ -392,7 +418,7 @@ userApp.post('/reset-password', expressAsyncHandler(async (req, res) => {
     let mailOptions = {
       from: process.env.OUTLOOK_EMAIL,
       to: user.email,
-      subject: 'Password Reset OTP',
+      subject: 'Password Reset OTP - FIS',
       text: `Your OTP for password reset is: ${otp}`,
     };
 
@@ -416,7 +442,9 @@ userApp.post('/reset-password', expressAsyncHandler(async (req, res) => {
 // Verify OTP Route
 userApp.post('/verify-otp', expressAsyncHandler(async (req, res) => {
   try {
-    const { username, otp } = req.body;
+    // const { username, otp } = req.body;
+    const username = req.body.username;
+    const otp = req.body.otp;
     // Check if OTP is valid
     // console.log(otpStorage)
     if (otpStorage[username] === otp) {
@@ -441,7 +469,11 @@ userApp.put('/change-password-with-otp/:username', expressAsyncHandler(async (re
 
     // Hash the new password
     const hashedNewPassword = await bcryptjs.hash(newPassword, 5);
-
+    const user = await userCollectionObj.findOne(
+      { username },
+      { projection: { email: 1, _id: 0 } }
+    );
+    // console.log(user)
     // Update user's password
     const result = await userCollectionObj.updateOne({ username }, { $set: { password: hashedNewPassword } });
 
@@ -452,7 +484,7 @@ userApp.put('/change-password-with-otp/:username', expressAsyncHandler(async (re
       const mailOptions = {
         from: process.env.OUTLOOK_EMAIL,
         to: user.email, // Assuming user.email is available in your user object
-        subject: 'Password Changed',
+        subject: 'Password Changed - FIS',
         text: 'Your password has been changed successfully.',
       };
 
@@ -491,7 +523,7 @@ userApp.post('/forgot-username', expressAsyncHandler(async (req, res) => {
     const mailOptions = {
       from: process.env.OUTLOOK_EMAIL,
       to: user.email,
-      subject: 'Username Retrieval',
+      subject: 'Username Retrieval - FIS',
       text: `Your username is: ${user.username}`,
     };
 

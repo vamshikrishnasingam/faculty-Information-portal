@@ -40,14 +40,18 @@ function NavigationBar() {
             <Navbar.Toggle />
             <Navbar.Collapse className="collapse-nav">
               <Nav className="ms-auto p-3">
-                <div>
-                  <NavLink
-                    to="/"
-                    className="fa nav-link text-white btn btn-success m-2"
-                  >
-                    <i className="fa fa-home fa-fw"></i>HOME
-                  </NavLink>
-                </div>
+                {userLoginStatus ? (
+                  <></>
+                ) : (
+                  <div>
+                    <NavLink
+                      to="/"
+                      className="fa nav-link text-white btn btn-success m-2"
+                    >
+                      <i className="fa fa-home fa-fw"></i>HOME
+                    </NavLink>
+                  </div>
+                )}
                 {userLoginStatus ? (
                   <>
                     <div>

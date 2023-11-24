@@ -151,13 +151,18 @@ function ResetPassword() {
   };
 
   return (
-    <div>
+    <div className="container">
       {userLoginStatus ? (
-        <div>
-          <h2>Change Password</h2>
-          <div className="row">
-            <div className="col-lg-3">
-              <label htmlFor="oldPassword">Old Password:</label>
+        <div className="row p-5">
+          <h2 className="fw-bold text-white text-center mb-4">
+            Change Password
+          </h2>
+          <hr />
+          <div className="row m-2">
+            <div className="col-lg-4 col-sm-12 col-md-12">
+              <label className="text-white p-2" htmlFor="oldPassword">
+                Old Password:
+              </label>
               <input
                 type="password"
                 id="oldPassword"
@@ -167,8 +172,10 @@ function ResetPassword() {
                 onChange={(e) => setOldPassword(e.target.value)}
               />
             </div>
-            <div className="col-lg-3">
-              <label htmlFor="newPassword">New Password:</label>
+            <div className="col-lg-4 col-sm-12 col-md-12">
+              <label className="text-white p-2" htmlFor="newPassword">
+                New Password:
+              </label>
               <input
                 type="password"
                 id="newPassword"
@@ -178,8 +185,10 @@ function ResetPassword() {
                 onChange={(e) => setNewPassword(e.target.value)}
               />
             </div>
-            <div className="col-lg-3">
-              <label htmlFor="confirmNewPassword">Confirm New Password:</label>
+            <div className="col-lg-4 col-sm-12 col-md-12">
+              <label className="text-white p-2" htmlFor="confirmNewPassword">
+                Confirm New Password:
+              </label>
               <input
                 type="password"
                 id="confirmNewPassword"
@@ -189,9 +198,11 @@ function ResetPassword() {
                 onChange={(e) => setConfirmNewPassword(e.target.value)}
               />
             </div>
-            <div className="col-lg-2 p-4">
+          </div>
+          <div className="row mx-auto">
+            <div className="col-lg-3 col-sm-12 col-md-6 p-4">
               <Button
-                className="btn btn-success"
+                className="btn btn-success text-white"
                 onClick={handlePasswordChange}
               >
                 Change Password
@@ -200,49 +211,77 @@ function ResetPassword() {
           </div>
         </div>
       ) : (
-        <div>
-          {step !== 4 && <h2>Reset Password</h2>}
+        <div className="container m-3">
+          {step !== 4 && <h2 className="text-white mx-3">Reset Password</h2>}
           {step === 1 && (
-            <div>
-              <label htmlFor="username">Username:</label>
-              <input
-                type="text"
-                id="username"
-                className="search-input form-control me-2"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-              <Button
-                className="btn btn-success"
-                onClick={handleForgotPassword}
-              >
-                Reset Password
-              </Button>
+            <div className="m-2">
+              <label className="text-white p-2" htmlFor="username">
+                Username:
+              </label>
+              <div className="row ">
+                <div className="col-lg-4 col-sm-12 col-md-5 m-2">
+                  <input
+                    type="text"
+                    id="username"
+                    className="search-input form-control me-2"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                </div>
+                <div className="col-lg-3 col-md-6 col-sm-12 m-2">
+                  <Button
+                    className="btn btn-success text-white"
+                    onClick={handleForgotPassword}
+                  >
+                    Reset Password
+                  </Button>
+                </div>
+              </div>
               <hr />
-              <h2>Forgot Username?</h2>
-              <Button className="btn btn-info" onClick={handleForgotUsername}>
-                Click here
-              </Button>
+              <div className="m-2">
+                <div className="row">
+                  <div className="col-lg-4 col-sm-6 col-md-6 p-2">
+                    <h2 className="text-white ">Forgot Username?</h2>
+                  </div>
+                  <div className="col-lg-4 col-sm-6 col-md-6 p-2">
+                    <Button
+                      className="btn btn-info text-white w-50"
+                      onClick={handleForgotUsername}
+                    >
+                      Click here
+                    </Button>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
           {step === 4 && (
-            <div>
-              <h1>Forgot Username?</h1>
-              <label htmlFor="email">Email:</label>
-              <input
-                type="text"
-                id="email"
-                className="search-input form-control me-2"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <Button
-                className="btn btn-success"
-                onClick={handleSendUsernameOnEmail}
-              >
-                Send Username
-              </Button>
+            <div className="p-4">
+              <h1 className="text-white">Forgot Username?</h1>
+              <label className="text-white fw-bold fs-5 p-2" htmlFor="email">
+                Email:
+              </label>
+              <div className="row">
+                <div className="col-lg-4 col-sm-6 col-md-6 p-3">
+                  <input
+                    type="text"
+                    id="email"
+                    placeholder="Email"
+                    className="search-input form-control me-2"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+                <div className="col-lg-4 col-sm-6 col-md-6 p-3">
+                  <Button
+                    className="btn btn-success"
+                    onClick={handleSendUsernameOnEmail}
+                  >
+                    Send Username
+                  </Button>
+                </div>
+              </div>
             </div>
           )}
 

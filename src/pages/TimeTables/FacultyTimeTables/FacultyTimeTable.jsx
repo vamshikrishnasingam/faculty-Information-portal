@@ -175,6 +175,9 @@ const FacultyTimeTable = () => {
       </div>
       {data && (
         <div className="table-container">
+          <h3>Fac_Id : {data.username}</h3>
+          <h3>Name : {data.name}</h3>
+          <h3>Type : {data.facultytype}</h3>
           <table className="m-3 mx-auto">
             <thead>
               <div className="row">

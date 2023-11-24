@@ -190,7 +190,7 @@ const SideNav = () => {
                     </li>
                   </Link>
                 </MenuItem>
-                <MenuItem
+                {/* <MenuItem
                   icon={
                     <Link
                       className="text-col fa fa-filter"
@@ -208,7 +208,7 @@ const SideNav = () => {
                       </NavLink>
                     </li>
                   </Link>
-                </MenuItem>
+                </MenuItem> */}
               </SubMenu>
               <MenuItem
                 icon={

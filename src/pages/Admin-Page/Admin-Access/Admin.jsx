@@ -137,26 +137,31 @@ function Admin() {
 
   return (
     <div>
-      <h1>Welcome, {userDetails.username}!</h1>
-      <div>
-        <h2>User Details</h2>
+      <h2 className="m-1">Welcome, {userDetails.username}!</h2>
+      <hr />
+      <div className="p-2">
+        <h2>Your Details</h2>
 
         {editing ? (
           <>
-            <p>
-              <strong>Username:</strong> {userDetails.username}
-            </p>
-            <p>
-              <strong>Email:</strong> {userDetails.email}
-            </p>
-            {userDetails.oldusertype === "super-admin" && (
+            <div className="p-2">
               <p>
-                <strong>Type:</strong> {userDetails.type}
+                <strong>Username:</strong> {userDetails.username}
               </p>
-            )}
-            <Button className="btn btn-success" onClick={handleEdit}>
-              Edit Details
-            </Button>
+              <p>
+                <strong>Email:</strong> {userDetails.email}
+              </p>
+              {userDetails.oldusertype === "super-admin" && (
+                <p>
+                  <strong>Type:</strong> {userDetails.type}
+                </p>
+              )}
+            </div>
+            <div className="p-2">
+              <Button className="btn btn-success" onClick={handleEdit}>
+                Edit Details
+              </Button>
+            </div>
           </>
         ) : (
           <div className="row">
@@ -227,7 +232,7 @@ function Admin() {
           </div>
         )}
       </div>
-      <div>
+      <div className="p-3">
         <Button className="btn btn-success" onClick={navigateToResetPassword}>
           Change Password
         </Button>

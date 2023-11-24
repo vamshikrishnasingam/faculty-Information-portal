@@ -13,8 +13,11 @@ const ReplaceFaculty = () => {
 
 
   return (
-    <animated.div style={fadeOutSlideUpAnimation } className="container p-5">
-      <h3 className="mb-5 text-white">Please enter FacultyID for their Time Tables!!!</h3>
+    <animated.div style={fadeOutSlideUpAnimation} className="container p-5">
+      <h1 className="text-white text-center">
+        Please enter FacultyID for their Time Tables!!!
+      </h1>
+      <hr />
       <div className="row">
         <div className="col-lg-3 col-sm-7 p-2">
           <input
@@ -26,11 +29,7 @@ const ReplaceFaculty = () => {
           />
         </div>
         <div className="col-lg-3 col-sm-5 p-2">
-          <Button
-            className="btn btn-success w-50"
-            type="submit"
-            onClick={1}
-          >
+          <Button className="btn btn-success w-50" type="submit" onClick={1}>
             search
           </Button>
         </div>

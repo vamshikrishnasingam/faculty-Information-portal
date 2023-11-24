@@ -336,7 +336,7 @@ function History() {
   return (
     <div>
       <div className="row p-4 container">
-        <h1 className="m-3 text-white">HISTORY </h1>
+        <h1 className="m-3 text-white text-center">HISTORY </h1>
         <hr />
         <div className="row m-2">
           <div className="col-lg-2 col-sm-8 col-mg-8 mx-auto p-3">

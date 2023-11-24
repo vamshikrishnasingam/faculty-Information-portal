@@ -49,96 +49,57 @@ function Home() {
   return (
     <animated.div style={fadeIn}>
       <div className="p-3">
+        <animated.h1
+          style={welcomeAnimation}
+          className="fw-bold text-center text-white display-5 p-2"
+        >
+          Welcome to Faculty Information System!!!
+        </animated.h1>
         <div className="row">
-          <animated.div className="col-sm-4">
-            <animated.h1
-              style={welcomeAnimation}
-              className="fw-bold text-center text-white display-5 p-2"
-            >
-              Welcome!!!!
-            </animated.h1>
+          <animated.div className="col-sm-12">
             <hr />
             <animated.h1
               style={welcomeAnimation}
               className="mt-1 mb-4 text-center text-white display-6 fw-bold"
-            >
-              Faculty Information System
-            </animated.h1>
-            <div>
-              <Accordion defaultActiveKey="0">
-                <Accordion.Item eventKey="0" className="accord">
-                  <Accordion.Header onClick={handleChange}>
-                    {val === 1 ? (
-                      <h4>Click Here!!!</h4>
-                    ) : (
-                      <i class="fa fa-code fw-2"></i>
-                    )}
-                  </Accordion.Header>
-                  <Accordion.Body>
-                    <animated.div style={textProps}>
-                      <Carousel>
-                        <Carousel.Item interval={5000}>
-                          <img
-                            src="media/caur1.jpg"
-                            typeof="image"
-                            alt="Card"
-                            width="100%"
-                            height="250px"
-                            className="image1"
-                          />
-                        </Carousel.Item>
-                        <Carousel.Item interval={5000}>
-                          <img
-                            src="media/caur2.jpg"
-                            typeof="image"
-                            alt="Card"
-                            width="100%"
-                            height="250px"
-                            className="image1"
-                          />
-                        </Carousel.Item>
-                        <Carousel.Item interval={5000}>
-                          <img
-                            src="media/CSE_image.png"
-                            typeof="image"
-                            alt="Card"
-                            width="100%"
-                            height="250px"
-                            className="image1"
-                          />
-                        </Carousel.Item>
-                      </Carousel>
-                    </animated.div>
-                  </Accordion.Body>
-                </Accordion.Item>
-              </Accordion>
-              {val === 1 ? (
-                <animated.div style={slideIn}>
-                  <img
-                    src="media/CSE_image.png"
-                    typeof="image"
-                    alt="Card"
-                    width="100%"
-                    height="250px"
-                    className="p-1"
-                  />
+            ></animated.h1>
+            <Carousel>
+              <Carousel.Item interval={10000}>
+                <animated.div style={textProps}>
+                  <animated.div style={fadeIn} className="col-sm-12 mx-auto">
+                    <div>
+                      <img
+                        src="media/home.png"
+                        typeof="image"
+                        alt="Card"
+                        width="100%"
+                        height="450px"
+                        className="image1"
+                      />
+                    </div>
+                  </animated.div>
                 </animated.div>
-              ) : (
-                <></>
-              )}
-            </div>
-          </animated.div>
-          <animated.div style={fadeIn} className="col-sm-8">
-            <div>
-              <img
-                src="media/home.png"
-                typeof="image"
-                alt="Card"
-                width="100%"
-                height="100%"
-                className=""
-              />
-            </div>
+              </Carousel.Item>
+              <Carousel.Item interval={1000}>
+                <img
+                  src="media/caur2.jpg"
+                  typeof="image"
+                  alt="Card"
+                  width="100%"
+                  height="450px"
+                  className="image1"
+                />
+              </Carousel.Item>
+              <Carousel.Item interval={1000}>
+                <img
+                  src="media/CSE_image.png"
+                  typeof="image"
+                  alt="Card"
+                  width="100%"
+                  height="450px"
+                  className="image1"
+                />
+              </Carousel.Item>
+            </Carousel>
           </animated.div>
           {/* <animated.div
             style={{ ...slideIn, ...scaleMenu }}

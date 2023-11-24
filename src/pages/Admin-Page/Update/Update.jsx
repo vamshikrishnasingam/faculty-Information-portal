@@ -16,7 +16,12 @@ const fadeOutSlideUpAnimation = useSpring({
 });
 
   return (
-    <animated.div style={fadeOutSlideUpAnimation} className="container m-5 text-white">
+    <animated.div
+      style={fadeOutSlideUpAnimation}
+      className="container m-5 text-white"
+    >
+      <h1 className="m-3 text-white">DATA UPDATE</h1>
+      <hr />
       {userLoginStatus ? (
         <ExcelToJsonConverterTimeTable />
       ) : (

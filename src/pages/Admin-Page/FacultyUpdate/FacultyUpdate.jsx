@@ -180,8 +180,10 @@ const ContactUS = () => {
   return (
     <animated.div
       style={fadeOutSlideUpAnimation}
-      className="container text-white m-5 p-3"
+      className="container text-white m-5"
     >
+      <h1 className="text-white">FACULTY UPDATE</h1>
+      <hr />
       {userLoginStatus ? (
         <div>
           <div className="row">
