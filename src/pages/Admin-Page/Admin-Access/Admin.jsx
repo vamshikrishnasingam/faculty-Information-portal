@@ -88,12 +88,17 @@ function Admin() {
           theme: "light",
         });
 
-        // Delay for 4 seconds before logging out and navigating
+        // Delay for 3 seconds before logging out and navigating
         setTimeout(() => {
           logoutUser();
           navigate("../admin-login");
-        }, 4000);
+        }, 3000);
       }
+
+      setRefresh(!refresh);
+
+      // Exit edit mode after saving changes
+      setEditing(!editing);
 
       if (userDetails.type !== currentUser.type) {
         toast.error("User Type modified", {
@@ -106,13 +111,9 @@ function Admin() {
           progress: undefined,
           theme: "light",
         });
+        navigate("/adminpage/admin-access")
         setTimeout(() => {}, 4000);
       }
-
-      setRefresh(!refresh);
-
-      // Exit edit mode after saving changes
-      setEditing(!editing);
     } catch (error) {
       console.error("Error saving changes:", error);
 

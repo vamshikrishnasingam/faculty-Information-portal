@@ -18,7 +18,7 @@ function ResetPassword() {
 
   //common for both reset and change
   const [newPassword, setNewPassword] = useState("");
-  const [, , userLoginStatus, ,] = useContext(loginContext);
+  const [currentUser, , userLoginStatus, ,] = useContext(loginContext);
   const [step, setStep] = useState(1); // Track the current step
   // Use the useNavigate hook to get the navigate function
   const navigate = useNavigate();
@@ -27,17 +27,17 @@ function ResetPassword() {
   const handlePasswordChange = async () => {
     try {
       // Perform password change logic
-      console.log(
-        "Change password:",
-        oldPassword,
-        newPassword,
-        confirmNewPassword
-      );
+      // console.log(
+      //   "Change password:",
+      //   oldPassword,
+      //   newPassword,
+      //   confirmNewPassword
+      // );
 
       // Example: You may want to send an API request to change the password
       const token = localStorage.getItem("token");
       await axios.put(
-        "http://localhost:5000/user-api/change-password",
+        `http://localhost:5000/user-api/change-password/${currentUser.username}`,
         {
           oldPassword,
           newPassword,
@@ -66,6 +66,7 @@ function ResetPassword() {
         progress: undefined,
         theme: "light",
       });
+      navigate("/adminpage/admin-access")
     } catch (error) {
       console.error("Error changing password:", error);
 
@@ -115,13 +116,13 @@ function ResetPassword() {
   const handleResetPassword = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/user-api/change-password-with-otp/${username}`,
+        `http://localhost:5000/user-api/change-password-with-otp/${currentUser.username}`,
         { newPassword }
       );
       toast.success(response.data.message);
       setTimeout(() => {
         navigate("/admin-login");
-      }, 4000);
+      }, 2000);
     } catch (error) {
       console.error("Error changing password with OTP:", error);
       toast.error("Error changing password with OTP");
@@ -140,10 +141,10 @@ function ResetPassword() {
         "http://localhost:5000/user-api/forgot-username",
         { email }
       );
-      toast.success(response.data);
+      toast.success(response.data.message);
       setTimeout(() => {
         setStep(1);
-      }, 3000);
+      }, 1500);
     } catch (error) {
       console.error("Error retrieving username:", error);
       toast.error("Error retrieving username");
