@@ -129,6 +129,31 @@ userApp.get('/get-users',verifyToken,verifySuperToken,expressAsyncHandler(async(
     })
 }))
 
+// ...
+
+// Route to search for users based on username or email
+userApp.get('/search-users/:userInput', verifyToken, verifySuperToken, expressAsyncHandler(async (req, res) => {
+  const userInput = req.params.userInput;
+
+  // get user collection object
+  const userCollectionObj = req.app.get("userCollectionObj");
+
+  try {
+      // Search for users with the given username or email
+      const users = await userCollectionObj.find({
+        $or: [
+          { username: { $regex: userInput, $options: 'i' } }, // 'i' for case-insensitive
+          { email: { $regex: userInput, $options: 'i' } }
+        ],
+      }).toArray();
+
+      res.status(200).send({ message: "User Search Results", payload: users });
+  } catch (err) {
+      console.log("Error in Searching Users", err);
+      res.status(500).send({ message: "Error", errMessage: err.message });
+  }
+}));
+
 //set default password user
 userApp.get('/set-default-password/:username',verifyToken,verifySuperToken,expressAsyncHandler(async(req,res)=>{
     try{

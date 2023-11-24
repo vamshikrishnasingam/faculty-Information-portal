@@ -8,10 +8,11 @@ import { Button , Modal } from 'react-bootstrap';
 function SuperAdmin() {
   let [currentUser, , , ,] = useContext(loginContext);
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [editMode, setEditMode] = useState({});
   const [editedData, setEditedData] = useState({});
   const [refresh, setRefresh] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   const [filterType, setFilterType] = useState(""); // '' for all, 'admin', or 'super-admin'
   //the add user form
   const [newUser, setNewUser] = useState({
@@ -46,11 +47,22 @@ function SuperAdmin() {
           newusername: user.username, // Adding new field newUsername
         }));
         setUsers(usersWithNewUsername);
+        setFilteredUsers(usersWithNewUsername);
       })
       .catch((error) => {
         console.error("Error fetching users:", error);
       });
   }, [refresh,show]);
+
+  useEffect(() => {
+    // Apply type filter
+    const filteredByType = filterType
+      ? users.filter((user) => user.type === filterType.toLowerCase())
+      : users;
+
+    setFilteredUsers(filteredByType);
+  }, [filterType, filteredUsers]);
+
   const handleEdit = (user) => {
     // Toggle edit mode for the selected user
     setEditMode((prevMode) => ({
@@ -83,6 +95,76 @@ function SuperAdmin() {
   //   // return usernameMatch ;
   //   return usernameMatch || emailMatch || typeMatch;
   // });
+
+  const handleFilterChange = (selectedFilter) => {
+    setFilterType(selectedFilter);
+  };
+
+  const handleSearch = async () => {
+    try {
+      if(searchInput===''){
+      const token = localStorage.getItem("token");
+      if (!token) {
+        // No token, return null indicating no authenticated user
+        return null;
+      }
+      axios
+        .get("http://localhost:5000/user-api/get-users", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          // Filter out the current user from the list
+          const filteredUsers = response.data.payload.filter(
+            (user) => user.username !== currentUser.username
+          );
+
+          // Update the state with the filtered users
+          const usersWithNewUsername = filteredUsers.map((user) => ({
+            ...user,
+            newusername: user.username, // Adding new field newUsername
+          }));
+          setUsers(usersWithNewUsername);
+        })
+        .catch((error) => {
+          console.error("Error fetching users:", error);
+        });
+        return;
+      }
+      const response = await axios.get(`http://localhost:5000/user-api/search-users/${searchInput}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      // Filter out the current user from the list
+      const filteredUsers = response.data.payload.filter(
+        (user) => user.username !== currentUser.username
+      );
+
+      // Update the state with the filtered users
+      const usersWithNewUsername = filteredUsers.map((user) => ({
+        ...user,
+        newusername: user.username, // Adding new field newUsername
+      }));
+      setUsers(usersWithNewUsername);
+    } catch (error) {
+      console.error("Error searching users:", error);
+
+      // Handle error (e.g., show an error message to the user)
+      toast.error(error.message, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
 
   const handleInputChange = (userId, field, value) => {
     // Update the edited data when input fields change
@@ -291,15 +373,43 @@ function SuperAdmin() {
     <div>
       <ToastContainer />
       <div className='row'>
-        <div className="col-lg-6">
+        <div className="col-lg-8">
           <h2>
             User List
           </h2>
         </div>
-        <div className="col-lg-6">
-          <button className="btn btn-primary ms-3" onClick={() => setShow(true)}>
+        <div className="col-lg-4">
+          <Button style={{ width: '10vw' }} className="btn btn-success ms-3" onClick={() => setShow(true)}>
             Add User
-          </button>
+          </Button>
+        </div>
+      </div>
+      <div className='row'>
+        <div className="col-lg-4">
+          <select
+            className="form-select"
+            value={filterType}
+            onChange={(e) => handleFilterChange(e.target.value)}
+          >
+            <option value="">All</option>
+            <option value="admin">Admin</option>
+            <option value="super-admin">Super Admin</option>
+          </select>
+        </div>
+        <div className="col-lg-4">
+          <input  
+            type="text"
+            className="form-control"
+            placeholder='Search Here...'
+            id="search"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+          />
+        </div>
+        <div className="col-lg-4">
+          <Button style={{ width: '10vw' }} className="btn btn-primary ms-3" onClick={handleSearch}>
+            Search
+          </Button>
         </div>
       </div>
       <Modal
@@ -372,8 +482,8 @@ function SuperAdmin() {
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <Button type="button" className="btn btn-secondary" onClick={()=>setShow(false)}>Close</Button>
-            <Button type="button" className="btn btn-primary" onClick={handleAddUser}>
+            <Button style={{ width: '10vw', color: 'white' }} type="button" className="btn btn-secondary" onClick={()=>setShow(false)}>Close</Button>
+            <Button style={{ width: '10vw', color: 'white' }} type="button" className="btn btn-primary" onClick={handleAddUser}>
                 Add User
             </Button>
           </Modal.Footer>
@@ -396,15 +506,15 @@ function SuperAdmin() {
           <option value="super-admin">Super Admin</option>
         </select>
       </div> */}
-      <table>
+      <table className='mt-3 rounded'>
         <thead>
           <tr>
-            <th>Username</th>
-            <th>Type</th>
-            <th>Email</th>
-            <th>Edit</th>
-            <th>Change Password</th>
-            <th>Remove User</th>
+            <th style={{ width: '20%' }} className='rounded'>Username</th>
+            <th style={{ width: '15%' }} className='rounded'>Type</th>
+            <th style={{ width: '25%' }} className='rounded'>Email</th>
+            <th style={{ width: '10%' }} className='rounded'>Edit</th>
+            <th style={{ width: '15%' }} className='rounded'>Change Password</th>
+            <th style={{ width: '15%' }} className='rounded'>Remove User</th>
           </tr>
         </thead>
         {/* <tbody>
@@ -414,18 +524,18 @@ function SuperAdmin() {
                 <td>{user.type}</td>
                 <td>{user.email}</td>
                 <td>
-                    <button onClick={() => handleEdit(user)}>Edit</button>
+                    <Button style={{ width: '10vw' }} onClick={() => handleEdit(user)}>Edit</Button>
                 </td>
                 <td>
-                    <button onClick={() => handleSetDefaultPassword(user.username)}>change</button>
+                    <Button style={{ width: '10vw' }} onClick={() => handleSetDefaultPassword(user.username)}>change</Button>
                 </td>
                 </tr>
             ))}
             </tbody> */}
         <tbody>
-          {users?.map((user) => (
+          {filteredUsers?.map((user) => (
             <tr key={user._id}>
-              <td>
+              <td className='rounded'>
                 {editMode[user._id] ? (
                   <input
                     type="text"
@@ -440,7 +550,7 @@ function SuperAdmin() {
                   user.newusername
                 )}
               </td>
-              <td>
+              <td className='rounded'>
                 {editMode[user._id] ? (
                   <select
                     value={editedData[user._id]?.type || user.type}
@@ -455,7 +565,7 @@ function SuperAdmin() {
                   user.type
                 )}
               </td>
-              <td>
+              <td className='rounded'>
                 {editMode[user._id] ? (
                   <input
                     type="text"
@@ -468,24 +578,24 @@ function SuperAdmin() {
                   user.email
                 )}
               </td>
-              <td>
+              <td className='rounded'>
                 {editMode[user._id] ? (
-                  <button onClick={() => handleSaveChanges(user._id)}>
+                  <Button style={{ width: '10vw' }} className="btn btn-primary" onClick={() => handleSaveChanges(user._id)}>
                     Save
-                  </button>
+                  </Button>
                 ) : (
-                  <button onClick={() => handleEdit(user)}>Edit</button>
+                  <Button style={{ width: '10vw' }} className="btn btn-primary" onClick={() => handleEdit(user)}>Edit</Button>
                 )}
               </td>
-              <td>
-                <button onClick={() => handleSetDefaultPassword(user.username)}>
+              <td className='rounded'>
+                <Button style={{ width: '10vw' }} className="btn btn-primary" onClick={() => handleSetDefaultPassword(user.username)}>
                   Change
-                </button>
+                </Button>
               </td>
-              <td>
-                <button onClick={() => handleRemoveUser(user.username)}>
+              <td className='rounded'>
+                <Button style={{ width: '10vw' }} className="btn btn-primary" onClick={() => handleRemoveUser(user.username)}>
                   Remove
-                </button>
+                </Button>
               </td>
             </tr>
           ))}
