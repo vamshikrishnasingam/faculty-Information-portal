@@ -1,3 +1,4 @@
+/* eslint-disable no-lone-blocks */
 /* eslint-disable no-undef */
 const { type } = require("@testing-library/user-event/dist/type");
 const exp = require("express")
@@ -117,7 +118,9 @@ classtimetableApp.post("/class-insert", expressAsyncHandler(async (req, res) => 
         for (let j = 1; j < facultyinfo.length; j++) {
             const f = {}
             for (let i = 1; i < 4; i++) {
-                f[facultyinfo[0][i]] = facultyinfo[j][i].toUpperCase()
+                if (typeof facultyinfo[j][i] === "string") {
+                    f[facultyinfo[0][i]] = facultyinfo[j][i].toUpperCase()
+                }
             }
             facultydata[facultyinfo[j][0].toUpperCase()] = f
         }

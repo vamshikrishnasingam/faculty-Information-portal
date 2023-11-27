@@ -1,0 +1,544 @@
+[{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de99e"
+  },
+  "username": "98CSE011",
+  "name": "Dr. S. Nagini",
+  "facultytype": "Prof &HOD"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de99f"
+  },
+  "username": "16CSE105",
+  "name": "Dr.P.Neelakantan",
+  "facultytype": "Professor"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9a0"
+  },
+  "username": "97CSE009",
+  "name": "Dr. C. Kiran Mai",
+  "facultytype": "Professor"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9a1"
+  },
+  "username": "07CSE021",
+  "name": "Dr.G. Ramesh Chandra",
+  "facultytype": "Professor"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9a2"
+  },
+  "username": "97CSE004",
+  "name": "Dr.B.V. Kiran Mayee                        ",
+  "facultytype": "Professor"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9a3"
+  },
+  "username": "23CSE067",
+  "name": "Dr.M.Madhubala",
+  "facultytype": "Professor"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9a4"
+  },
+  "username": "00CSE003",
+  "name": "Dr.V. Baby",
+  "facultytype": "Assoc. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9a5"
+  },
+  "username": "00CSE007",
+  "name": "Dr.M. Gangappa ",
+  "facultytype": "Assoc.Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9a6"
+  },
+  "username": "00CSE010",
+  "name": "Dr. P. V. Siva Kumar",
+  "facultytype": "Assoc.Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9a7"
+  },
+  "username": "10CSE023",
+  "name": "Dr.A.B.N. Reddy",
+  "facultytype": "Assoc.Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9a8"
+  },
+  "username": "17CSE033",
+  "name": "Dr.Deepak Sukheja",
+  "facultytype": "Assoc.Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9a9"
+  },
+  "username": "22CSE153",
+  "name": "Dr.Anjusha P",
+  "facultytype": "Sr. Asst.Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9aa"
+  },
+  "username": "07CSE011",
+  "name": "A. Madhavi",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9ab"
+  },
+  "username": "07CSE018",
+  "name": "Dr.N.V.Sailaja",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9ac"
+  },
+  "username": "07CSE028",
+  "name": "Dr.D.N. Vasundhara",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9ad"
+  },
+  "username": "07CSE061",
+  "name": "Dr.R. Vasavi",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9ae"
+  },
+  "username": "07CSE063",
+  "name": "Dr.R.Vijaya  Saraswathi",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9af"
+  },
+  "username": "08CSE028",
+  "name": "Dr.G.S.Ramesh",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9b0"
+  },
+  "username": "08CSE066",
+  "name": "P.Radhika",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9b1"
+  },
+  "username": "10CSE016",
+  "name": "T. Gnana Prakash",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9b2"
+  },
+  "username": "12CSE023",
+  "name": "Dr.P.Venkateswara Rao",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9b3"
+  },
+  "username": "15CSE020",
+  "name": "Dr.M.Ravi Kanth",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9b4"
+  },
+  "username": "15CSE022",
+  "name": "S.Jahnavi",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9b5"
+  },
+  "username": "15CSE031",
+  "name": "N.Lakshmi Kalyani",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9b6"
+  },
+  "username": "15CSE032",
+  "name": "N.Sandeep Chaitanya",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9b7"
+  },
+  "username": "15CSE048",
+  "name": "N.Sarika",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9b8"
+  },
+  "username": "15CSE091",
+  "name": "Dr.Tejaswi.P",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9b9"
+  },
+  "username": "15CSE094",
+  "name": "Dr.P.Bharath Kumar ",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9ba"
+  },
+  "username": "16CSE012",
+  "name": "P.Rama Krishna ",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9bb"
+  },
+  "username": "16CSE089",
+  "name": "Dr.K.Bheemalingapa",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9bc"
+  },
+  "username": "16CSE102",
+  "name": "L.Indira",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9bd"
+  },
+  "username": "16CSE121",
+  "name": "Dr.K.Srinivas",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9be"
+  },
+  "username": "17CSE012",
+  "name": "Dr.CH.Suresh",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9bf"
+  },
+  "username": "17CSE017",
+  "name": "Kriti Ohri",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9c0"
+  },
+  "username": "17CSE025",
+  "name": "Dr.K.Venkata Ramana",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9c1"
+  },
+  "username": "07CSE054",
+  "name": "K.Jhansi Lakshmi Bai",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9c2"
+  },
+  "username": "12CSE053",
+  "name": "M.V. Krishna Rao",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9c3"
+  },
+  "username": "15ITD083",
+  "name": "Tummala Nagarjuna",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9c4"
+  },
+  "username": "15CSE084",
+  "name": "CH.Sri Sumanth",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9c5"
+  },
+  "username": "19CSE009",
+  "name": "Nyemeesha S",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9c6"
+  },
+  "username": "19CSE054",
+  "name": "P.Jyothi",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9c7"
+  },
+  "username": "20CSE015",
+  "name": "K.Bhagya Rekha",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9c8"
+  },
+  "username": "20CSE025",
+  "name": "Shaik Abul Hameed",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9c9"
+  },
+  "username": "20CSE026",
+  "name": "P.Prasanna",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9ca"
+  },
+  "username": "20CSE033",
+  "name": "G.Lakshmi Deepthi",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9cb"
+  },
+  "username": "20CSE032",
+  "name": "K.Haripraya",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9cc"
+  },
+  "username": "21CSE031",
+  "name": "Sudeshna.S",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9cd"
+  },
+  "username": "21CSE035",
+  "name": "Sudheer Benarji.P",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9ce"
+  },
+  "username": "21CSE055",
+  "name": "J.Vamsinath",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9cf"
+  },
+  "username": "22CSE024",
+  "name": "K.Sai Madhuri",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9d0"
+  },
+  "username": "22CSE029",
+  "name": "I.Ravindra Kumar",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9d1"
+  },
+  "username": "22CSE033",
+  "name": "N.Sai Srithaja",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9d2"
+  },
+  "username": "22CSE035",
+  "name": "B.Prathusha",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9d3"
+  },
+  "username": "22CSE057",
+  "name": "Dr.D.Sudheer",
+  "facultytype": "Asst. Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9d4"
+  },
+  "username": "22CSE115",
+  "name": "G.Gouthami",
+  "facultytype": "Asst.Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9d5"
+  },
+  "username": "22CSE143",
+  "name": "M.Srikanth",
+  "facultytype": "Asst.Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9d6"
+  },
+  "username": "22CSE163",
+  "name": "K.Akhil",
+  "facultytype": "Asst.Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9d7"
+  },
+  "username": "22CSE164",
+  "name": "S.Alankritha",
+  "facultytype": "Asst.Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9d8"
+  },
+  "username": "23CSE010",
+  "name": "P.Praveen",
+  "facultytype": "Asst.Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9d9"
+  },
+  "username": "23CSE011",
+  "name": "V.Muniraju Naidu",
+  "facultytype": "Asst.Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9da"
+  },
+  "username": "23CSE016",
+  "name": "Ch.Sandhya Rani",
+  "facultytype": "Asst.Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9db"
+  },
+  "username": "23CSE027",
+  "name": "V.Vijaya Bhaskar",
+  "facultytype": "Asst.Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9dc"
+  },
+  "username": "23CSE038",
+  "name": "Ch.Suresh Kumar Raju",
+  "facultytype": "Asst.Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9dd"
+  },
+  "username": "23CSE044",
+  "name": "P.Rajesh",
+  "facultytype": "Asst.Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9de"
+  },
+  "username": "23CSE057",
+  "name": "Deepa T",
+  "facultytype": "Asst.Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9df"
+  },
+  "username": "23CSE064",
+  "name": "S.K.Saddam Hussain",
+  "facultytype": "Asst.Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9e0"
+  },
+  "username": "23CSE070",
+  "name": "K.Sri Rama Murthy",
+  "facultytype": "Asst.Prof"
+},
+{
+  "_id": {
+    "$oid": "64bd8f420d47a288192de9e1"
+  },
+  "username": "23CSE074",
+  "name": "Thirupathi Nanuvala",
+  "facultytype": "Asst.Prof"
+}]

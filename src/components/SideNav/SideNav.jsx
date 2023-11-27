@@ -17,7 +17,7 @@ const SideNav = () => {
     <div id="app1">
       <Sidebar
         // backgroundColor="rgba(146, 57, 147, 0.3)"
-        collapsed={collapsed}
+        collapsed={!collapsed}
         className="side-nav border m-3"
         backgroundColor=""
       >
@@ -144,11 +144,7 @@ const SideNav = () => {
           {userLoginStatus ? (
             <>
               <SubMenu
-                icon={
-                  <Link
-                    className="text-col fa fa-filter"
-                  ></Link>
-                }
+                icon={<Link className="text-col fa fa-filter"></Link>}
                 className="fw-bold  fs-5 link text-col"
                 label="UPDATE"
               >
@@ -166,17 +162,14 @@ const SideNav = () => {
                         className="fw-bold  fs-5 link text-col"
                         to="fac-update"
                       >
-                      FACULTY UPDATE
+                        FACULTY UPDATE
                       </NavLink>
                     </li>
                   </Link>
                 </MenuItem>
                 <MenuItem
                   icon={
-                    <Link
-                      className="text-col fa fa-filter"
-                      to="update"
-                    ></Link>
+                    <Link className="text-col fa fa-filter" to="update"></Link>
                   }
                 >
                   <Link className="link" to="update">

@@ -212,21 +212,21 @@ function ClassTimeTable() {
       <h1 className="p-2 m-1 text-center">CLASS TIME TABLES</h1>
       <hr />
       <div className="row m-2">
-        <div className="col-lg-2 col-sm-8 col-mg-8 mx-auto p-3">
+        <div className="col-lg-2 col-sm-12 col-md-4 p-3">
           <Form.Select value={academicyear} onChange={handlechangeacademicyear}>
             <option>Academic year</option>
             <option value="2023-2024">2023-2024</option>
             <option value="2024-2025">2024-2025</option>
           </Form.Select>
         </div>
-        <div className="col-lg-2 col-sm-8 col-mg-8 mx-auto p-3">
+        <div className="col-lg-2 col-sm-12 col-md-4 p-3">
           <Form.Select value={graduation} onChange={handlechangegraduation}>
             <option>select course</option>
             <option value="Btech">UG</option>
             <option value="Mtech">PG</option>
           </Form.Select>
         </div>
-        <div className="col-lg-2 col-sm-8 col-mg-8 mx-auto p-3">
+        <div className="col-lg-2 col-sm-12 col-md-4 p-3">
           <Form.Select value={year} onChange={handlechangeyear}>
             <option>select year</option>
             <option value="1">I</option>
@@ -239,7 +239,7 @@ function ClassTimeTable() {
             )}
           </Form.Select>
         </div>
-        <div className="col-lg-2 col-sm-8 col-mg-8 mx-auto p-3">
+        <div className="col-lg-2 col-sm-12 col-md-4 p-3">
           <Form.Select value={branch} onChange={handlechangebranch}>
             <option>select branch</option>
             <option value="aiml">AIML</option>
@@ -255,14 +255,14 @@ function ClassTimeTable() {
             <option value="mech">MECH</option>
           </Form.Select>
         </div>
-        <div className="col-lg-2 col-sm-8 col-mg-8 mx-auto p-3">
+        <div className="col-lg-2 col-sm-12 col-md-4 p-3">
           <Form.Select value={semester} onChange={handlechangesem}>
             <option>select sem</option>
             <option value="1">1</option>
             <option value="2">2</option>
           </Form.Select>
         </div>
-        <div className="col-lg-2 col-sm-8 col-mg-8 mx-auto p-3">
+        <div className="col-lg-2 col-sm-12 col-md-4 p-3">
           <Form.Select value={sec} onChange={handlechangesec}>
             <option>select section</option>
             <option value="1">A</option>
@@ -273,12 +273,10 @@ function ClassTimeTable() {
         </div>
 
         <div
-          className="col-lg-4 col-sm-8 col-mg-8 mx-auto p-3"
-          style={{ position: "relative" }}
+          className="col-lg-2 col-sm-12 col-md-4 p-3"
         >
           <Button
-            className=" col-lg-5 btn-success"
-            style={{ marginRight: "20px" }}
+            className="w-100 btn-success"
             onClick={handleSearch}
           >
             SEARCH

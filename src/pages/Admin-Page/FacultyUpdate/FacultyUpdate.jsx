@@ -180,14 +180,14 @@ const ContactUS = () => {
   return (
     <animated.div
       style={fadeOutSlideUpAnimation}
-      className="container text-white m-5"
+      className="text-white m-5 p-1"
     >
       <h1 className="text-white">FACULTY UPDATE</h1>
       <hr />
       {userLoginStatus ? (
         <div>
           <div className="row">
-            <div className="col-lg-3 col-sm-6 col-md-6 p-3">
+            <div className="col-lg-3 col-sm-12 col-md-6 p-3">
               <div className="search-bar-container">
                 <input
                   type="text"
@@ -214,7 +214,7 @@ const ContactUS = () => {
                 )}
               </div>
             </div>
-            <div className="col-lg-2 col-sm-6 col-md-6 p-3">
+            <div className="col-lg-2 col-sm-12 col-md-6 p-3">
               <Button
                 className="btn btn-success w-100"
                 type="submit"
@@ -230,7 +230,7 @@ const ContactUS = () => {
               <h3>Name : {facdata.name}</h3>
               <h3>Type : {facdata.facultytype}</h3>
               {wlv === 0 && (
-                <div>
+                <div className="history-results">
                   <table>
                     <thead>
                       <tr>

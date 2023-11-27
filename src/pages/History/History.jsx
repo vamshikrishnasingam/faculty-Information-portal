@@ -3,6 +3,7 @@ import { Button, Form, Dropdown } from "react-bootstrap";
 import axios from 'axios';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import './History.css'
 
 function History() {
 
@@ -397,23 +398,28 @@ function History() {
 
   return (
     <div>
-      <div className=''>
-        <div className='row m-2'>
-          <div className='col-lg-2 col-sm-8 col-mg-8 mx-auto p-3'>
-            <Form.Select value={academicyear} onChange={handlechangeacademicyear}>
+      <div className="container p-4">
+        <h1 className="p-2 text-center text-white">HISTORY</h1>
+        <hr />
+        <div className="container row p-3">
+          <div className="col-lg-4 col-sm-12 col-md-4 p-3">
+            <Form.Select
+              value={academicyear}
+              onChange={handlechangeacademicyear}
+            >
               <option>Academic year</option>
-              <option value='2023-2024'>2023-2024</option>
-              <option value='2024-2025'>2024-2025</option>
+              <option value="2023-2024">2023-2024</option>
+              <option value="2024-2025">2024-2025</option>
             </Form.Select>
           </div>
-          <div className='col-lg-2 col-sm-8 col-mg-8 mx-auto p-3'>
+          <div className="col-lg-4 col-sm-12 col-md-4 p-3">
             <Form.Select value={sem} onChange={handlechangesem}>
               <option>select sem</option>
               <option value="1">1</option>
               <option value="2">2</option>
             </Form.Select>
           </div>
-          <div className='col-lg-2 col-sm-8 col-mg-8 mx-auto p-3'>
+          <div className="col-lg-4 col-sm-12 col-md-4 p-3">
             <Form.Select value={type} onChange={handlechangetype}>
               <option>select type</option>
               <option value="class">class time table</option>
@@ -423,27 +429,37 @@ function History() {
         </div>
         {classvalue === 1 && (
           <div>
-            <div className='row'>
-              <h1 className='text-center'>CLASS TIME TABLES</h1>
-              <div className='col-lg-2 col-sm-8 col-mg-8 mx-auto p-3'>
-                <Form.Select value={type} onChange={handlechangegraduation}>
+            <div className="container row p-3">
+              <h1 className="text-center text-white m-3">CLASS TIME TABLES</h1>
+              <div className="col-lg-3 col-sm-12 col-md-4 p-3 ">
+                <Form.Select
+                  value={type}
+                  onChange={handlechangegraduation}
+                  className="text-center"
+                >
                   <option>select course</option>
                   <option value="Btech">BTech</option>
                   <option value="Mtech">MTech</option>
                 </Form.Select>
               </div>
-              <div className="col-lg-3 col-md-6 p-3">
+              <div className="col-lg-3 col-md-4 col-sm-12  p-3">
                 <Dropdown>
                   <Dropdown.Toggle
-                    className="border border-secondary border-opacity-25 bg-white w-100 p-3"
+                    className="border border-secondary border-opacity-25 bg-white w-100"
                     variant=""
-                    id="dropdown-basic">
+                    id="dropdown-basic"
+                  >
                     YEAR
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     <Form>
                       <div className="p-3">
-                        <Form.Check id="selectAll" label="Select All" onChange={(e) => handleyearchange(e)} checked={years.length === yearlist.length} />
+                        <Form.Check
+                          id="selectAll"
+                          label="Select All"
+                          onChange={(e) => handleyearchange(e)}
+                          checked={years.length === yearlist.length}
+                        />
                         {yearlist.map((year) => (
                           <Form.Check
                             key={year}
@@ -458,18 +474,24 @@ function History() {
                   </Dropdown.Menu>
                 </Dropdown>
               </div>
-              <div className="col-lg-3 col-md-6 p-3">
+              <div className="col-lg-3 col-sm-12 col-md-4 p-3">
                 <Dropdown>
                   <Dropdown.Toggle
-                    className="border border-secondary border-opacity-25 bg-white w-100 p-3"
+                    className="border border-secondary border-opacity-25 bg-white w-100"
                     variant=""
-                    id="dropdown-basic">
+                    id="dropdown-basic"
+                  >
                     BRANCH
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     <Form>
                       <div className="p-3">
-                        <Form.Check id="selectAll" label="Select All" onChange={(e) => handlechangebranch(e)} checked={branches.length === branchesList.length} />
+                        <Form.Check
+                          id="selectAll"
+                          label="Select All"
+                          onChange={(e) => handlechangebranch(e)}
+                          checked={branches.length === branchesList.length}
+                        />
                         {branchesList.map((branch) => (
                           <Form.Check
                             key={branch}
@@ -484,18 +506,24 @@ function History() {
                   </Dropdown.Menu>
                 </Dropdown>
               </div>
-              <div className="col-lg-3 col-md-6 p-3">
+              <div className="col-lg-3 col-sm-12 col-md-4 p-3">
                 <Dropdown>
                   <Dropdown.Toggle
-                    className="border border-secondary border-opacity-25 bg-white w-100 p-3"
+                    className="border border-secondary border-opacity-25 bg-white w-100"
                     variant=""
-                    id="dropdown-basic">
+                    id="dropdown-basic"
+                  >
                     SECTIONS
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     <Form>
                       <div className="p-3">
-                        <Form.Check id="selectAll" label="Select All" onChange={(e) => handlechangesec(e)} checked={secs.length === seclist.length} />
+                        <Form.Check
+                          id="selectAll"
+                          label="Select All"
+                          onChange={(e) => handlechangesec(e)}
+                          checked={secs.length === seclist.length}
+                        />
                         {seclist.map((sec) => (
                           <Form.Check
                             key={sec}
@@ -510,126 +538,184 @@ function History() {
                   </Dropdown.Menu>
                 </Dropdown>
               </div>
-              <div className='' style={{ position: 'relative' }} >
-                <Button onClick={fun} className="p-3 btn-secondary">
+              <div
+                className="col-lg-2 col-sm-12 col-md-4 p-3"
+                style={{ position: "relative" }}
+              >
+                <Button
+                  onClick={fun}
+                  className="fw-bold text-white w-100 btn btn-success"
+                >
                   Download
                 </Button>
               </div>
             </div>
             {(availabledata.length > 0 || nonavailabledata.length > 0) && (
-              <div style={{ display: 'flex', gap: '20px'}}>
-                <div>
-                  <h1>DOWNLOADED DATA</h1>
-                  {dv === 1 && (
-                    <div style={{overflowY:'auto' }}>
-                      <table style={{ width: '100%' }}>
-                        <thead>
-                          <tr>
-                            <th style={{ width: '40%', padding: '8px' }}>Academic Year</th>
-                            <th style={{ width: '20%', padding: '8px' }}>Course</th>
-                            <th style={{ width: '20%', padding: '8px' }}>Semester</th>
-                            <th style={{ width: '20%', padding: '8px' }}>Class</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {availabledata.map((cell, cellindex) => (
-                            <tr key={cellindex}>
-                              <td>{cell[0]}</td>
-                              <td>{cell[1]}</td>
-                              <td>{cell[2]}</td>
-                              <td>{cell[3]}</td>
+              <div className="row m-2">
+                <div className="col-sm-12 col-md-12 col-lg-6">
+                  <h1 className="text-white text-center p-2">
+                    DOWNLOADED DATA
+                  </h1>
+                  <div
+                    className="container m-3 history-results"
+                    style={{ "overflow-x": "auto" }}
+                  >
+                    {dv === 1 && (
+                      <div>
+                        <table>
+                          <thead>
+                            <tr>
+                              <th style={{ width: "40%", padding: "8px" }}>
+                                Academic Year
+                              </th>
+                              <th style={{ width: "20%", padding: "8px" }}>
+                                Course
+                              </th>
+                              <th style={{ width: "20%", padding: "8px" }}>
+                                Semester
+                              </th>
+                              <th style={{ width: "20%", padding: "8px" }}>
+                                Class
+                              </th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-                  {dv === 0 && (
-                    <div style={{overflowY:'auto' }}>
-                      <table style={{ width: '100%' }}>
-                        <thead>
-                          <tr>
-                            <th style={{ width: '40%', padding: '8px' }}>Academic Year</th>
-                            <th style={{ width: '20%', padding: '8px' }}>Course</th>
-                            <th style={{ width: '20%', padding: '8px' }}>Semester</th>
-                            <th style={{ width: '20%', padding: '8px' }}>Class</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <div>
-                            <td></td>
-                          </div>
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
+                          </thead>
+                          <tbody>
+                            {availabledata.map((cell, cellindex) => (
+                              <tr key={cellindex}>
+                                <td>{cell[0]}</td>
+                                <td>{cell[1]}</td>
+                                <td>{cell[2]}</td>
+                                <td>{cell[3]}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                    {dv === 0 && (
+                      <div>
+                        <table>
+                          <thead>
+                            <tr>
+                              <th style={{ width: "40%", padding: "8px" }}>
+                                Academic Year
+                              </th>
+                              <th style={{ width: "20%", padding: "8px" }}>
+                                Course
+                              </th>
+                              <th style={{ width: "20%", padding: "8px" }}>
+                                Semester
+                              </th>
+                              <th style={{ width: "20%", padding: "8px" }}>
+                                Class
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <div>
+                              <td></td>
+                            </div>
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div>
-                  <h1>UNAVAILABLE DATA</h1>
-                  {ndv === 1 && (
-                    <div style={{ "overflow-y": 'auto' }}>
-                      <table style={{ width: '100%' }}>
-                        <thead>
-                          <tr>
-                            <th style={{ width: '40%', padding: '8px' }}>Academic Year</th>
-                            <th style={{ width: '20%', padding: '8px' }}>Course</th>
-                            <th style={{ width: '20%', padding: '8px' }}>Semester</th>
-                            <th style={{ width: '20%', padding: '8px' }}>Class</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {nonavailabledata.map((cell, cellindex) => (
-                            <tr key={cellindex}>
-                              <td>{cell[0]}</td>
-                              <td>{cell[1]}</td>
-                              <td>{cell[2]}</td>
-                              <td>{cell[3]}</td>
+                <div className="col-sm-12 col-lg-6 col-md-12">
+                  <h1 className="text-white text-center p-2">
+                    UNAVAILABLE DATA
+                  </h1>
+                  <div
+                    className="container m-3 history-results"
+                    style={{ "overflow-x": "auto" }}
+                  >
+                    {ndv === 1 && (
+                      <div style={{ "overflow-y": "auto" }}>
+                        <table style={{ width: "100%" }}>
+                          <thead>
+                            <tr>
+                              <th style={{ width: "40%", padding: "8px" }}>
+                                Academic Year
+                              </th>
+                              <th style={{ width: "20%", padding: "8px" }}>
+                                Course
+                              </th>
+                              <th style={{ width: "20%", padding: "8px" }}>
+                                Semester
+                              </th>
+                              <th style={{ width: "20%", padding: "8px" }}>
+                                Class
+                              </th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-                  {ndv === 0 && (
-                    <div style={{overflowY:'auto' }}>
-                      <table style={{ width: '100%' }}>
-                        <thead>
-                          <tr>
-                            <th style={{ width: '40%', padding: '8px' }}>Academic Year</th>
-                            <th style={{ width: '20%', padding: '8px' }}>Course</th>
-                            <th style={{ width: '20%', padding: '8px' }}>Semester</th>
-                            <th style={{ width: '20%', padding: '8px' }}>Class</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <div>
-                            <td></td>
-                          </div>
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
+                          </thead>
+                          <tbody>
+                            {nonavailabledata.map((cell, cellindex) => (
+                              <tr key={cellindex}>
+                                <td>{cell[0]}</td>
+                                <td>{cell[1]}</td>
+                                <td>{cell[2]}</td>
+                                <td>{cell[3]}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                    {ndv === 0 && (
+                      <div style={{ overflowY: "auto" }}>
+                        <table style={{ width: "100%" }}>
+                          <thead>
+                            <tr>
+                              <th style={{ width: "40%", padding: "8px" }}>
+                                Academic Year
+                              </th>
+                              <th style={{ width: "20%", padding: "8px" }}>
+                                Course
+                              </th>
+                              <th style={{ width: "20%", padding: "8px" }}>
+                                Semester
+                              </th>
+                              <th style={{ width: "20%", padding: "8px" }}>
+                                Class
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <div>
+                              <td></td>
+                            </div>
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
           </div>
         )}
         {facvalue === 1 && (
-          <div>
-            <h1>FACULTY TIME TABLES</h1>
+          <div className="row p-3">
+            <h1 className="text-white p-2 text-center ">FACULTY TIME TABLES</h1>
             <div className="row">
-              <div className="">
+              <div className="col-lg-4 col-sm-12 col-md-6 p-3">
                 <Dropdown>
                   <Dropdown.Toggle
-                    className="border border-secondary border-opacity-25 bg-white w-100 p-3"
+                    className="border border-secondary border-opacity-25 bg-white w-100"
                     variant=""
-                    id="dropdown-basic">
+                    id="dropdown-basic"
+                  >
                     FACULTY TYPE
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     <Form>
                       <div className="p-3">
-                        <Form.Check id="selectAll" label="Select All" onChange={(e) => handlechangefactype(e)} checked={factypearray.length === factypes.length} />
+                        <Form.Check
+                          id="selectAll"
+                          label="Select All"
+                          onChange={(e) => handlechangefactype(e)}
+                          checked={factypearray.length === factypes.length}
+                        />
                         {factypes.map((type) => (
                           <Form.Check
                             key={type}
@@ -644,16 +730,19 @@ function History() {
                   </Dropdown.Menu>
                 </Dropdown>
               </div>
-              <div className="">
-                <Button onClick={handleTypeSubmit} className="p-3 btn-secondary">
+              <div className="col-lg-2 col-sm-12 col-md-6 p-3">
+                <Button
+                  onClick={handleTypeSubmit}
+                  className="fw-bold btn text-white btn-success w-100"
+                >
                   FETCH
                 </Button>
               </div>
               {filtervlaue === 1 && (
-                <div className="">
+                <div className="col-lg-2 col-sm-6 col-md-12 p-3">
                   <Dropdown>
                     <Dropdown.Toggle
-                      className="border border-secondary border-opacity-25 bg-white w-50 p-3"
+                      className="border border-secondary border-opacity-25 bg-white w-100"
                       variant=""
                     >
                       FILTER
@@ -661,7 +750,14 @@ function History() {
                     <Dropdown.Menu>
                       <Form>
                         <div className="p-3">
-                          <Form.Check id="selectAll" label="Select All" onChange={(e) => handlechangefilter(e)} checked={filterbranches.length === filterList.length} />
+                          <Form.Check
+                            id="selectAll"
+                            label="Select All"
+                            onChange={(e) => handlechangefilter(e)}
+                            checked={
+                              filterbranches.length === filterList.length
+                            }
+                          />
                           {filterList.map((filter) => (
                             <Form.Check
                               key={filter}
@@ -678,65 +774,73 @@ function History() {
                 </div>
               )}
             </div>
-            <div className="row">
+            <div className="row m-2">
               {message && <h3>{message}</h3>}
               {DisplayData.length > 0 ? (
                 <div>
-                  <div className='row'>
-                    <div className="container m-3" style={{ overflowX: 'auto' }}>
-                      <table className="mx-auto w-75">
-                        <thead>
-                          <tr>
-                            <th>Faculty-Id</th>
-                            <th>Faculty-Name</th>
-                            <th>
-                              <input
-                                type="checkbox"
-                                onChange={handleSelectAll}
-                                checked={selectedRows.length === facultyData.length}
-                              />
-                              Select All
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {DisplayData.length > 0 && (
-                            DisplayData.map((row) => (
-                              <tr key={row.username}>
-                                <td>{row.username}</td>
-                                <td>{row.name}</td>
-                                <td>
-                                  <input
-                                    type="checkbox"
-                                    onChange={() => handleCheckboxChange(row.username, row)}
-                                    checked={isSelected(row.username)}
-                                  />
-                                </td>
-                              </tr>
-                            ))
-                          )}
-                          {DisplayData.length === 0 && (
-                            <h1>NO DATA FOUND</h1>
-                          )}
-                        </tbody>
-                      </table>
+                  <div className="col-lg-12 col-sm-12 col-md-12">
+                    <div
+                      className="container m-3 history-results"
+                      style={{ overflowX: "auto" }}
+                    >
+                      <div>
+                        <table className="mx-auto w-75">
+                          <thead>
+                            <tr>
+                              <th>Faculty-Id</th>
+                              <th>Faculty-Name</th>
+                              <th>
+                                <input
+                                  type="checkbox"
+                                  onChange={handleSelectAll}
+                                  checked={
+                                    selectedRows.length === facultyData.length
+                                  }
+                                />
+                                Select All
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {DisplayData.length > 0 &&
+                              DisplayData.map((row) => (
+                                <tr key={row.username}>
+                                  <td>{row.username}</td>
+                                  <td>{row.name}</td>
+                                  <td>
+                                    <input
+                                      type="checkbox"
+                                      onChange={() =>
+                                        handleCheckboxChange(row.username, row)
+                                      }
+                                      checked={isSelected(row.username)}
+                                    />
+                                  </td>
+                                </tr>
+                              ))}
+                            {DisplayData.length === 0 && <h1>NO DATA FOUND</h1>}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
-                  < div className='' style={{ position: 'relative' }} >
-                    <Button onClick={handleSelectedFaculty} className="p-3 btn-secondary">
+                  <div className="" style={{ position: "relative" }}>
+                    <Button
+                      onClick={handleSelectedFaculty}
+                      className="p-3 btn-secondary"
+                    >
                       Download
                     </Button>
-                  </div >
+                  </div>
                 </div>
               ) : null}
             </div>
           </div>
         )}
       </div>
-      <div>
-      </div>
-    </div >
-  )
+      <div></div>
+    </div>
+  );
 }
 
 export default History

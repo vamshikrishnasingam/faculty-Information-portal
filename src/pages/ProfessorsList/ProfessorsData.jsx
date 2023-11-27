@@ -126,7 +126,10 @@ function ProfessorsData() {
 
 
   return (
-    <animated.div style={diagonalSlideAnimation} className="container mx-auto text-white">
+    <animated.div
+      style={diagonalSlideAnimation}
+      className="container mx-auto text-white"
+    >
       <div className="row m-4 mx-auto">
         <div className="col-lg-8 col-sm-10 col-md-12 p-2">
           <h1>FACULTY INFO</h1>
@@ -199,34 +202,41 @@ function ProfessorsData() {
           </Button>
         </div>
       </div>
-      <div className="row">
+      <div>
         {message && <h3>{message}</h3>}
         {facultyData.length > 0 ? (
-          <div className="container m-3" style={{ "overflow-x": "auto" }}>
-            <table className="mx-auto w-75">
-              <thead>
-                <tr>
-                  <th>Faculty-Id</th>
-                  <th>Faculty-Name</th>
-                  <th>Faculty-Type</th>
-                  <th>Timetables</th>
-                </tr>
-              </thead>
-              <tbody>
-                {facultyData.map((row) => (
-                  <tr key={row.username}>
-                    <td>{row.username}</td>
-                    <td>{row.name}</td>
-                    <td>{row.facultytype}</td>
-                    <td>
-                      <Button className="btn-success" onClick={handleSearch}>
-                        Timetable
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div>
+            <div className="row">
+              <div className="container m-3 history-results" style={{ "overflow-x": "auto" }}>
+                <table className="w-75 mx-auto ">
+                  <thead>
+                    <tr>
+                      <th>Faculty-Id</th>
+                      <th>Faculty-Name</th>
+                      <th>Faculty-Type</th>
+                      <th>Timetables</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {facultyData.map((row) => (
+                      <tr key={row.username}>
+                        <td>{row.username}</td>
+                        <td>{row.name}</td>
+                        <td>{row.facultytype}</td>
+                        <td>
+                          <Button
+                            className="btn-success"
+                            onClick={handleSearch}
+                          >
+                            Timetable
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         ) : null}
       </div>

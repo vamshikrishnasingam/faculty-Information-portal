@@ -372,20 +372,22 @@ function SuperAdmin() {
   return (
     <div>
       <ToastContainer />
-      <div className='row'>
+      <div className="row">
         <div className="col-lg-8">
-          <h2>
-            User List
-          </h2>
+          <h2>User List</h2>
         </div>
-        <div className="col-lg-4">
-          <Button style={{ width: '10vw' }} className="btn btn-success ms-3" onClick={() => setShow(true)}>
+        <div className="col-lg-3">
+          <Button
+            style={{ width: "12vw" }}
+            className="btn btn-success ms-3"
+            onClick={() => setShow(true)}
+          >
             Add User
           </Button>
         </div>
       </div>
-      <div className='row'>
-        <div className="col-lg-4">
+      <div className="row">
+        <div className="col-lg-4 col-sm-12 col-md-6 p-3">
           <select
             className="form-select"
             value={filterType}
@@ -396,98 +398,116 @@ function SuperAdmin() {
             <option value="super-admin">Super Admin</option>
           </select>
         </div>
-        <div className="col-lg-4">
-          <input  
+        <div className="col-lg-4 col-sm-12 col-md-6 p-3">
+          <input
             type="text"
             className="form-control"
-            placeholder='Search Here...'
+            placeholder="Search Here..."
             id="search"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
           />
         </div>
-        <div className="col-lg-4">
-          <Button style={{ width: '10vw' }} className="btn btn-primary ms-3" onClick={handleSearch}>
+        <div className="col-lg-4 col-sm-12 col-md-6 p-3">
+          <Button className="w-50 btn btn-primary ms-3" onClick={handleSearch}>
             Search
           </Button>
         </div>
       </div>
       <Modal
-          show={show}
-          size="lg"
-          onHide={()=>setShow(false)}
-          backdrop="static"
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
+        show={show}
+        size="lg"
+        onHide={() => setShow(false)}
+        backdrop="static"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">Add User</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="add-user-form">
+            <form>
+              <div className="mb-3">
+                <label htmlFor="username" className="form-label">
+                  Username
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="username"
+                  value={newUser.username}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, username: e.target.value })
+                  }
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="email" className="form-label">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  className="form-control"
+                  id="email"
+                  value={newUser.email}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, email: e.target.value })
+                  }
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="type" className="form-label">
+                  Type
+                </label>
+                <select
+                  className="form-select"
+                  id="type"
+                  value={newUser.type}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, type: e.target.value })
+                  }
+                >
+                  <option value="admin">Admin</option>
+                  <option value="super-admin">Super Admin</option>
+                </select>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="password" className="form-label">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  className="form-control"
+                  id="password"
+                  value={newUser.password}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, password: e.target.value })
+                  }
+                />
+              </div>
+            </form>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            style={{ width: "10vw", color: "white" }}
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => setShow(false)}
           >
-          <Modal.Header closeButton>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Add User
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="add-user-form">
-              <form>
-                <div className="mb-3">
-                  <label htmlFor="username" className="form-label">
-                    Username
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="username"
-                    value={newUser.username}
-                    onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="email" className="form-label">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    id="email"
-                    value={newUser.email}
-                    onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="type" className="form-label">
-                    Type
-                  </label>
-                  <select
-                    className="form-select"
-                    id="type"
-                    value={newUser.type}
-                    onChange={(e) => setNewUser({ ...newUser, type: e.target.value })}
-                  >
-                    <option value="admin">Admin</option>
-                    <option value="super-admin">Super Admin</option>
-                  </select>
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="password" className="form-label">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="password"
-                    value={newUser.password}
-                    onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-                  />
-                </div>
-              </form>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button style={{ width: '10vw', color: 'white' }} type="button" className="btn btn-secondary" onClick={()=>setShow(false)}>Close</Button>
-            <Button style={{ width: '10vw', color: 'white' }} type="button" className="btn btn-primary" onClick={handleAddUser}>
-                Add User
-            </Button>
-          </Modal.Footer>
-        </Modal>
+            Close
+          </Button>
+          <Button
+            style={{ width: "10vw", color: "white" }}
+            type="button"
+            className="btn btn-primary"
+            onClick={handleAddUser}
+          >
+            Add User
+          </Button>
+        </Modal.Footer>
+      </Modal>
       {/* <div style={{ marginBottom: "10px" }}>
         <label htmlFor="search">Search: </label>
         <input
@@ -506,18 +526,31 @@ function SuperAdmin() {
           <option value="super-admin">Super Admin</option>
         </select>
       </div> */}
-      <table className='mt-3 rounded'>
-        <thead>
-          <tr>
-            <th style={{ width: '20%' }} className='rounded'>Username</th>
-            <th style={{ width: '15%' }} className='rounded'>Type</th>
-            <th style={{ width: '25%' }} className='rounded'>Email</th>
-            <th style={{ width: '10%' }} className='rounded'>Edit</th>
-            <th style={{ width: '15%' }} className='rounded'>Change Password</th>
-            <th style={{ width: '15%' }} className='rounded'>Remove User</th>
-          </tr>
-        </thead>
-        {/* <tbody>
+      <div style={{ overflowX: "auto", overflowY: "hidden" }}>
+        <table className="mt-3 rounded">
+          <thead>
+            <tr>
+              <th style={{ width: "20%" }} className="rounded">
+                Username
+              </th>
+              <th style={{ width: "15%" }} className="rounded">
+                Type
+              </th>
+              <th style={{ width: "25%" }} className="rounded">
+                Email
+              </th>
+              <th style={{ width: "10%" }} className="rounded">
+                Edit
+              </th>
+              <th style={{ width: "15%" }} className="rounded">
+                Change Password
+              </th>
+              <th style={{ width: "15%" }} className="rounded">
+                Remove User
+              </th>
+            </tr>
+          </thead>
+          {/* <tbody>
             {users?.map((user) => (
                 <tr key={user._id}>
                 <td>{user.username}</td>
@@ -532,75 +565,98 @@ function SuperAdmin() {
                 </tr>
             ))}
             </tbody> */}
-        <tbody>
-          {filteredUsers?.map((user) => (
-            <tr key={user._id}>
-              <td className='rounded'>
-                {editMode[user._id] ? (
-                  <input
-                    type="text"
-                    value={
-                      editedData[user._id]?.newusername || user.newusername
-                    }
-                    onChange={(e) =>
-                      handleInputChange(user._id, "newusername", e.target.value)
-                    }
-                  />
-                ) : (
-                  user.newusername
-                )}
-              </td>
-              <td className='rounded'>
-                {editMode[user._id] ? (
-                  <select
-                    value={editedData[user._id]?.type || user.type}
-                    onChange={(e) =>
-                      handleInputChange(user._id, "type", e.target.value)
-                    }
+          <tbody>
+            {filteredUsers?.map((user) => (
+              <tr key={user._id}>
+                <td className="rounded">
+                  {editMode[user._id] ? (
+                    <input
+                      type="text"
+                      value={
+                        editedData[user._id]?.newusername || user.newusername
+                      }
+                      onChange={(e) =>
+                        handleInputChange(
+                          user._id,
+                          "newusername",
+                          e.target.value
+                        )
+                      }
+                    />
+                  ) : (
+                    user.newusername
+                  )}
+                </td>
+                <td className="rounded">
+                  {editMode[user._id] ? (
+                    <select
+                      value={editedData[user._id]?.type || user.type}
+                      onChange={(e) =>
+                        handleInputChange(user._id, "type", e.target.value)
+                      }
+                    >
+                      <option value="admin">Admin</option>
+                      <option value="super-admin">Super Admin</option>
+                    </select>
+                  ) : (
+                    user.type
+                  )}
+                </td>
+                <td className="rounded">
+                  {editMode[user._id] ? (
+                    <input
+                      type="text"
+                      value={editedData[user._id]?.email || user.email}
+                      onChange={(e) =>
+                        handleInputChange(user._id, "email", e.target.value)
+                      }
+                    />
+                  ) : (
+                    user.email
+                  )}
+                </td>
+                <td className="rounded">
+                  {editMode[user._id] ? (
+                    <Button
+                      style={{ width: "10vw" }}
+                      className="btn btn-primary"
+                      onClick={() => handleSaveChanges(user._id)}
+                    >
+                      Save
+                    </Button>
+                  ) : (
+                    <Button
+                      style={{ width: "10vw" }}
+                      className="btn btn-primary"
+                      onClick={() => handleEdit(user)}
+                    >
+                      Edit
+                    </Button>
+                  )}
+                </td>
+                <td className="rounded">
+                  <Button
+                    style={{ width: "10vw" }}
+                    className="btn btn-primary"
+                    onClick={() => handleSetDefaultPassword(user.username)}
                   >
-                    <option value="admin">Admin</option>
-                    <option value="super-admin">Super Admin</option>
-                  </select>
-                ) : (
-                  user.type
-                )}
-              </td>
-              <td className='rounded'>
-                {editMode[user._id] ? (
-                  <input
-                    type="text"
-                    value={editedData[user._id]?.email || user.email}
-                    onChange={(e) =>
-                      handleInputChange(user._id, "email", e.target.value)
-                    }
-                  />
-                ) : (
-                  user.email
-                )}
-              </td>
-              <td className='rounded'>
-                {editMode[user._id] ? (
-                  <Button style={{ width: '10vw' }} className="btn btn-primary" onClick={() => handleSaveChanges(user._id)}>
-                    Save
+                    Change
                   </Button>
-                ) : (
-                  <Button style={{ width: '10vw' }} className="btn btn-primary" onClick={() => handleEdit(user)}>Edit</Button>
-                )}
-              </td>
-              <td className='rounded'>
-                <Button style={{ width: '10vw' }} className="btn btn-primary" onClick={() => handleSetDefaultPassword(user.username)}>
-                  Change
-                </Button>
-              </td>
-              <td className='rounded'>
-                <Button style={{ width: '10vw' }} className="btn btn-primary" onClick={() => handleRemoveUser(user.username)}>
-                  Remove
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                </td>
+                <td className="rounded">
+                  <Button
+                    style={{ width: "10vw" }}
+                    className="btn btn-primary"
+                    onClick={() => handleRemoveUser(user.username)}
+                  >
+                    Remove
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

@@ -24,20 +24,19 @@ function AdminLogin() {
   });
   
   return (
-    <animated.div style={fadeInFromLeftAnimation} className="container p-3">
+    <animated.div style={fadeInFromLeftAnimation} className="container p-4">
       <div className="row">
         <div className="col-lg-6 col-md-6 col-sm-12">
           <img
-            className="image w-100 h-100"
+            className="image1"
             src="media/UserData.png"
             alt="Card"
+            width="100%"
+            height="100%"
           />
         </div>
-        <div
-          className="col-lg-6 col-md-6 col-sm-12 p-3 border border-2"
-          id="first"
-        >
-          <div className="card-body">
+        <div className="col-lg-6 col-md-6 col-sm-12 p-4 border  border-2 bg bg-success bg-opacity-10 image1">
+          <div className="card-body" width="100%" height="100%">
             <div className="text-center">
               <h2 className="text-center text-white fs-1">Administrator</h2>
               <h1 className="text-white ">Sign In</h1>

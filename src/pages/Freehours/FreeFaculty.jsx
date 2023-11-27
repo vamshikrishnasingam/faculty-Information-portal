@@ -182,7 +182,7 @@ function FreeFaculty() {
       <h1 className="p-2 m-1 text-center text-white">FREE FACULTY</h1>
       <hr />
       <div className="row p-3 m-4">
-        <div className="col-lg-3 col-md-6 p-3">
+        <div className="col-lg-3 col-md-6 col-sm-12 p-3">
           <Form.Select
             className="p-3"
             value={date}
@@ -291,24 +291,30 @@ function FreeFaculty() {
                   </Button>
                 </h3>
               </div>
-              <table className="m-4 mx-auto">
-                <thead className="text-dark">
-                  <tr>
-                    <th>faculty-id</th>
-                    <th>faculty-name</th>
-                    <th>faculty-type</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {freeFacultyInfo.map((row) => (
-                    <tr key={row.username}>
-                      <td>{row.username}</td>
-                      <td>{row.name}</td>
-                      <td>{row.facultytype}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <div>
+                <div className="row">
+                  <div className="container m-3 history-results"> 
+                    <table className="w-75 mx-auto ">
+                      <thead className="text-dark">
+                        <tr>
+                          <th>faculty-id</th>
+                          <th>faculty-name</th>
+                          <th>faculty-type</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {freeFacultyInfo.map((row) => (
+                          <tr key={row.username}>
+                            <td>{row.username}</td>
+                            <td>{row.name}</td>
+                            <td>{row.facultytype}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
       </div>

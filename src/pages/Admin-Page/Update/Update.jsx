@@ -18,7 +18,7 @@ const fadeOutSlideUpAnimation = useSpring({
   return (
     <animated.div
       style={fadeOutSlideUpAnimation}
-      className="container m-5 text-white"
+      className="m-5 p-1 text-white"
     >
       <h1 className="m-3 text-white">DATA UPDATE</h1>
       <hr />

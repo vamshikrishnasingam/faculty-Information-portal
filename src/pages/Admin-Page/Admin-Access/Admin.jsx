@@ -166,7 +166,7 @@ function Admin() {
           </>
         ) : (
           <div className="row">
-            <div className="col-lg-3">
+            <div className="col-lg-3 col-sm-12 col-md-4 p-3">
               <label htmlFor="username">Username:</label>
               <input
                 type="text"
@@ -182,7 +182,7 @@ function Admin() {
                 }
               />
             </div>
-            <div className="col-lg-3">
+            <div className="col-lg-3 col-sm-12 col-md-4 p-3">
               <label htmlFor="email">Email:</label>
               <input
                 type="text"
@@ -195,7 +195,7 @@ function Admin() {
                 }
               />
             </div>
-            <div className="col-lg-3">
+            <div className="col-lg-3 col-sm-12 col-md-4 p-3">
               {userDetails.oldusertype === "super-admin" && (
                 <div>
                   <label htmlFor="type">Type:</label>

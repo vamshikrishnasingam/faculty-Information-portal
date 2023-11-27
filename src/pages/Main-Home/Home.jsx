@@ -243,6 +243,14 @@ function Home() {
                   className="m-2"
                 />
                 <img
+                  src="media/navbg3jpg.jpg"
+                  typeof="image"
+                  alt="Card"
+                  width="200px"
+                  height="200px"
+                  className="m-2"
+                />
+                <img
                   src="media/home.png"
                   typeof="image"
                   alt="Card"

@@ -21,7 +21,7 @@ const fadeInScaleUpAnimation = useSpring({
         <div className="sidebar">
           <SideNav/>
         </div>
-        <div className="page">
+        <div className="page" >
           <Outlet/>
         </div>
       </div>
