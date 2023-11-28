@@ -78,8 +78,26 @@ function FreeFaculty() {
     getdata();
   };
   const handleSearch = async () => {
-    const start = searchTime1;
-    const end = searchTime2;
+    // Function to subtract minutes from a given time
+    function adjustTime(time, minutes) {
+      const [hour, minute = "00"] = time.split(".");
+      const totalMinutes = parseInt(hour) * 60 + parseInt(minute) + minutes;
+      const newHour = Math.floor(totalMinutes / 60);
+      const newMinute = totalMinutes % 60;
+
+      // Format the result
+      const formattedHour = String(newHour).padStart(2, "0");
+      const formattedMinute = String(newMinute).padStart(2, "0");
+
+      return `${formattedHour}.${formattedMinute}`;
+    }
+
+    let dummysearchTime1 = adjustTime(searchTime1, -20); // 20 minutes earlier
+    let dummysearchTime2 = adjustTime(searchTime2, 20); // 20 minutes later
+    console.log(dummysearchTime1, dummysearchTime2);
+
+    const start = dummysearchTime1;
+    const end = dummysearchTime2;
     const [startHour, startMinute = "00"] = start.split(".");
     const [endHour, endMinute = "00"] = end.split(".");
     if (parseInt(startHour, 10) > parseInt(endHour, 10)) {
@@ -95,7 +113,6 @@ function FreeFaculty() {
     let eh2 = endHour;
     const em1 = "00";
     const em2 = "40";
-
     const startTotal1 = parseInt(sh1, 10);
     let endTotal1 = parseInt(eh1, 10);
     if (endMinute !== "00") endTotal1 += 1;
@@ -134,6 +151,8 @@ function FreeFaculty() {
       parts.push(partString);
       currentHour += 1;
     }
+    console.log(parts);
+
     try {
       const response = await axios
         .get(`/freehours-api/freehours-get/${date}/${parts}/${selectedOptions}`)
@@ -168,7 +187,6 @@ function FreeFaculty() {
       );
     }
   };
-
   const strobeAnimation = useSpring({
     to: async (next) => {
       await next({ opacity: 1 });
@@ -291,30 +309,24 @@ function FreeFaculty() {
                   </Button>
                 </h3>
               </div>
-              <div>
-                <div className="row">
-                  <div className="container m-3 history-results"> 
-                    <table className="w-75 mx-auto ">
-                      <thead className="text-dark">
-                        <tr>
-                          <th>faculty-id</th>
-                          <th>faculty-name</th>
-                          <th>faculty-type</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {freeFacultyInfo.map((row) => (
-                          <tr key={row.username}>
-                            <td>{row.username}</td>
-                            <td>{row.name}</td>
-                            <td>{row.facultytype}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
+              <table className="m-4 mx-auto">
+                <thead className="text-dark">
+                  <tr>
+                    <th>faculty-id</th>
+                    <th>faculty-name</th>
+                    <th>faculty-type</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {freeFacultyInfo.map((row) => (
+                    <tr key={row.username}>
+                      <td>{row.username}</td>
+                      <td>{row.name}</td>
+                      <td>{row.facultytype}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
       </div>

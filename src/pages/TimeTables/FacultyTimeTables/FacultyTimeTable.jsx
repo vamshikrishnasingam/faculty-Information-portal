@@ -146,7 +146,7 @@ const FacultyTimeTable = () => {
               placeholder="Enter faculty ID"
             />
             {searchTerm && (
-              <div className="search-results text-dark">
+              <div className="search-results">
                 {filteredResults.map((user) => (
                   <div
                     key={user._id.$oid}
@@ -175,92 +175,85 @@ const FacultyTimeTable = () => {
       </div>
       {data && (
         <div className="table-container">
-          <h3>Fac_Id : {data.username}</h3>
-          <h3>Name : {data.name}</h3>
-          <h3>Type : {data.facultytype}</h3>
-          <div className="history-results">
-            <table className="m-3 mx-auto">
-              <thead>
-                <div className="row">
-                  <tr className="col-lg-6 col-sm-12 col-md-6 p-3">
-                    <Form.Select
-                      value={year}
-                      onChange={(e) => setYear(e.target.value)}
-                    >
-                      <option
-                        value={
-                          year === ""
-                            ? Object.keys(data)[Object.keys(data).length - 1]
-                            : ""
-                        }
-                      >
-                        {year === ""
+          <table className="m-3 mx-auto">
+            <thead>
+              <div className="row">
+                <tr className="col-lg-6 col-sm-12 col-md-6 p-3">
+                  <Form.Select
+                    value={year}
+                    onChange={(e) => setYear(e.target.value)}
+                  >
+                    <option
+                      value={
+                        year === ""
                           ? Object.keys(data)[Object.keys(data).length - 1]
-                          : "Select Year"}
-                      </option>
-
-                      {Object.keys(data)
-                        .slice(4)
-                        .map((yearOption) => (
-                          <option key={yearOption} value={yearOption}>
-                            {yearOption}
-                          </option>
-                        ))}
-                    </Form.Select>
-                  </tr>
-                  <tr className="col-lg-6 col-sm-12 col-md-6 p-3">
-                    <Form.Select
-                      value={sem}
-                      onChange={(e) => setSem(e.target.value)}
+                          : ""
+                      }
                     >
-                      <option>select SEM</option>
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                    </Form.Select>
-                  </tr>
-                </div>
+                      {year === ""
+                        ? Object.keys(data)[Object.keys(data).length - 1]
+                        : "Select Year"}
+                    </option>
 
-                <tr>
-                  <th>Day</th>
-                  {times.map((time) => (
-                    <th key={time}>{time}</th>
+                    {Object.keys(data)
+                      .slice(4)
+                      .map((yearOption) => (
+                        <option key={yearOption} value={yearOption}>
+                          {yearOption}
+                        </option>
+                      ))}
+                  </Form.Select>
+                </tr>
+                <tr className="col-lg-6 col-sm-12 col-md-6 p-3">
+                  <Form.Select
+                    value={sem}
+                    onChange={(e) => setSem(e.target.value)}
+                  >
+                    <option>select SEM</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                  </Form.Select>
+                </tr>
+              </div>
+
+              <tr>
+                <th>Day</th>
+                {times.map((time) => (
+                  <th key={time}>{time}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {pegasus.map((row, rowIndex) => (
+                <tr key={rowIndex}>
+                  {row.map((cell, cellIndex) => (
+                    <td key={cellIndex}>
+                      {cellIndex === 0 &&
+                        cell &&
+                        Object.keys(cell).length > 0 && (
+                          <div className="cell-content">
+                            <p>{cell.classtype}</p>
+                          </div>
+                        )}
+                      {cellIndex !== 0 &&
+                        cell &&
+                        Object.keys(cell).length > 0 && (
+                          <div className="cell-content">
+                            <OverlayTrigger
+                              trigger="hover"
+                              placement="right"
+                              overlay={MyPopoverContent(cell)}
+                            >
+                              <p className="popover-button">{cell.classtype}</p>
+                            </OverlayTrigger>
+                          </div>
+                        )}
+                    </td>
                   ))}
                 </tr>
-              </thead>
-              <tbody>
-                {pegasus.map((row, rowIndex) => (
-                  <tr key={rowIndex}>
-                    {row.map((cell, cellIndex) => (
-                      <td key={cellIndex}>
-                        {cellIndex === 0 &&
-                          cell &&
-                          Object.keys(cell).length > 0 && (
-                            <div className="cell-content">
-                              <p>{cell.classtype}</p>
-                            </div>
-                          )}
-                        {cellIndex !== 0 &&
-                          cell &&
-                          Object.keys(cell).length > 0 && (
-                            <div className="cell-content">
-                              <OverlayTrigger
-                                trigger="hover"
-                                placement="right"
-                                overlay={MyPopoverContent(cell)}
-                              >
-                                <p className="popover-button">
-                                  {cell.classtype}
-                                </p>
-                              </OverlayTrigger>
-                            </div>
-                          )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </animated.div>

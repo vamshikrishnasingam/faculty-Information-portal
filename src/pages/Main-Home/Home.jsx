@@ -51,7 +51,7 @@ function Home() {
       <div className="p-3">
         <animated.h1
           style={welcomeAnimation}
-          className="fw-bold text-center text-white display-5 p-2"
+          className="fw-bold text-center text-white display-5 p-1"
         >
           Welcome to Faculty Information System!!!
         </animated.h1>

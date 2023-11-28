@@ -17,7 +17,7 @@ const SideNav = () => {
     <div id="app1">
       <Sidebar
         // backgroundColor="rgba(146, 57, 147, 0.3)"
-        collapsed={!collapsed}
+        collapsed={collapsed}
         className="side-nav border m-3"
         backgroundColor=""
       >

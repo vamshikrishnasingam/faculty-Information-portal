@@ -9,7 +9,6 @@ const { Code } = require("mongodb")
 facultytimetableApp.get("/faculty-data/:type", expressAsyncHandler(async (req, res) => {
     const facultyTimeTableObj = req.app.get("facultyTimeTableObj")
     const type = req.params.type;
-    console.log(type)
     const matchedfaculty = await facultyTimeTableObj.find({ facultytype: type }).toArray()
     res.json(matchedfaculty)
 }))
@@ -23,19 +22,9 @@ facultytimetableApp.get("/faculty-typearraydata/:type", expressAsyncHandler(asyn
     });
     
     const returnarray = await Promise.all(promises);
-    console.log(returnarray.flat());
     res.json(returnarray.flat())    
 }))
 
-// facultytimetableApp.get("/faculty-data-total", expressAsyncHandler(async (req, res) => {
-//     const facultyTimeTableObj = req.app.get("facultyTimeTableObj")
-//     console.log("hii")
-//     const type = req.params.type;
-//     console.log(type)
-//     const matchedfaculty = await facultyTimeTableObj.find({ facultytype: type }).toArray()
-//     console.log(matchedfaculty)
-//     res.json(matchedfaculty)
-// }))
 facultytimetableApp.get(
   "/faculty-data-total",
   expressAsyncHandler(async (req, res) => {
@@ -43,7 +32,6 @@ facultytimetableApp.get(
     const doc = await facultyTimeTableObj.find({}).toArray(function (err, result) {
       if (err) throw err;
     });
-    console.log(doc);
     res.json(doc);
   })
 );
@@ -59,17 +47,14 @@ facultytimetableApp.get(
 );
 
 facultytimetableApp.post("/facultytt-insert", expressAsyncHandler(async (req, res) => {
-    //get user collection object
     const classFacultyObj = req.app.get("classFacultyObj")
     const facultyTimeTableObj = req.app.get("facultyTimeTableObj")
     const freeHoursObj = req.app.get("freeHoursObj")
-    //get new user from request
     const newuser = req.body;
     const matchedclassfaculty = await classFacultyObj.findOne({ id: newuser.id })
     const headingNames1 = Object.values(req.body);
     for (let i = 0; i < 6; i++) {
         for (let j = 0; j < 8; j++) {
-            console.log(i, j)
             const a = (headingNames1[i][days[j]]);
             if (a) {
                 aa = a.trim();
@@ -91,7 +76,6 @@ facultytimetableApp.post("/facultytt-insert", expressAsyncHandler(async (req, re
                             for (let k = 0; k < 3; k++) {
                                 const result1 = await facultyTimeTableObj.findOne({ username: facultydata1.username });
                                 const result2 = await freeHoursObj.findOne({ username: facultydata1.username });
-                                console.log(result2);
                                 const filter = { username: facultydata1.username };
                                 const res1 = {
                                     $set: {
@@ -99,10 +83,8 @@ facultytimetableApp.post("/facultytt-insert", expressAsyncHandler(async (req, re
                                     }
                                 };
                                 const res2 = { $push: { [keys[i]]: days[j + k] } };
-                                console.log(res2)
                                 await facultyTimeTableObj.updateOne(filter, res1);
                                 const result = await freeHoursObj.updateOne(filter, res2);
-                                console.log(result)
                             }
                         }
                     }
@@ -117,7 +99,6 @@ facultytimetableApp.post("/facultytt-insert", expressAsyncHandler(async (req, re
                         additionalobject.classtype = 'CLASS'
                         const result1 = await facultyTimeTableObj.findOne({ username: facultydata.username });
                         const result2 = await freeHoursObj.findOne({ username: facultydata.username });
-                        console.log(result2);
                         const filter = { username: facultydata.username };
                         const res1 = {
                             $set: {
@@ -129,10 +110,8 @@ facultytimetableApp.post("/facultytt-insert", expressAsyncHandler(async (req, re
                                 [keys[i]]: days[j]
                             }
                         };
-                        console.log(res2)
                         await facultyTimeTableObj.updateOne(filter, res1);
                         const result = await freeHoursObj.updateOne(filter, res2);
-                        console.log(result)
                     }
                 }
             }

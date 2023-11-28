@@ -1,4 +1,3 @@
-/* eslint-disable no-lone-blocks */
 /* eslint-disable no-undef */
 const { type } = require("@testing-library/user-event/dist/type");
 const exp = require("express")
@@ -17,83 +16,75 @@ classtimetableApp.get('/classtt-data/:classid/:year/:graduation/:sem', async (re
 })
 
 const freehrs = async (year, day, time, dat, freeHoursObj) => {
-    const week = { 'M': 'mon', 'T': 'tue', 'W': 'wed', 'Th': 'thu', 'F': 'fri', 'S': 'sat' }
-    ids = dat.username.split('/')
-    names = dat.name.split('/')
-    ids.forEach(async (ele, index) => {
-        sn = names[index]
-        if (sn) {
-            sn.trim()
-            if (sn.includes('(')) {
-                fi = sn.indexOf('(')
-                li = sn.indexOf(')')
-                let l = sn.slice(fi + 1, li)
-                if (week[l] !== day)
-                    return;
+    const week = { 'M': 'mon', 'T': 'tue', 'W': 'wed', 'Th': 'thu', 'F': 'fri', 'S': 'sat' };
+    const ids = dat.username.split('/');
+    const names = dat.name.split('/');
+
+    await Promise.all(ids.map(async (ele, index) => {
+        const sn = names[index];
+        if (sn && sn.includes('(')) {
+            const fi = sn.indexOf('(');
+            const li = sn.indexOf(')');
+            const l = sn.slice(fi + 1, li);
+            if (week[l.toUpperCase()] !== day) {
+                return;
             }
         }
+
         const timingsKey = `${day.trim()}.${time.replace(/\./g, '_').trim()}`;
-        const updateObj = {};
-        updateObj[timingsKey] = year;
-        const res1 = {
-            $set: updateObj
-        };
-        const a = await freeHoursObj.updateOne({ username: ele.trim() }, res1)
-    })
-}
-const fun = async (year, day, timings, fac, facttobj, sem) => {
-    const week = { 'M': 'mon', 'T': 'tue', 'W': 'wed', 'Th': 'thu', 'F': 'fri', 'S': 'sat' }
-    ids = fac.username.split('/')
-    names = fac.name.split('/')
-    i = 0
-    let faccopy = {};
-    faccopy['classtype'] = fac['classtype']
-    faccopy['subject'] = fac['subject']
-    faccopy['subject'].trim()
-    faccopy['classtype'].trim()
-    faccopy['class'] = fac['class']
-    faccopy['roomno'] = fac['roomno']
-    for (const [index, ele] of ids.entries()) {
-        sn = names[index]
-        if (sn) {
-            if (sn.includes('(')) {
-                fi = sn.indexOf('(')
-                li = sn.indexOf(')')
-                let l = sn.slice(fi + 1, li)
-                if (week[l] !== day)
-                    return;
-            }
+        const existingData = await freeHoursObj.findOne({ username: ele.trim() });
+
+         if (existingData) {
+            const updateObj = {
+                $addToSet: { [timingsKey]: year }
+            };
+            await freeHoursObj.updateOne({ username: ele.trim() }, updateObj);
         }
+    }));
+};
+
+const fun = async (year, day, timings, fac, facttobj, sem) => {
+    const week = { 'M': 'mon', 'T': 'tue', 'W': 'wed', 'Th': 'thu', 'F': 'fri', 'S': 'sat' };
+    console.log(fac)
+    const ids = fac.username.split('/');
+    const names = fac.name.split('/');
+    
+    let faccopy = {
+        classtype: fac.classtype.trim(),
+        subject: fac.subject.trim(),
+        class: fac.class,
+        roomno: fac.roomno
+    };
+
+    for (const [index, ele] of ids.entries()) {
+        const sn = names[index];
+        if (sn && sn.includes('(')) {
+            const fi = sn.indexOf('(');
+            const li = sn.indexOf(')');
+            const l = sn.slice(fi + 1, li);
+            if (week[l.toUpperCase()] !== day) return;
+        }
+
         const timingsKey = `${sem.trim()}.${day.trim()}.${timings.replace(/\./g, '_').trim()}`;
         const d = await facttobj.findOne({ username: ele.trim() });
-        if (d) {
-            if (d[year]) {
-                {
-                    if (d[year][sem.trim()]) {
-                        if (d[year][sem.trim()][day.trim()]) {
-                            if (d[year][sem.trim()][day.trim()][timings.replace(/\./g, '_').trim()]) {
-                                console.log("first: ", d.name, d[year][sem.trim()][day.trim()][timings.replace(/\./g, '_').trim()]['subject'], fac['subject'])
-                                if ((!d[year][sem.trim()][day.trim()][timings.replace(/\./g, '_').trim()]['subject'].toLowerCase().trim().includes(fac['subject'].toLowerCase().trim()))) {
-                                    faccopy['subject'] = d[year][sem.trim()][day.trim()][timings.replace(/\./g, '_').trim()]['subject'] + '/' + fac['subject']
-                                    faccopy['classtype'] = d[year][sem.trim()][day.trim()][timings.replace(/\./g, '_').trim()]['classtype'] + '/' + fac['classtype']
-                                    faccopy['class'] = d[year][sem.trim()][day.trim()][timings.replace(/\./g, '_').trim()]['class'] + '/' + fac['class']
-                                    faccopy['roomno'] = d[year][sem.trim()][day.trim()][timings.replace(/\./g, '_').trim()]['roomno'] + '/' + fac['roomno']
-                                }
-                                console.log('second : ', faccopy['subject'])
-                            }
-                        }
-                    }
-                }
+
+        if (d?.[year]?.[sem.trim()]?.[day.trim()]?.[timings.replace(/\./g, '_').trim()]) {
+            const existingSubject = d[year][sem.trim()][day.trim()][timings.replace(/\./g, '_').trim()]['subject'].toLowerCase().trim();
+            const facSubject = fac.subject.toLowerCase().trim();
+
+            if (!existingSubject.includes(facSubject)) {
+                faccopy.subject = `${existingSubject}/${facSubject}`;
+                faccopy.classtype = `${d[year][sem.trim()][day.trim()][timings.replace(/\./g, '_').trim()]['classtype'].trim()}/${fac.classtype.trim()}`;
+                faccopy.class = `${d[year][sem.trim()][day.trim()][timings.replace(/\./g, '_').trim()]['class'].trim()}/${fac.class.trim()}`;
+                faccopy.roomno = `${d[year][sem.trim()][day.trim()][timings.replace(/\./g, '_').trim()]['roomno'].trim()}/${fac.roomno.trim()}`;
             }
         }
-        const updateObj = {};
-        updateObj[`${year}.${timingsKey}`] = faccopy;
-        const res1 = {
-            $set: updateObj
-        };
-        const a = await facttobj.updateOne({ username: ele.trim() }, res1);
+
+        const updateObj = { $set: { [`${year}.${timingsKey}`]: faccopy } };
+        await facttobj.updateOne({ username: ele.trim() }, updateObj);
     }
-}
+};
+
 classtimetableApp.post("/class-insert", expressAsyncHandler(async (req, res) => {
     const newUser = req.body
     const classTimeTableObj = req.app.get("classTimeTableObj")
@@ -117,10 +108,9 @@ classtimetableApp.post("/class-insert", expressAsyncHandler(async (req, res) => 
         const facultydata = {};
         for (let j = 1; j < facultyinfo.length; j++) {
             const f = {}
+
             for (let i = 1; i < 4; i++) {
-                if (typeof facultyinfo[j][i] === "string") {
-                    f[facultyinfo[0][i]] = facultyinfo[j][i].toUpperCase()
-                }
+                f[facultyinfo[0][i]] = facultyinfo[j][i].toString().toUpperCase()
             }
             facultydata[facultyinfo[j][0].toUpperCase()] = f
         }

@@ -6,44 +6,44 @@ const expressAsyncHandler = require("express-async-handler")
 
 userApp.post("/facultydata", expressAsyncHandler(async (req, res) => {
     //get user collection object
-    const newUser = req.body
-    const facultyListObj = req.app.get("facultyListObj")
-    const facultyTimeTableObj = req.app.get("facultyTimeTableObj")
-    const freeHoursObj = req.app.get("freeHoursObj")
+    const newUser = req.body;
+    const facultyListObj = req.app.get("facultyListObj");
+    const facultyTimeTableObj = req.app.get("facultyTimeTableObj");
+    const freeHoursObj = req.app.get("freeHoursObj");
 
-    newUser.forEach(async (element) => {
-        //faculty_list
-        a = await facultyListObj.findOne({ username: element.username })
+    for (const element of newUser) {
+        // faculty_list
+        let a = await facultyListObj.findOne({ username: element.username });
         if (!a) {
-            await facultyListObj.insertOne(element)
+            await facultyListObj.insertOne(element);
+        } else {
+            await facultyListObj.updateOne({ username: element.username }, { $set: element });
         }
-        else {
-            await facultyListObj.updateOne({ username: element.username }, element)
-        }
-        //faculty_time_table
-        a = await facultyTimeTableObj.findOne({ username: element.username })
+
+        // faculty_time_table
+        a = await facultyTimeTableObj.findOne({ username: element.username });
         if (!a) {
-            await facultyTimeTableObj.insertOne(element)
+            await facultyTimeTableObj.insertOne(element);
+        } else {
+            await facultyTimeTableObj.updateOne({ username: element.username }, { $set: element });
         }
-        else {
-            await facultyTimeTableObj.updateOne({ username: element.username }, element)
-        }
-        //free_hours
-        a = await freeHoursObj.findOne({ username: element.username })
+
+        // free_hours
+        a = await freeHoursObj.findOne({ username: element.username });
         if (!a) {
-            await freeHoursObj.insertOne(element)
+            await freeHoursObj.insertOne(element);
+        } else {
+            await freeHoursObj.updateOne({ username: element.username }, { $set: element });
         }
-        else {
-            await freeHoursObj.updateOne({ username: element.username }, element)
-        }
-    })
-    res.status(201).send({ message: "User Created", payload: req.body })
-}))
+    }
+
+    res.status(201).send({ message: "User Created", payload: req.body });
+}));
+
 
 userApp.get("/faculty-data/:id", expressAsyncHandler(async (req, res) => {
     //get user collection object
     const newUser = req.params.id;
-    console.log(newUser)
     const facultyListObj = req.app.get("facultyListObj")
     const obj1 = await facultyListObj.findOne({ username: newUser })
     //get new user from request   
@@ -57,7 +57,6 @@ userApp.post("/facultycheck", expressAsyncHandler(async (req, res) => {
     receivedData.forEach((item, index) => {
         const sheetname = item.sheetname;
         const sheetData = item.data;
-        console.log(`Sheet Name: ${sheetname}`);
         semdetails = sheetData[0]
         classinfo = sheetData[1]
         facultyinfo = sheetData[2]
@@ -135,7 +134,6 @@ userApp.post("/facultycheck", expressAsyncHandler(async (req, res) => {
         const b1 = {}
         b1[p[1][1]] = a1
         classarray[p[2][1]] = b1;
-        console.log(classarray)
     });
     res.json(receivedData);
 
