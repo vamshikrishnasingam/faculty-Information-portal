@@ -122,7 +122,6 @@ function ClassTimeTable() {
   };
 
   useEffect(() => {
-    console.log(sem, academicyear, sec, classid);
     const handlechanges = () => {
       const id = year + branch + sec;
       setclassid(id);
@@ -148,10 +147,8 @@ function ClassTimeTable() {
     const classdt = classdata[classid][academicyear][graduation][sem];
     const mainKeysextra = Object.keys(classdt);
     mainKeys = mainKeysextra;
-    const columnKeysextra =
-      mainKeys.length > 0 ? Object.keys(classdt[mainKeys[0]]) : [];
+    const columnKeysextra = mainKeys.length > 0 ? Object.keys(classdt[mainKeys[0]]) : [];
     columnKeys = columnKeysextra;
-    console.log(classdt, mainKeys, columnKeys);
     let b = [];
     for (let i = 0; i < 6; i++) b.push(columnKeys[i]);
     let unicorn = [];
@@ -163,13 +160,11 @@ function ClassTimeTable() {
       }
       unicorn.push(b);
     }
-    console.log("data: ", unicorn);
     seterrorvalue(0);
     setphoenix(unicorn);
   };
 
   const handleSearch = async () => {
-    console.log(academicyear, classid, sem, graduation);
     await axios
       .get(
         `/classtimetable-api/classtt-data/${classid}/${academicyear}/${graduation}/${sem}`
@@ -185,7 +180,6 @@ function ClassTimeTable() {
   };
 
   const handlechangegraduation = (e) => {
-    console.log(e.target.value);
     if (e.target.value === "Btech") setgraduatevalue(1);
     else setgraduatevalue(0);
     setgraduation(e.target.value);

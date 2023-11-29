@@ -14,86 +14,91 @@ freehoursapp.post(
   })
 );
 
-freehoursapp.post(
-  "/fac-update",
-  expressAsyncHandler(async (req, res) => {
+freehoursapp.post("/fac-update", expressAsyncHandler(async (req, res) => {
+  try {
     const freeHoursObj = req.app.get("freeHoursObj");
     const facultyTimeTableObj = req.app.get("facultyTimeTableObj");
     const data = req.body;
     const upd = data.dataupdate;
     const opt = data.reasons;
     const ids = data.selectedfaculty;
-    let timevalue = data.timevalue;
-    let lastkey;
-    await Promise.all(
-      ids.forEach((username) => {
-        console.log(username)
-        Object.keys(upd).forEach(async (ele, index) => {
-          console.log(ele, index)
-          if (timevalue.toUpperCase() === 'SEM') {
-            const res = {
-              $addToSet: {
-                [ele]: upd[ele]
-              }
-            }
-            const updobj={
-              $addToSet : {
-                'special' : {
-                  [ele]: opt[ele]
-                }
-              }
-            }
-            a = await freeHoursObj.updateOne({ username: username.trim() }, res);
-            b = await facultyTimeTableObj.updateOne({ username: username.trim() }, updobj);
+    const timevalue = data.timevalue;
 
-          }
+    for (const username of ids) {
+      console.log(username);
 
-          else {
-            const times = parseInt(timevalue, 10) * 60 * 1000;
-            const res = {
-              $addToSet: {
-              [ele]   : { 'special': upd[ele] }
-              }
-            }
-            const updobj={
-              $addToSet : {
-                'special' : {
-                  [ele]: opt[ele]
-                }
-              }
-            }
-            // Set the object in the database for only particular time
-            a = await freeHoursObj.updateOne({ username: username.trim() }, res);
-            b = await facultyTimeTableObj.updateOne({ username: username.trim() }, updobj);
-            // Schedule the deletion of the data after the specified time
-            schedule.scheduleJob(new Date(Date.now() + times), async () => {
-              const deleteResult = await freeHoursObj.updateOne(
-                { username: username.trim() },
-                {
-                  $unset: {
-                    [ele]   : { 'special': upd[ele] }
-                  }
-                }
-              );
-              console.log(`Data for ${ele} deleted after the scheduled time.`, deleteResult);
-            });
-            schedule.scheduleJob(new Date(Date.now() + times), async () => {
-              const deleteResult = await facultyTimeTableObj.updateOne(
-                { username: username.trim() },
-                {
-                  $unset: {
-                    'special'   : { [ele]: upd[ele] }
-                  }
-                }
-              );
-              console.log(`Data for ${ele} deleted after the scheduled time.`, deleteResult);
-            });
+      for (const [ele, value] of Object.entries(upd)) {
+        console.log(ele);
+
+        const updateQuery1 = {
+          $set: {
+            [`special.${ele}`]: value
           }
-        })
-      })
-    )
-    res.status(201).send({ message: "Status Created", payload: req.body });
-  }));
+        };
+        const updateQuery2 = {
+          $set: {
+            [`special.${ele}`]: opt[ele]
+          }
+        };
+
+        const updateOptions = {
+          upsert: true,
+          returnDocument: 'after'
+        };
+
+        // Update the freeHoursObj
+        const a = await freeHoursObj.findOneAndUpdate(
+          { username: username.trim() },
+          updateQuery1,
+          updateOptions
+        );
+
+        // Update the facultyTimeTableObj
+        const b = await facultyTimeTableObj.findOneAndUpdate(
+          { username: username.trim() },
+          updateQuery2,
+          updateOptions
+        );
+
+        if (timevalue.toUpperCase() !== 'SEM') {
+          // Schedule the deletion of the data after the specified time
+          const times = parseInt(timevalue, 10) * 60 * 1000;
+          schedule.scheduleJob(new Date(Date.now() + times), async () => {
+            const deleteResult1 = await freeHoursObj.updateOne(
+              { username: username.trim() },
+              {
+                $unset: {
+                  [`special.${ele}`]: value
+                }
+              }
+            );
+            console.log(`Data for ${ele} deleted after the scheduled time.`, deleteResult1);
+          });
+
+          schedule.scheduleJob(new Date(Date.now() + times), async () => {
+            const deleteResult2 = await facultyTimeTableObj.updateOne(
+              { username: username.trim() },
+              {
+                $unset: {
+                  [`special.${ele}`]: opt[ele]
+                }
+              }
+            );
+            console.log(`Data for ${ele} deleted after the scheduled time.`, deleteResult2);
+          });
+        }
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
+  res.status(201).send({ message: "Status Created", payload: req.body });
+}));
+
+
+
+
 
 freehoursapp.get(
   "/faculty-data-total",

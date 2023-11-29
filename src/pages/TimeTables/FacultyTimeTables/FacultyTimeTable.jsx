@@ -40,8 +40,7 @@ const FacultyTimeTable = () => {
     fetchlist();
   }, []);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
+  const handleSearch = async () => {
     try {
       const response = await axios.get(
         `/facultytimetable-api/classfaculty-data/${searchId}`
@@ -84,6 +83,7 @@ const FacultyTimeTable = () => {
     const unicorn = [];
     for (const day of days) {
       const b = [{ classtype: day }];
+      console.log(data?.['special']?.['thu'])
       const l = data[y][sem]?.hasOwnProperty(day);
       if (l) {
         for (const time of times) {
@@ -129,6 +129,7 @@ const FacultyTimeTable = () => {
     from: { transform: "translateX(-100%)" },
     config: { duration: 800 },
   });
+
   return (
     <animated.div style={slideIn} className="container p-5 text-white">
       <h3 className="mb-4 text-center">
@@ -150,9 +151,8 @@ const FacultyTimeTable = () => {
                 {filteredResults.map((user) => (
                   <div
                     key={user._id.$oid}
-                    className={`search-result-item ${
-                      selectedResult === user ? "selected" : ""
-                    }`}
+                    className={`search-result-item ${selectedResult === user ? "selected" : ""
+                      }`}
                     value={user.username}
                     onClick={() => handleSelectResult(user)}
                   >
@@ -228,26 +228,26 @@ const FacultyTimeTable = () => {
                 <tr key={rowIndex}>
                   {row.map((cell, cellIndex) => (
                     <td key={cellIndex}>
-                      {cellIndex === 0 &&
-                        cell &&
-                        Object.keys(cell).length > 0 && (
-                          <div className="cell-content">
-                            <p>{cell.classtype}</p>
-                          </div>
-                        )}
-                      {cellIndex !== 0 &&
-                        cell &&
-                        Object.keys(cell).length > 0 && (
-                          <div className="cell-content">
-                            <OverlayTrigger
-                              trigger="hover"
-                              placement="right"
-                              overlay={MyPopoverContent(cell)}
-                            >
+                      {cellIndex === 0 && cell && Object.keys(cell).length > 0 && (
+                        <div className="cell-content">
+                          <p>{cell.classtype}</p>
+                        </div>
+                      )}
+                      {cellIndex !== 0 && cell && Object.keys(cell).length > 0 && (
+                        <div className="cell-content">
+                          <OverlayTrigger
+                            trigger="hover"
+                            placement="right"
+                            overlay={MyPopoverContent(cell)}>
+                            <div>
                               <p className="popover-button">{cell.classtype}</p>
-                            </OverlayTrigger>
-                          </div>
-                        )}
+                            </div>
+                          </OverlayTrigger>
+                          {data?.['special']?.[row[0].classtype]?.[times[cellIndex - 1].replace(/\./g, "_")] && (
+                                <p className="text-danger">{`[${data?.['special']?.[row[0].classtype]?.[times[cellIndex - 1].replace(/\./g, "_")]}]`}</p>
+                              )}
+                        </div>
+                      )}
                     </td>
                   ))}
                 </tr>
