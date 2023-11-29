@@ -28,14 +28,32 @@ function NavigationBar() {
         >
           <Container fluid>
             <div className="m-3">
-              <a href="/">
-                <img src="media/home.png" alt="" width="40" height="40" />
-              </a>
+              {userLoginStatus ? (
+                <NavLink
+                  to="/adminpage"
+                  className="text-decoration-none text-white"
+                >
+                  <img src="media/home.png" alt="" width="40" height="40" />
+                </NavLink>
+              ) : (
+                <NavLink to="/" className="text-decoration-none text-white">
+                  <img src="media/home.png" alt="logo" width="40" height="40" />
+                </NavLink>
+              )}
             </div>
             <Navbar.Brand>
-              <NavLink to="/" className="text-decoration-none text-white fs-1">
-                VNRVJIET
-              </NavLink>
+              {userLoginStatus ? (
+                <NavLink
+                  to="/adminpage"
+                  className="text-decoration-none text-white fs-1"
+                >
+                  VNRVJIET
+                </NavLink>
+              ) : (
+                <NavLink to="/" className="text-decoration-none text-white fs-1">
+                  VNRVJIET
+                </NavLink>
+              )}
             </Navbar.Brand>
             <Navbar.Toggle />
             <Navbar.Collapse className="collapse-nav">

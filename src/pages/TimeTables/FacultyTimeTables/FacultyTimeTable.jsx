@@ -146,7 +146,7 @@ const FacultyTimeTable = () => {
               placeholder="Enter faculty ID"
             />
             {searchTerm && (
-              <div className="search-results">
+              <div className="search-results text-dark">
                 {filteredResults.map((user) => (
                   <div
                     key={user._id.$oid}
