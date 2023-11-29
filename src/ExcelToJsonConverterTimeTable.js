@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
 import axios from "axios";
+import { useSpring, animated } from 'react-spring'
 
 function ExcelUploader() {
   const [file, setFile] = useState(null);
@@ -11,13 +12,21 @@ function ExcelUploader() {
   let sheetcount = 0;
   let tabledata = [];
 
+  const fadeOutSlideUpAnimation = useSpring({
+    to: async (next) => {
+      await next({ opacity: 1, transform: "translateY(-10px)" });
+    },
+    from: { opacity: 0, transform: "translateY(20px)" },
+    config: { duration: 700 },
+  });
+
   const updatedata = async (dt1, dt2) => {
     const obj = {};
     const dtp = JSON.parse(JSON.stringify(dt2));
     for (let i = 0; i < dt2.length; i++) {
       for (let j = 0; j < dt2[i].length; j++) {
         if (dt2[i][j] === -1)
-          dtp[i][j]=dtp[i][j-1]
+          dtp[i][j] = dtp[i][j - 1]
       }
     }
     obj['dt1'] = dt1
@@ -132,7 +141,7 @@ function ExcelUploader() {
     reader.readAsBinaryString(selectedFile);
   };
   return (
-    <div>
+    <animated.div style={fadeOutSlideUpAnimation}>
       <h1>Insert the class Data</h1>
       <div className="row ">
         <input type="file" accept=".xlsx" onChange={handleFileUpload} />
@@ -141,7 +150,7 @@ function ExcelUploader() {
       <div className="row ">
         <input type="file" accept=".xlsx" onChange={handleListUpload} />
       </div>
-    </div>
+    </animated.div>
   );
 }
 
