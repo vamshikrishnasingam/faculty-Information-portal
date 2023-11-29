@@ -1,7 +1,9 @@
 const exp = require("express");
 const freehoursapp = exp.Router();
+const schedule = require('node-schedule');
 
 const expressAsyncHandler = require("express-async-handler");
+const { promises } = require("nodemailer/lib/xoauth2");
 
 freehoursapp.post(
   "/freehours-insert",
@@ -13,21 +15,85 @@ freehoursapp.post(
 );
 
 freehoursapp.post(
-  "/fac-update/:id/:key/:value",
+  "/fac-update",
   expressAsyncHandler(async (req, res) => {
     const freeHoursObj = req.app.get("freeHoursObj");
-    const un = req.params.id;
-    const key = req.params.key;
-    const value = req.params.value;
-    const updateObj = {};
-    updateObj[key] = value;
-    const res1 = {
-      $set: updateObj,
-    };
-    a = await freeHoursObj.updateOne({ username: un }, res1);
-    res.status(201).send({ message: "User Created", payload: req.body });
-  })
-);
+    const facultyTimeTableObj = req.app.get("facultyTimeTableObj");
+    const data = req.body;
+    const upd = data.dataupdate;
+    const opt = data.reasons;
+    const ids = data.selectedfaculty;
+    let timevalue = data.timevalue;
+    let lastkey;
+    await Promise.all(
+      ids.forEach((username) => {
+        console.log(username)
+        Object.keys(upd).forEach(async (ele, index) => {
+          console.log(ele, index)
+          if (timevalue.toUpperCase() === 'SEM') {
+            const res = {
+              $addToSet: {
+                [ele]: upd[ele]
+              }
+            }
+            const updobj={
+              $addToSet : {
+                'special' : {
+                  [ele]: opt[ele]
+                }
+              }
+            }
+            a = await freeHoursObj.updateOne({ username: username.trim() }, res);
+            b = await facultyTimeTableObj.updateOne({ username: username.trim() }, updobj);
+
+          }
+
+          else {
+            const times = parseInt(timevalue, 10) * 60 * 1000;
+            const res = {
+              $addToSet: {
+              [ele]   : { 'special': upd[ele] }
+              }
+            }
+            const updobj={
+              $addToSet : {
+                'special' : {
+                  [ele]: opt[ele]
+                }
+              }
+            }
+            // Set the object in the database for only particular time
+            a = await freeHoursObj.updateOne({ username: username.trim() }, res);
+            b = await facultyTimeTableObj.updateOne({ username: username.trim() }, updobj);
+            // Schedule the deletion of the data after the specified time
+            schedule.scheduleJob(new Date(Date.now() + times), async () => {
+              const deleteResult = await freeHoursObj.updateOne(
+                { username: username.trim() },
+                {
+                  $unset: {
+                    [ele]   : { 'special': upd[ele] }
+                  }
+                }
+              );
+              console.log(`Data for ${ele} deleted after the scheduled time.`, deleteResult);
+            });
+            schedule.scheduleJob(new Date(Date.now() + times), async () => {
+              const deleteResult = await facultyTimeTableObj.updateOne(
+                { username: username.trim() },
+                {
+                  $unset: {
+                    'special'   : { [ele]: upd[ele] }
+                  }
+                }
+              );
+              console.log(`Data for ${ele} deleted after the scheduled time.`, deleteResult);
+            });
+          }
+        })
+      })
+    )
+    res.status(201).send({ message: "Status Created", payload: req.body });
+  }));
 
 freehoursapp.get(
   "/faculty-data-total",
@@ -69,12 +135,10 @@ freehoursapp.get(
       const d = ele[day];
       if (d) {
         times.forEach((time, index) => {
-        if(d[time])
-        {
-          if(!d[time.replace(/\./g,'_')].every(value => years.includes(value)))
-          { value=false}
-        }
-        console.log(day,time,ele.username,d[time.replace(/\./g,'_')],years,value)
+          if (d[time]) {
+            if (!d[time.replace(/\./g, '_')].every(value => years.includes(value))) { value = false }
+          }
+          console.log(day, time, ele.username, d[time.replace(/\./g, '_')], years, value)
 
         })
       }

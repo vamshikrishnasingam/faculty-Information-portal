@@ -103,7 +103,7 @@ userApp.post('/user-login', expressAsyncHandler(async (req, res) => {
         }
         //if password matched
         else {
-            let jwtToken = jwt.sign({ username: userOfDB.username }, "abcdef", { expiresIn: "10m" })
+            let jwtToken = jwt.sign({ username: userOfDB.username }, "abcdef", { expiresIn: "30m" })
             //delete password from user of db
             delete userOfDB.password
             //send token in response

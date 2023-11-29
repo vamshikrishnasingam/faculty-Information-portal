@@ -50,6 +50,15 @@ userApp.get("/faculty-data/:id", expressAsyncHandler(async (req, res) => {
     res.json(obj1)
 }))
 
+userApp.get("/full-data", expressAsyncHandler(async (req, res) => {
+    //get user collection object
+    const facultyListObj = req.app.get("facultyListObj")
+    const doc = await facultyListObj.find({}).toArray(function (err, result) {
+        if (err) throw err;
+    });
+    res.json(doc)
+}))
+
 userApp.post("/facultycheck", expressAsyncHandler(async (req, res) => {
     //get user collection object
     const receivedData = req.body;
