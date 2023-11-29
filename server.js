@@ -43,7 +43,7 @@ app.use("/freehours-api",freehoursApp)
 //connect to mongoclient
 const mclient=require('mongodb').MongoClient
 
-mclient.connect('mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.8.0')
+mclient.connect('mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.10.1')
 .then((dbRef)=>{
     const dbObj=dbRef.db("faculty-portal")
     const userCollectionObj=dbObj.collection("userCollection")

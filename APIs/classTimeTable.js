@@ -110,11 +110,11 @@ classtimetableApp.post("/class-insert", expressAsyncHandler(async (req, res) => 
             const f = {}
 
             for (let i = 1; i < 4; i++) {
-                f[facultyinfo[0][i]] = facultyinfo[j][i].toString().toUpperCase()
+                f[facultyinfo[0][i]] = facultyinfo[j][i].toString().toUpperCase().trim()
             }
             facultydata[facultyinfo[j][0].toUpperCase()] = f
         }
-
+        console.log(sheetname)
         const classdata = {};
         for (let i = 1; i < 7; i++) {
             const day = classinfo[i][0].trim();

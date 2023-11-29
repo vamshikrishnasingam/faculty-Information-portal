@@ -1,24 +1,31 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useContext } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Modal } from "react-bootstrap";
 import { useSpring, animated } from 'react-spring'
 import { loginContext } from "../../../contexts/loginContext";
-import { NavLink, Link, Outlet } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 const ContactUS = () => {
   const [searchId, setSearchId] = useState("");
   const [facdata, setFacData] = useState(null);
   const [dv, sdv] = useState(0);
   const [wlv, swlv] = useState(0);
-  const [message, setMessage] = useState("");
-  const [cellState, setCellState] = useState({});
-  const [selectedSlots, setSelectedSlots] = useState({});
-  const [dropdownOpen, setDropdownOpen] = useState({});
+  const [ewlv, sewlv] = useState(0);
+  const [selectedSlots, setSelectedSlots] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [selectedResult, setSelectedResult] = useState(null);
-  const week = ["mon", "tue", "wed", "thu", "fri", "sat"];
+  const [inputRequiredCell, setInputRequiredCell] = useState(0);
+  const [newInput, setNewInput] = useState(null);
+  const [reason, setreason] = useState([]);
+  const [changedCells, setChangedCells] = useState([]);
+  const [modalShow, setModalShow] = useState(false);
+  const [timevalue, settimevalue] = useState('1');
+  const [facultyModalShow, setFacultyModalShow] = useState(false);
+  const [selectedFaculty, setSelectedFaculty] = useState([]);
 
+
+  const week = ["mon", "tue", "wed", "thu", "fri", "sat"];
   let [, , userLoginStatus, , logoutUser] = useContext(loginContext);
   const times = [
     "9-10",
@@ -31,6 +38,7 @@ const ContactUS = () => {
     "3_40-4_40",
   ];
   const years = ["1", "2", "3", "4"];
+  const timings = ["1", "2", "3", "7", "SEM"];
 
   useEffect(() => {
     const fetchlist = async () => {
@@ -45,12 +53,15 @@ const ContactUS = () => {
   }, []);
 
   useEffect(() => {
-    if (facdata === null) sdv(0);
-    else sdv(1);
+    if (facdata === null) {
+      sdv(0);
+    } else {
+      handlefacdata();
+      sdv(1);
+    }
   }, [facdata]);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
+  const handleSearch = async () => {
     swlv(0);
     await axios
       .get(`/freehours-api/full-data/${searchId}`)
@@ -61,7 +72,6 @@ const ContactUS = () => {
           setSearchTerm("");
         } else {
           setFacData(null);
-          setMessage("No data found for the given ID.");
         }
         // You can perform any data processing or UI updates here
       })
@@ -74,92 +84,73 @@ const ContactUS = () => {
   };
 
   const editworkload = () => {
-    swlv(1);
-  };
-
-  const toggleCellState = (day, time) => {
-    const cellKey = `${day}.${time}`;
-    if (cellState[cellKey] === "idle") {
-      const newState = { ...cellState };
-      newState[cellKey] = "busy";
-      setSelectedSlots((prevSelectedSlots) => ({
-        ...prevSelectedSlots,
-        [cellKey]: "Year 1",
-      }));
-      setCellState(newState);
-    }
-  };
-
-  const toggleDropdown = (day, time) => {
-    setDropdownOpen((prevState) => ({
-      ...prevState,
-      [`${day}.${time}`]: !prevState[`${day}.${time}`],
-    }));
+    sewlv(1);
   };
 
   const saveworkload = async () => {
-    fetchData();
-    swlv(0);
-    setDropdownOpen({});
-    let k = Object.keys(selectedSlots);
-    console.log("keys : ", k);
-    k.forEach(async (ele) => {
-      await axios
-        .post(
-          `/freehours-api/fac-update/${searchId}/${ele}/${selectedSlots[ele]}`
-        )
-        .then((response) => {
-          // Handle the successful response here
-          console.log("Success:", response.data);
-          // You can perform any data processing or UI updates here
-        })
-        .catch((error) => {
-          // Handle any errors or exceptions here
-          console.error("Error:", error);
-          // You can update the UI to show an error message or take any other action
-        });
-    });
+    const passobj = {};
+    passobj['dataupdate'] = selectedSlots;
+    passobj['reasons'] = reason;
+    passobj['selectedfaculty']=[...selectedFaculty, searchId];
+    passobj['timevalue']=timevalue;
+    console.log("final data :",passobj,selectedFaculty,timevalue);
+    try {
+      const response = await axios.post("/freehours-api/fac-update", passobj);
+      console.log("Success:", response.data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+    sewlv(0);
     setSelectedSlots({});
+    handleSearch();
+    handlefacdata();
+    setChangedCells([]);
+    setreason([]);
+    setSelectedSlots([]);
+    setSelectedFaculty([]);
+    handleFacultySelection([]); 
+    settimevalue("");
+
   };
 
   const cancelworkload = () => {
-    setCellState({});
-    setSelectedSlots({});
-    swlv(0);
-    // Close all dropdowns
-    setDropdownOpen({});
+    sewlv(0);
+    setChangedCells([]);
+    setreason([]);
+    setSelectedSlots([]);
+    setSelectedFaculty([]);
+    handleFacultySelection([]);
+    settimevalue('1'); 
+    // Reset changed cells
+
   };
 
-  useEffect(() => {
+  const handlefacdata = () => {
     if (facdata === null) {
       sdv(0);
-      setCellState({});
     } else {
       sdv(1);
-      const initialCellState = {};
-      week.forEach((day) => {
-        times.forEach((time) => {
-          const cellKey = `${day}.${time}`;
-          initialCellState[cellKey] =
-            facdata[day] && facdata[day][time] ? "busy" : "idle";
-        });
-      });
-      setCellState(initialCellState);
+      swlv(1);
     }
-  }, [facdata]);
-
-  const fetchData = async () => {};
+  };
 
   const handleSearchInputChange = (event) => {
     const term = event.target.value;
     setSearchTerm(term);
+    setSearchId(term);
   };
 
   const handleSelectResult = (result) => {
     setSelectedResult(result);
     setSearchTerm(result.username);
     setSearchId(result.username);
+    setInputRequiredCell(null);
   };
+
+  const handleSave = () => {
+
+  };
+
 
   const filteredResults = searchResults.filter(
     (item) =>
@@ -176,6 +167,120 @@ const ContactUS = () => {
     config: { duration: 700 },
   });
 
+  const handleFacultySelection = (selectedFacultyList) => {
+    setSelectedFaculty(selectedFacultyList);
+  };
+
+  const handleSetMultipleFaculty = () => {
+    setFacultyModalShow(true);
+  };
+
+  const handleFacultyModalClose = () => {
+    setFacultyModalShow(false);
+  };
+
+
+  function MyVerticallyCenteredModal(props) {
+    return (
+      <Modal show={props.show} size="lg" centered>
+        <Modal.Header>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Conditionally Set Chnages
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: "space-around" }}>
+            <h3>Set Time limit for the specified workload</h3>
+            <select
+              value={timevalue === "" ? 'select' : timevalue}
+              onChange={(e) => {
+                settimevalue(e.target.value);
+              }} >
+              {timings.map((duration, index) => (
+                <option key={index} value={duration}>
+                  {index === 4 ? duration : `${duration}-weeks`}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: "space-around" }} >
+            <h3>update the same status for multiple faculty</h3>
+            <Button className="btn-secondary" onClick={() => { setModalShow(false); handleSetMultipleFaculty(); }}>Update</Button>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={() => { setModalShow(false); sewlv(1); }} variant="primary"> Save </Button>
+          <Button onClick={() => { setModalShow(false);sewlv(1);settimevalue('1') ;handleFacultySelection([])}} variant="secondary">Cancel</Button>
+        </Modal.Footer>
+      </Modal >
+    );
+  }
+
+  const FacultySelectionModal = ({ show, onHide}) => {
+    const [selectedFacultyModal, setSelectedFacultyModal] = useState(selectedFaculty);
+  
+    const handleCheckboxChange = (username) => {
+      setSelectedFacultyModal((prevSelectedFaculty) => {
+        if (prevSelectedFaculty.includes(username)) {
+          return prevSelectedFaculty.filter((faculty) => faculty !== username);
+        } else {
+          return [...prevSelectedFaculty, username];
+        }
+      });
+    };
+  
+    return (
+      <Modal show={show} size="lg" centered onHide={onHide}>
+        <Modal.Header closeButton>
+          <Modal.Title>Select Faculty</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {searchResults.length > 0 ? (
+            <div className="container m-6 history-results" style={{ overflowX: "auto" }}>
+              <table className="w-50 mx-auto">
+                <thead>
+                  <tr>
+                    <th>Faculty-Id</th>
+                    <th>Faculty-Name</th>
+                    <th>Faculty-Type</th>
+                    <th>Timetables</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {searchResults.map((row) => (
+                    <tr key={row.username}>
+                      <td>{row.username}</td>
+                      <td>{row.name}</td>
+                      <td>{row.facultytype}</td>
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={selectedFacultyModal.includes(row.username)}
+                          onChange={() => handleCheckboxChange(row.username)}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div>
+              <h1>NO DATA TO FETCH IN API</h1>
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={() => { setModalShow(true);onHide(); handleFacultySelection(selectedFacultyModal);setSelectedFacultyModal([]); }}>
+            Update
+          </Button>
+          <Button variant="secondary" onClick={()=>{setModalShow(true);onHide();handleFacultySelection([])}}>
+            Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  };
 
   return (
     <animated.div
@@ -201,9 +306,8 @@ const ContactUS = () => {
                     {filteredResults.map((user) => (
                       <div
                         key={user._id.$oid}
-                        className={`search-result-item ${
-                          selectedResult === user ? "selected" : ""
-                        }`}
+                        className={`search-result-item ${selectedResult === user ? "selected" : ""
+                          }`}
                         value={user.username}
                         onClick={() => handleSelectResult(user)}
                       >
@@ -229,35 +333,6 @@ const ContactUS = () => {
               <h3>Fac_Id : {facdata.username}</h3>
               <h3>Name : {facdata.name}</h3>
               <h3>Type : {facdata.facultytype}</h3>
-              {wlv === 0 && (
-                <div className="history-results">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        {times.map((ele) => (
-                          <th key={ele}>{ele}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {week.map((element) => (
-                        <tr key={element}>
-                          <td>{element}</td>
-                          {times.map((ele) => (
-                            <td key={ele}>
-                              {facdata[element] && facdata[element][ele]
-                                ? "Busy"
-                                : "Idle"}
-                            </td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  <button onClick={editworkload}>EDIT</button>
-                </div>
-              )}
               {wlv === 1 && (
                 <div>
                   <table>
@@ -273,36 +348,83 @@ const ContactUS = () => {
                       {week.map((day) => (
                         <tr key={day}>
                           <td>{day}</td>
-                          {times.map((time) => (
-                            <td key={time}>
-                              <h6
-                                onClick={() => toggleCellState(day, time)}
-                                className={
-                                  cellState[`${day}.${time}`] === "busy"
-                                    ? "busy"
-                                    : "idle"
-                                }
-                              >
-                                {cellState[`${day}.${time}`] === "busy"
-                                  ? "Busy"
-                                  : "Idle"}
-                              </h6>
-                              {cellState[`${day}.${time}`] === "idle" && (
-                                <select
-                                  value={selectedSlots[`${day}.${time}`]}
-                                  onChange={(e) => {
-                                    setSelectedSlots((prevSelectedSlots) => ({
-                                      ...prevSelectedSlots,
-                                      [`${day}.${time}`]: e.target.value,
-                                    }));
-                                  }}
-                                >
-                                  {years.map((year, index) => (
-                                    <option key={index} value={year}>
-                                      {year}
-                                    </option>
-                                  ))}
-                                </select>
+                          {times.map((ele) => (
+                            <td
+                              key={ele}
+                              style={{
+                                border: `1px solid ${changedCells.includes(`${day}.${ele}`)
+                                  ? "red" // Change the border color for changed cells
+                                  : "black" // Default border color
+                                  }`,
+                              }}
+                            >
+                              {facdata[day] && facdata[day][ele] ? "Busy" : "Idle"}
+                              {ewlv === 1 && (
+                                <div>
+                                  <select
+                                    value={selectedSlots[`${day}.${ele}`]}
+                                    onChange={(e) => {
+                                      setSelectedSlots(() => ({
+                                        ...selectedSlots,
+                                        [`${day}.${ele}`]: e.target.value
+                                      }));
+                                      setInputRequiredCell(`${day}.${ele}`);
+                                    }}
+                                  >
+                                    <option>select</option>
+                                    {years.map((year, index) => (
+                                      <option key={index} value={year}>
+                                        {year}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  {inputRequiredCell === `${day}.${ele}` && (
+                                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
+                                      <div >
+                                        <input
+                                          type="text"
+                                          value={newInput}
+                                          placeholder="Specify Reason"
+                                          onChange={(ev) => {
+                                            setNewInput(ev.target.value);
+                                            setreason(() => ({
+                                              ...reason,
+                                              [`${day}.${ele}`]: ev.target.value,
+                                            }));
+                                          }}
+                                        />
+                                      </div>
+                                      <div >
+                                        <Button
+                                          onClick={() => {
+                                            setreason({
+                                              ...reason,
+                                              [`${day}.${ele}`]: newInput,
+                                            });
+                                            setChangedCells((prevChangedCells) =>
+                                              [...prevChangedCells, `${day}.${ele}`]
+                                            );
+                                            setInputRequiredCell(null);
+                                          }}
+                                        >
+                                          O
+                                        </Button>
+                                      </div>
+                                      <div>
+                                        <Button
+                                          onClick={() => setInputRequiredCell(null)}
+                                        >
+                                          X
+                                        </Button>
+                                      </div>
+                                      <div>
+                                      </div>
+                                    </div>
+                                  )}
+                                  <div>
+                                  </div>
+                                </div>
+
                               )}
                             </td>
                           ))}
@@ -310,8 +432,16 @@ const ContactUS = () => {
                       ))}
                     </tbody>
                   </table>
-                  <button onClick={saveworkload}>SAVE</button>
-                  <button onClick={cancelworkload}>CANCEL</button>
+                  {ewlv === 0 && (
+                    <button onClick={editworkload}>EDIT</button>
+                  )}
+                </div>
+              )}
+              {ewlv === 1 && (
+                <div styles={{ variant: "secondary", justifyContent: "space-evenly" }}>
+                  <Button onClick={() => { setModalShow(true) }}>SET</Button>
+                  <Button onClick={saveworkload}>SAVE</Button>
+                  <Button onClick={cancelworkload}>CANCEL</Button>
                 </div>
               )}
             </div>
@@ -332,8 +462,22 @@ const ContactUS = () => {
           </Button>
         </div>
       )}
+      <MyVerticallyCenteredModal
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        save={handleSave}
+        setMultipleFaculty={handleSetMultipleFaculty}
+      />
+      <FacultySelectionModal
+        show={facultyModalShow}
+        onHide={handleFacultyModalClose}
+      />
     </animated.div>
+
   );
+
+
 };
+
 
 export default ContactUS;
