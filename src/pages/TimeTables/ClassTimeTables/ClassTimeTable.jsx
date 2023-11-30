@@ -27,6 +27,7 @@ function ClassTimeTable() {
   const [displayvalue, setdisplayvalue] = useState(0);
   const [errorvalue, seterrorvalue] = useState(0);
   const [semester, setsemester] = useState("");
+  const [keys,setkeys]=useState([])
 
   let mainKeys = [];
   let columnKeys = [];
@@ -57,6 +58,22 @@ function ClassTimeTable() {
     }
   }, [phoenix]);
 
+  useEffect(()=>{
+    const fetchkeys=async()=>{
+      await axios
+      .get(
+        `/classtimetable-api/academicyearkeys`
+      )
+      .then((response) => {
+        setkeys(response.data);
+        console.log('keys : ',response.data)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    }
+    fetchkeys();
+  },[])
   // Rest of your component cod
   const MyPopoverContent = (cell) => (
     <Popover id="popover-basic">
@@ -179,6 +196,7 @@ function ClassTimeTable() {
       });
   };
 
+
   const handlechangegraduation = (e) => {
     if (e.target.value === "Btech") setgraduatevalue(1);
     else setgraduatevalue(0);
@@ -209,8 +227,11 @@ function ClassTimeTable() {
         <div className="col-lg-2 col-sm-12 col-md-4 p-3">
           <Form.Select value={academicyear} onChange={handlechangeacademicyear}>
             <option>Academic year</option>
-            <option value="2023-2024">2023-2024</option>
-            <option value="2024-2025">2024-2025</option>
+            {keys.map((key, index) => (
+                <option key={index} value={key}>
+                  {key}
+                </option>
+              ))}
           </Form.Select>
         </div>
         <div className="col-lg-2 col-sm-12 col-md-4 p-3">
