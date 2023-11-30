@@ -96,10 +96,6 @@ freehoursapp.post("/fac-update", expressAsyncHandler(async (req, res) => {
   res.status(201).send({ message: "Status Created", payload: req.body });
 }));
 
-
-
-
-
 freehoursapp.get(
   "/faculty-data-total",
   expressAsyncHandler(async (req, res) => {
@@ -124,34 +120,55 @@ freehoursapp.get(
 freehoursapp.get(
   "/freehours-get/:date/:time/:year",
   expressAsyncHandler(async (req, res) => {
-    const freeHoursObj = req.app.get("freeHoursObj");
-    const doc = await freeHoursObj.find({}).toArray(function (err, result) {
-      if (err) throw err;
-    });
-    const t = req.params.time;
-    const day = req.params.date;
-    const y = req.params.year;
-    const times = t.split(",");
-    const years = y.split(",");
-    let array = [];
-    let barray = [];
-    doc.forEach((ele, index) => {
-      let value = true;
-      const d = ele[day];
-      if (d) {
-        times.forEach((time, index) => {
-          if (d[time]) {
-            if (!d[time.replace(/\./g, '_')].every(value => years.includes(value))) { value = false }
-          }
-          console.log(day, time, ele.username, d[time.replace(/\./g, '_')], years, value)
+    try {
+      const freeHoursObj = req.app.get("freeHoursObj");
+      const doc = await freeHoursObj.find({}).toArray();
 
-        })
+      const t = req.params.time;
+      const day = req.params.date;
+      const y = req.params.year;
+      const times = t.split(",").map((year) => year.replace(/\./g, '_'));
+      const years = y.split(",");
+
+      let array = [];
+      let barray = [];
+      console.log(times)
+      doc.forEach((ele) => {
+        let value = true;
+        const d = ele[day];
+        const events = ele?.['special']?.[day];
+        times.forEach((time) => {
+          if (d?.[time]) {
+            if (!d[time].every((opt) => years.includes(opt))) {
+              value = false;
+            }
+          }
+          if (events?.[time]) {
+            if (!years.includes(events[time])) {
+              value = false;
+            }
+          }
+        });
+        console.log(ele.username, d, events, value)
+        console.log('-------')
+        if (value === true) {
+          array.push(ele.username);
+        } else {
+          barray.push(ele.username);
+        }
+      });
+
+      // Check array length instead of truthiness
+      if (array.length > 0) {
+        res.json(array);
+      } else {
+        res.json(null);
       }
-      if (value === true) array.push(ele.username);
-      else barray.push(ele.username);
-    });
-    if (array) res.json(array);
-    else res.json(null);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
   })
 );
+
 module.exports = freehoursapp;
