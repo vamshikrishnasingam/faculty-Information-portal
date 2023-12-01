@@ -4,7 +4,6 @@ const facultytimetableApp = exp.Router()
 let days = ['9-10', '10-11', '11-12', '12-1', '12.40-1.40', '1.40-2.40', '2.40-3.40', '3.40-4.40']
 let keys = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat']
 const expressAsyncHandler = require("express-async-handler")
-const { Code } = require("mongodb")
 
 facultytimetableApp.get("/faculty-data/:type", expressAsyncHandler(async (req, res) => {
     const facultyTimeTableObj = req.app.get("facultyTimeTableObj")
@@ -35,6 +34,27 @@ facultytimetableApp.get(
     res.json(doc);
   })
 );
+
+facultytimetableApp.delete(
+    "/reset",
+    expressAsyncHandler(async (req, res) => {
+      const facultyTimeTableObj = req.app.get("facultyTimeTableObj");
+      const freeHoursObj=req.app.get("freeHoursObj")
+      const keyToRemove = "special"; // Replace with your specific key
+      const updateQuery = {
+        $unset: {
+          [keyToRemove]: 1
+        }
+      };
+      const updateOptions = {
+        multi: true // Update multiple documents
+      };
+      a=await facultyTimeTableObj.updateMany({}, updateQuery, updateOptions);
+      const result = await freeHoursObj.updateMany({}, updateQuery, updateOptions);
+      res.json(result);
+    })
+  );
+  
 
 facultytimetableApp.get(
   "/classfaculty-data/:id",

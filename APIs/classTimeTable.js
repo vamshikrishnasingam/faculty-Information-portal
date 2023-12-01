@@ -15,6 +15,15 @@ classtimetableApp.get('/classtt-data/:classid/:year/:graduation/:sem', async (re
     res.json(matchedclass)
 })
 
+classtimetableApp.get('/academicyearkeys', async (req, res) => {
+    const classTimeTableObj = req.app.get("classTimeTableObj")
+    key='4cse1'
+    let matchedclass = await classTimeTableObj.findOne({ [key]: { $exists: true } })
+    keys=Object.keys(matchedclass[key])
+    console.log(keys)
+    res.json(keys)
+})
+
 const freehrs = async (year, day, time, dat, freeHoursObj) => {
     const week = { 'M': 'mon', 'T': 'tue', 'W': 'wed', 'Th': 'thu', 'F': 'fri', 'S': 'sat' };
     const ids = dat.username.split('/');

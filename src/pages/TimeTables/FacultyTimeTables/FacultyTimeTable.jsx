@@ -79,11 +79,14 @@ const FacultyTimeTable = () => {
   }, [year, data, sem]);
 
   const printData = () => {
-    const y = year || Object.keys(data)[Object.keys(data).length - 1];
+    let y = year || Object.keys(data)[Object.keys(data).length - 1];
+    if (y === 'special')
+      y = year || Object.keys(data)[Object.keys(data).length - 2];
+    if (data?.[y]?.[2])
+      setSem(2)
     const unicorn = [];
     for (const day of days) {
       const b = [{ classtype: day }];
-      console.log(data?.['special']?.['thu'])
       const l = data[y][sem]?.hasOwnProperty(day);
       if (l) {
         for (const time of times) {
@@ -167,55 +170,42 @@ const FacultyTimeTable = () => {
           <Button
             className="btn btn-success w-100"
             type="submit"
-            onClick={handleSearch}
-          >
+            onClick={handleSearch}>
             Search
           </Button>
         </div>
       </div>
       {data && (
         <div className="table-container">
+          <div className="row">
+            <div>
+              <Form.Select
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+              >
+                {Object.keys(data)
+                  .slice(4)
+                  .map((yearOption) => (
+                    <option key={yearOption} value={yearOption}>
+                      {yearOption !== "special" ? yearOption : <>Events</>}
+                    </option>
+                  ))}
+              </Form.Select>
+            </div>
+            <div>
+              <Form.Select
+                value={sem}
+                onChange={(e) => setSem(e.target.value)}
+              >
+                {console.log(sem)}
+                <option>select sem</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </Form.Select>
+            </div>
+          </div>
           <table className="m-3 mx-auto">
             <thead>
-              <div className="row">
-                <tr className="col-lg-6 col-sm-12 col-md-6 p-3">
-                  <Form.Select
-                    value={year}
-                    onChange={(e) => setYear(e.target.value)}
-                  >
-                    <option
-                      value={
-                        year === ""
-                          ? Object.keys(data)[Object.keys(data).length - 1]
-                          : ""
-                      }
-                    >
-                      {year === ""
-                        ? Object.keys(data)[Object.keys(data).length - 1]
-                        : "Select Year"}
-                    </option>
-
-                    {Object.keys(data)
-                      .slice(4)
-                      .map((yearOption) => (
-                        <option key={yearOption} value={yearOption}>
-                          {yearOption}
-                        </option>
-                      ))}
-                  </Form.Select>
-                </tr>
-                <tr className="col-lg-6 col-sm-12 col-md-6 p-3">
-                  <Form.Select
-                    value={sem}
-                    onChange={(e) => setSem(e.target.value)}
-                  >
-                    <option>select SEM</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                  </Form.Select>
-                </tr>
-              </div>
-
               <tr>
                 <th>Day</th>
                 {times.map((time) => (
@@ -228,26 +218,29 @@ const FacultyTimeTable = () => {
                 <tr key={rowIndex}>
                   {row.map((cell, cellIndex) => (
                     <td key={cellIndex}>
-                      {cellIndex === 0 && cell && Object.keys(cell).length > 0 && (
-                        <div className="cell-content">
-                          <p>{cell.classtype}</p>
-                        </div>
+                      {cell && Object.keys(cell).length > 0 && (
+                        (cellIndex === 0 || (cell['subject'] && (cell['subject'].toUpperCase().includes('OE') || cell['subject'].toUpperCase().includes('PE')))) ? (
+                          <div className="cell-content">
+                            <p>{cell.classtype}</p>
+                          </div>
+                        ) : (
+                          <div className="cell-content">
+                            <OverlayTrigger
+                              trigger="hover"
+                              placement="right"
+                              overlay={MyPopoverContent(cell)}
+                            >
+                              <div>
+                                <p className="popover-button">{cell.classtype}</p>
+                              </div>
+                            </OverlayTrigger>
+                            {data?.['special']?.[row[0].classtype]?.[times[cellIndex - 1].replace(/\./g, "_")] && (
+                              <p className="text-danger">{`[${data?.['special']?.[row[0].classtype]?.[times[cellIndex - 1].replace(/\./g, "_")]}]`}</p>
+                            )}
+                          </div>
+                        )
                       )}
-                      {cellIndex !== 0 && cell && Object.keys(cell).length > 0 && (
-                        <div className="cell-content">
-                          <OverlayTrigger
-                            trigger="hover"
-                            placement="right"
-                            overlay={MyPopoverContent(cell)}>
-                            <div>
-                              <p className="popover-button">{cell.classtype}</p>
-                            </div>
-                          </OverlayTrigger>
-                          {data?.['special']?.[row[0].classtype]?.[times[cellIndex - 1].replace(/\./g, "_")] && (
-                                <p className="text-danger">{`[${data?.['special']?.[row[0].classtype]?.[times[cellIndex - 1].replace(/\./g, "_")]}]`}</p>
-                              )}
-                        </div>
-                      )}
+
                     </td>
                   ))}
                 </tr>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
 import axios from "axios";
 import { useSpring, animated } from 'react-spring'
+import { Button } from "react-bootstrap";
 
 function ExcelUploader() {
   const [file, setFile] = useState(null);
@@ -61,6 +62,17 @@ function ExcelUploader() {
         console.log("err in user login:", err);
       });
   };
+
+  const handleReset=async()=>{
+    let response=await axios
+    .delete("http://localhost:5000/facultytimetable-api/reset")
+    .then((response) => {
+      console.log("Updated data is reset: ");
+    })
+    .catch((err) => {
+      console.log("err in resetting:", err);
+    });
+  }
 
   useEffect(() => {
     dataupdate();
@@ -150,6 +162,11 @@ function ExcelUploader() {
       <div className="row ">
         <input type="file" accept=".xlsx" onChange={handleListUpload} />
       </div>
+      <div className="row">
+        <h1>Reset the updated data</h1>
+        <Button variant="secondary" className="w-25 mx-auto" onClick={handleReset}>Reset Data</Button>
+      </div>
+
     </animated.div>
   );
 }
