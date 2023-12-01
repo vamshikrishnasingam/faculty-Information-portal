@@ -15,15 +15,21 @@ const fadeInScaleUpAnimation = useSpring({
   config: { duration: 600 },
 });
 
+  const animationProps = useSpring({
+    from: { opacity: 0, transform: "translateY(-30px)" },
+    to: { opacity: 1, transform: "translateY(0)" },
+    config: { duration: 300 },
+  });
+  
   return (
-    <animated.div style={fadeInScaleUpAnimation}>
+    <animated.div>
       <div className="d-flex">
         <div className="sidebar">
           <SideNav/>
         </div>
-        <div className="page" >
+        <animated.div style={fadeInFromLeftAnimation} className="page" >
           <Outlet/>
-        </div>
+        </animated.div>
       </div>
     </animated.div>
   );

@@ -43,24 +43,27 @@ app.use("/freehours-api",freehoursApp)
 //connect to mongoclient
 const mclient=require('mongodb').MongoClient
 
-mclient.connect('mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.10.1')
-.then((dbRef)=>{
-    const dbObj=dbRef.db("faculty-portal")
-    const userCollectionObj=dbObj.collection("userCollection")
-    app.set("userCollectionObj",userCollectionObj)
-    const facultyListObj=dbObj.collection("facultyListCollection")
-    app.set("facultyListObj",facultyListObj)
-    const facultyTimeTableObj=dbObj.collection("facTimeTableCollection")
-    app.set("facultyTimeTableObj",facultyTimeTableObj)
-    const classTimeTableObj=dbObj.collection("classTimeTableCollection")
-    app.set("classTimeTableObj",classTimeTableObj)
-    const classFacultyObj=dbObj.collection("classFacultyCollection")
-    app.set("classFacultyObj",classFacultyObj)
-    const freeHoursObj=dbObj.collection("freeHours")
-    app.set("freeHoursObj",freeHoursObj)
-    console.log("Connection to Faculty-Portal DB - Success")
-})
-.catch((err)=>console.log("Connection to Faculty-Portal DB - Failed"))
+mclient
+  .connect(
+    "mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.9.1"
+  )
+  .then((dbRef) => {
+    const dbObj = dbRef.db("faculty-portal");
+    const userCollectionObj = dbObj.collection("userCollection");
+    app.set("userCollectionObj", userCollectionObj);
+    const facultyListObj = dbObj.collection("facultyListCollection");
+    app.set("facultyListObj", facultyListObj);
+    const facultyTimeTableObj = dbObj.collection("facTimeTableCollection");
+    app.set("facultyTimeTableObj", facultyTimeTableObj);
+    const classTimeTableObj = dbObj.collection("classTimeTableCollection");
+    app.set("classTimeTableObj", classTimeTableObj);
+    const classFacultyObj = dbObj.collection("classFacultyCollection");
+    app.set("classFacultyObj", classFacultyObj);
+    const freeHoursObj = dbObj.collection("freeHours");
+    app.set("freeHoursObj", freeHoursObj);
+    console.log("Connection to Faculty-Portal DB - Success");
+  })
+  .catch((err) => console.log("Connection to Faculty-Portal DB - Failed"));
 
 
 //middleware to deal with page refresh

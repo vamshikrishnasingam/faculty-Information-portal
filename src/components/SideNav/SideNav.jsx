@@ -4,6 +4,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import "./SideNav.css";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { loginContext } from "../../contexts/loginContext";
+import { useSpring,animated } from "react-spring";
 import { useContext } from "react";
 const SideNav = () => {
   let [, , userLoginStatus, , logoutUser] = useContext(loginContext);
@@ -12,13 +13,24 @@ const SideNav = () => {
   const handleToggleSidebar = () => {
     setCollapsed(!collapsed);
   };
+   const fadeInFromLeftAnimation = useSpring({
+     to: { opacity: 1, transform: "translateX(0px)" },
+     from: { opacity: 0, transform: "translateX(-20px)" },
+     config: { duration: 500 },
+   });
+  
+   const animationProps = useSpring({
+    from: { opacity: 0, transform: "translateY(-30px)" },
+    to: { opacity: 1, transform: "translateY(0)" },
+    config: { duration: 300 },
+  });
 
   return (
-    <div id="app1">
+    <animated.div style={fadeInFromLeftAnimation} id="app1">
       <Sidebar
         // backgroundColor="rgba(146, 57, 147, 0.3)"
         collapsed={collapsed}
-        className="side-nav border m-3"
+        className="side-nav border border-3 m-3"
         backgroundColor=""
       >
         <Menu>
@@ -228,7 +240,7 @@ const SideNav = () => {
           )}
         </Menu>
       </Sidebar>
-    </div>
+    </animated.div>
   );
 };
 

@@ -4,6 +4,7 @@ import axios from 'axios';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import './History.css'
+import { useSpring, animated } from "react-spring";
 
 function History() {
 
@@ -394,10 +395,14 @@ function History() {
   const handleToggleAlltypes = (isChecked) => {
     settypes(isChecked ? [...factypes] : []);
   };
-
+   const diagonalSlideAnimation = useSpring({
+    to: { transform: "translateX(10px) translateY(10px)" },
+    from: { transform: "translateX(-5px) translateY(-5px)" },
+    config: { duration: 400 },
+  });
 
   return (
-    <div>
+    <animated.div style={diagonalSlideAnimation}>
       <div className="container p-4">
         <h1 className="p-2 text-center text-white">HISTORY</h1>
         <hr />
@@ -839,7 +844,7 @@ function History() {
         )}
       </div>
       <div></div>
-    </div>
+    </animated.div>
   );
 }
 
