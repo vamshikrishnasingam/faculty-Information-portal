@@ -5,13 +5,14 @@ import "react-toastify/dist/ReactToastify.css";
 import { loginContext } from "../../../contexts/loginContext";
 import { useNavigate } from "react-router-dom";
 import { Button, Form } from "react-bootstrap";
-const [loading, setLoading] = useState(true);
 
 function Admin() {
   const [userDetails, setUserDetails] = useState({});
   const [editing, setEditing] = useState(true); // State to track whether the user is in editing mode
   const [refresh, setRefresh] = useState(true);
   const [currentUser, , , , logoutUser] = useContext(loginContext);
+  const [loading, setLoading] = useState(true);
+
   // Use the useNavigate hook to get the navigate function
   const navigate = useNavigate();
 
