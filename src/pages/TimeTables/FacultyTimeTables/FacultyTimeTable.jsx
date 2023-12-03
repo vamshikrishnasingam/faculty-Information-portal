@@ -176,9 +176,9 @@ const FacultyTimeTable = () => {
         </div>
       </div>
       {data && (
-        <div className="table-container">
+        <div className="table-container mx-auto">
           <div className="row">
-            <div>
+            <div className="col-sm-12 col-lg-4 col-md-6">
               <Form.Select
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
@@ -192,7 +192,7 @@ const FacultyTimeTable = () => {
                   ))}
               </Form.Select>
             </div>
-            <div>
+            <div className="col-sm-12 col-lg-4 col-md-6">
               <Form.Select
                 value={sem}
                 onChange={(e) => setSem(e.target.value)}

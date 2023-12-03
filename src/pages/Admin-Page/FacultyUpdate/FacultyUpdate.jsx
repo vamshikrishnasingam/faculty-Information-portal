@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useContext } from "react";
 import { Form, Button, Modal } from "react-bootstrap";
-import { useSpring, animated } from 'react-spring'
+import { useSpring, animated } from "react-spring";
 import { loginContext } from "../../../contexts/loginContext";
 import { NavLink } from "react-router-dom";
 const ContactUS = () => {
@@ -20,10 +20,9 @@ const ContactUS = () => {
   const [reason, setreason] = useState([]);
   const [changedCells, setChangedCells] = useState([]);
   const [modalShow, setModalShow] = useState(false);
-  const [timevalue, settimevalue] = useState('1');
+  const [timevalue, settimevalue] = useState("1");
   const [facultyModalShow, setFacultyModalShow] = useState(false);
   const [selectedFaculty, setSelectedFaculty] = useState([]);
-
 
   const week = ["mon", "tue", "wed", "thu", "fri", "sat"];
   let [, , userLoginStatus, , logoutUser] = useContext(loginContext);
@@ -43,7 +42,9 @@ const ContactUS = () => {
   useEffect(() => {
     const fetchlist = async () => {
       try {
-        const response = await axios.get("/facultytimetable-api/faculty-data-total");
+        const response = await axios.get(
+          "/facultytimetable-api/faculty-data-total"
+        );
         setSearchResults(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -89,11 +90,11 @@ const ContactUS = () => {
 
   const saveworkload = async () => {
     const passobj = {};
-    passobj['dataupdate'] = selectedSlots;
-    passobj['reasons'] = reason;
-    passobj['selectedfaculty']=[...selectedFaculty, searchId];
-    passobj['timevalue']=timevalue;
-    console.log("final data :",passobj,selectedFaculty,timevalue);
+    passobj["dataupdate"] = selectedSlots;
+    passobj["reasons"] = reason;
+    passobj["selectedfaculty"] = [...selectedFaculty, searchId];
+    passobj["timevalue"] = timevalue;
+    console.log("final data :", passobj, selectedFaculty, timevalue);
     try {
       const response = await axios.post("/freehours-api/fac-update", passobj);
       console.log("Success:", response.data);
@@ -108,9 +109,8 @@ const ContactUS = () => {
     setreason([]);
     setSelectedSlots([]);
     setSelectedFaculty([]);
-    handleFacultySelection([]); 
+    handleFacultySelection([]);
     settimevalue("");
-
   };
 
   const cancelworkload = () => {
@@ -120,9 +120,8 @@ const ContactUS = () => {
     setSelectedSlots([]);
     setSelectedFaculty([]);
     handleFacultySelection([]);
-    settimevalue('1'); 
+    settimevalue("1");
     // Reset changed cells
-
   };
 
   const handlefacdata = () => {
@@ -147,10 +146,7 @@ const ContactUS = () => {
     setInputRequiredCell(null);
   };
 
-  const handleSave = () => {
-
-  };
-
+  const handleSave = () => {};
 
   const filteredResults = searchResults.filter(
     (item) =>
@@ -179,7 +175,6 @@ const ContactUS = () => {
     setFacultyModalShow(false);
   };
 
-
   function MyVerticallyCenteredModal(props) {
     return (
       <Modal show={props.show} size="lg" centered>
@@ -188,14 +183,27 @@ const ContactUS = () => {
             Conditionally Set Chnages
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: "space-around" }}>
+        <Modal.Body
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-around",
+            }}
+          >
             <h3>Set Time limit for the specified workload</h3>
             <select
-              value={timevalue === "" ? 'select' : timevalue}
+              value={timevalue === "" ? "select" : timevalue}
               onChange={(e) => {
                 settimevalue(e.target.value);
-              }} >
+              }}
+            >
               {timings.map((duration, index) => (
                 <option key={index} value={duration}>
                   {index === 4 ? duration : `${duration}-weeks`}
@@ -203,22 +211,56 @@ const ContactUS = () => {
               ))}
             </select>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: "space-around" }} >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-around",
+            }}
+          >
             <h3>update the same status for multiple faculty</h3>
-            <Button className="btn-secondary" onClick={() => { setModalShow(false); handleSetMultipleFaculty(); }}>Update</Button>
+            <Button
+              className="btn-secondary"
+              onClick={() => {
+                setModalShow(false);
+                handleSetMultipleFaculty();
+              }}
+            >
+              Update
+            </Button>
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => { setModalShow(false); sewlv(1); }} variant="primary"> Save </Button>
-          <Button onClick={() => { setModalShow(false);sewlv(1);settimevalue('1') ;handleFacultySelection([])}} variant="secondary">Cancel</Button>
+          <Button
+            onClick={() => {
+              setModalShow(false);
+              sewlv(1);
+            }}
+            variant="primary"
+          >
+            {" "}
+            Save{" "}
+          </Button>
+          <Button
+            onClick={() => {
+              setModalShow(false);
+              sewlv(1);
+              settimevalue("1");
+              handleFacultySelection([]);
+            }}
+            variant="secondary"
+          >
+            Cancel
+          </Button>
         </Modal.Footer>
-      </Modal >
+      </Modal>
     );
   }
 
-  const FacultySelectionModal = ({ show, onHide}) => {
-    const [selectedFacultyModal, setSelectedFacultyModal] = useState(selectedFaculty);
-  
+  const FacultySelectionModal = ({ show, onHide }) => {
+    const [selectedFacultyModal, setSelectedFacultyModal] =
+      useState(selectedFaculty);
+
     const handleCheckboxChange = (username) => {
       setSelectedFacultyModal((prevSelectedFaculty) => {
         if (prevSelectedFaculty.includes(username)) {
@@ -228,7 +270,7 @@ const ContactUS = () => {
         }
       });
     };
-  
+
     return (
       <Modal show={show} size="lg" centered onHide={onHide}>
         <Modal.Header closeButton>
@@ -236,7 +278,10 @@ const ContactUS = () => {
         </Modal.Header>
         <Modal.Body>
           {searchResults.length > 0 ? (
-            <div className="container m-6 history-results" style={{ overflowX: "auto" }}>
+            <div
+              className="container m-6 history-results"
+              style={{ overflowX: "auto" }}
+            >
               <table className="w-50 mx-auto">
                 <thead>
                   <tr>
@@ -271,10 +316,25 @@ const ContactUS = () => {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={() => { setModalShow(true);onHide(); handleFacultySelection(selectedFacultyModal);setSelectedFacultyModal([]); }}>
+          <Button
+            variant="primary"
+            onClick={() => {
+              setModalShow(true);
+              onHide();
+              handleFacultySelection(selectedFacultyModal);
+              setSelectedFacultyModal([]);
+            }}
+          >
             Update
           </Button>
-          <Button variant="secondary" onClick={()=>{setModalShow(true);onHide();handleFacultySelection([])}}>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setModalShow(true);
+              onHide();
+              handleFacultySelection([]);
+            }}
+          >
             Cancel
           </Button>
         </Modal.Footer>
@@ -306,8 +366,9 @@ const ContactUS = () => {
                     {filteredResults.map((user) => (
                       <div
                         key={user._id.$oid}
-                        className={`search-result-item ${selectedResult === user ? "selected" : ""
-                          }`}
+                        className={`search-result-item ${
+                          selectedResult === user ? "selected" : ""
+                        }`}
                         value={user.username}
                         onClick={() => handleSelectResult(user)}
                       >
@@ -352,13 +413,16 @@ const ContactUS = () => {
                             <td
                               key={ele}
                               style={{
-                                border: `1px solid ${changedCells.includes(`${day}.${ele}`)
-                                  ? "red" // Change the border color for changed cells
-                                  : "black" // Default border color
-                                  }`,
+                                border: `1px solid ${
+                                  changedCells.includes(`${day}.${ele}`)
+                                    ? "red" // Change the border color for changed cells
+                                    : "black" // Default border color
+                                }`,
                               }}
                             >
-                              {facdata[day] && facdata[day][ele] ? "Busy" : "Idle"}
+                              {facdata[day] && facdata[day][ele]
+                                ? "Busy"
+                                : "Idle"}
                               {ewlv === 1 && (
                                 <div>
                                   <select
@@ -366,7 +430,7 @@ const ContactUS = () => {
                                     onChange={(e) => {
                                       setSelectedSlots(() => ({
                                         ...selectedSlots,
-                                        [`${day}.${ele}`]: e.target.value
+                                        [`${day}.${ele}`]: e.target.value,
                                       }));
                                       setInputRequiredCell(`${day}.${ele}`);
                                     }}
@@ -379,8 +443,14 @@ const ContactUS = () => {
                                     ))}
                                   </select>
                                   {inputRequiredCell === `${day}.${ele}` && (
-                                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
-                                      <div >
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        justifyContent: "space-around",
+                                      }}
+                                    >
+                                      <div>
                                         <input
                                           type="text"
                                           value={newInput}
@@ -389,20 +459,24 @@ const ContactUS = () => {
                                             setNewInput(ev.target.value);
                                             setreason(() => ({
                                               ...reason,
-                                              [`${day}.${ele}`]: ev.target.value,
+                                              [`${day}.${ele}`]:
+                                                ev.target.value,
                                             }));
                                           }}
                                         />
                                       </div>
-                                      <div >
+                                      <div>
                                         <Button
                                           onClick={() => {
                                             setreason({
                                               ...reason,
                                               [`${day}.${ele}`]: newInput,
                                             });
-                                            setChangedCells((prevChangedCells) =>
-                                              [...prevChangedCells, `${day}.${ele}`]
+                                            setChangedCells(
+                                              (prevChangedCells) => [
+                                                ...prevChangedCells,
+                                                `${day}.${ele}`,
+                                              ]
                                             );
                                             setInputRequiredCell(null);
                                           }}
@@ -412,19 +486,18 @@ const ContactUS = () => {
                                       </div>
                                       <div>
                                         <Button
-                                          onClick={() => setInputRequiredCell(null)}
+                                          onClick={() =>
+                                            setInputRequiredCell(null)
+                                          }
                                         >
                                           X
                                         </Button>
                                       </div>
-                                      <div>
-                                      </div>
+                                      <div></div>
                                     </div>
                                   )}
-                                  <div>
-                                  </div>
+                                  <div></div>
                                 </div>
-
                               )}
                             </td>
                           ))}
@@ -432,16 +505,37 @@ const ContactUS = () => {
                       ))}
                     </tbody>
                   </table>
-                  {ewlv === 0 && (
-                    <button onClick={editworkload}>EDIT</button>
-                  )}
+                  {ewlv === 0 && <button onClick={editworkload}>EDIT</button>}
                 </div>
               )}
               {ewlv === 1 && (
-                <div styles={{ variant: "secondary", justifyContent: "space-evenly" }}>
-                  <Button onClick={() => { setModalShow(true) }}>SET</Button>
-                  <Button onClick={saveworkload}>SAVE</Button>
-                  <Button onClick={cancelworkload}>CANCEL</Button>
+                <div className="row p-4">
+                  <div className="col-lg-2 col-sm-4 col-md-4">
+                    <Button
+                      onClick={() => {
+                        setModalShow(true);
+                      }}
+                      className="btn btn-success w-100"
+                    >
+                      SET
+                    </Button>
+                  </div>
+                  <div className="col-lg-2 col-sm-4 col-md-4">
+                    <Button
+                      className="btn btn-success w-100"
+                      onClick={saveworkload}
+                    >
+                      SAVE
+                    </Button>
+                  </div>
+                  <div className="col-lg-2 col-sm-4 col-md-4">
+                    <Button
+                      className="btn btn-success w-100"
+                      onClick={cancelworkload}
+                    >
+                      CANCEL
+                    </Button>
+                  </div>
                 </div>
               )}
             </div>
@@ -473,11 +567,7 @@ const ContactUS = () => {
         onHide={handleFacultyModalClose}
       />
     </animated.div>
-
   );
-
-
 };
-
 
 export default ContactUS;

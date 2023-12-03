@@ -29,7 +29,7 @@ const SideNav = () => {
     <animated.div style={fadeInFromLeftAnimation} id="app1">
       <Sidebar
         // backgroundColor="rgba(146, 57, 147, 0.3)"
-        collapsed={collapsed}
+        collapsed={!collapsed}
         className="side-nav border border-3 m-3"
         backgroundColor=""
       >

@@ -153,20 +153,29 @@ function ExcelUploader() {
     reader.readAsBinaryString(selectedFile);
   };
   return (
-    <animated.div style={fadeOutSlideUpAnimation}>
-      <h1>Insert the class Data</h1>
-      <div className="row ">
-        <input type="file" accept=".xlsx" onChange={handleFileUpload} />
+    <animated.div style={fadeOutSlideUpAnimation} className="row">
+      <div className="col-sm-12 col-lg-6 col-md-6">
+        <h1>Insert the class Data</h1>
+        <div className="row ">
+          <input type="file" accept=".xlsx" onChange={handleFileUpload} />
+        </div>
+        <h1>Inser the faculty list</h1>
+        <div className="row ">
+          <input type="file" accept=".xlsx" onChange={handleListUpload} />
+        </div>
       </div>
-      <h1>Inser the faculty list</h1>
-      <div className="row ">
-        <input type="file" accept=".xlsx" onChange={handleListUpload} />
+      <div className="col-sm-12 col-lg-6 col-md-6">
+        <h1 className="p-2">Reset the updated data</h1>
+        <div className="p-2">
+          <Button
+            variant="secondary"
+            className="col-sm-3 col-lg-3 col-md-4"
+            onClick={handleReset}
+          >
+            Reset Data
+          </Button>
+        </div>
       </div>
-      <div className="row">
-        <h1>Reset the updated data</h1>
-        <Button variant="secondary" className="w-25 mx-auto" onClick={handleReset}>Reset Data</Button>
-      </div>
-
     </animated.div>
   );
 }
