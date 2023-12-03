@@ -24,6 +24,7 @@ const FacultyTimeTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [selectedResult, setSelectedResult] = useState(null);
+  const [pegasus,setpegasus]=useState(null)
 
   useEffect(() => {
     const fetchlist = async () => {
@@ -104,7 +105,7 @@ const FacultyTimeTable = () => {
       }
       unicorn.push(b);
     }
-    pegasus = unicorn;
+    setpegasus(unicorn);
   };
 
   const handleSearchInputChange = (event) => {
@@ -175,7 +176,7 @@ const FacultyTimeTable = () => {
           </Button>
         </div>
       </div>
-      {data && (
+      {data && pegasus && pegasus.length>0 && (
         <div className="table-container">
           <div className="row">
             <div>
@@ -240,7 +241,6 @@ const FacultyTimeTable = () => {
                           </div>
                         )
                       )}
-
                     </td>
                   ))}
                 </tr>

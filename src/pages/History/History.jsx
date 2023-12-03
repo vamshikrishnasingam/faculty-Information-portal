@@ -438,7 +438,7 @@ function History() {
               <h1 className="text-center text-white m-3">CLASS TIME TABLES</h1>
               <div className="col-lg-3 col-sm-12 col-md-4 p-3 ">
                 <Form.Select
-                  value={type}
+                  value={graduation}
                   onChange={handlechangegraduation}
                   className="text-center"
                 >
