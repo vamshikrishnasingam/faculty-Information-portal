@@ -5,6 +5,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { loginContext } from "../../../contexts/loginContext";
 import { useNavigate } from "react-router-dom";
 import { Button, Form } from "react-bootstrap";
+const [loading, setLoading] = useState(true);
+
 function Admin() {
   const [userDetails, setUserDetails] = useState({});
   const [editing, setEditing] = useState(true); // State to track whether the user is in editing mode
@@ -43,14 +45,19 @@ function Admin() {
   const handleSaveChanges = async () => {
     try {
       // Perform save changes logic
+      setLoading(true);
       console.log("Save changes:", userDetails);
 
       // Example: You may want to send an API request to update user data
       const token = localStorage.getItem("token");
-      await axios.put("http://localhost:5000/user-api/update", userDetails, {
+      let response=await axios.put("http://localhost:5000/user-api/update", userDetails, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+      }).then((res)=>{  
+        setLoading(false);
+      }).catch((err)=>{
+
       });
       // Notify the user about the success
       toast.success("Changes saved successfully", {
@@ -211,17 +218,6 @@ function Admin() {
                       <option value="super-admin">Super Admin</option>
                     </Form.Select>
                   </div>
-                  {/* <select
-                    id="type"
-                    className="search-input form-control me-2"
-                    value={userDetails.type}
-                    onChange={(e) =>
-                      setUserDetails({ ...userDetails, type: e.target.value })
-                    }
-                  >
-                    <option value="admin">Admin</option>
-                    <option value="super-admin">Super Admin</option>
-                  </select> */}
                 </div>
               )}
             </div>

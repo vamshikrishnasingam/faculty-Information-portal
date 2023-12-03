@@ -176,15 +176,10 @@ const FacultyTimeTable = () => {
           </Button>
         </div>
       </div>
-<<<<<<< HEAD
-      {data && (
-        <div className="table-container mx-auto">
-=======
       {data && pegasus && pegasus.length>0 && (
         <div className="table-container">
->>>>>>> 58863d6e810a47c967fba23c46ba15cf4125e4c3
           <div className="row">
-            <div className="col-sm-12 col-lg-4 col-md-6">
+            <div>
               <Form.Select
                 value={year}
                 onChange={(e) => setYear(e.target.value)}
@@ -198,7 +193,7 @@ const FacultyTimeTable = () => {
                   ))}
               </Form.Select>
             </div>
-            <div className="col-sm-12 col-lg-4 col-md-6">
+            <div>
               <Form.Select
                 value={sem}
                 onChange={(e) => setSem(e.target.value)}
