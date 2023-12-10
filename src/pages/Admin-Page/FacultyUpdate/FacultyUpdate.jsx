@@ -439,7 +439,7 @@ const ContactUS = () => {
                                 }`,
                               }}
                             >
-                              {facdata[day] && facdata[day][ele]
+                              {(facdata?.[day]?.[ele] || facdata?.['special']?.[day]?.[ele])
                                 ? "Busy"
                                 : "Idle"}
                               {ewlv === 1 && (
