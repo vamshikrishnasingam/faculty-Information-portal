@@ -1,0 +1,12 @@
+.admin1{
+    height:76.8vh;
+}
+.admin1::-webkit-scrollbar {
+  width: 0px; /* Adjust the width as needed */
+}
+.admin1::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+.admin1 {
+  overflow: overlay; /* Enable overlay scrolling */
+}

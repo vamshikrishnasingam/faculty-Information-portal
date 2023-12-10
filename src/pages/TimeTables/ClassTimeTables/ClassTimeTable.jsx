@@ -27,7 +27,8 @@ function ClassTimeTable() {
   const [displayvalue, setdisplayvalue] = useState(0);
   const [errorvalue, seterrorvalue] = useState(0);
   const [semester, setsemester] = useState("");
-  const [keys,setkeys]=useState([])
+  const [keys, setkeys] = useState([])
+  const [message, setMessage] = useState("");
 
   let mainKeys = [];
   let columnKeys = [];
@@ -182,20 +183,32 @@ function ClassTimeTable() {
   };
 
   const handleSearch = async () => {
-    await axios
-      .get(
-        `/classtimetable-api/classtt-data/${classid}/${academicyear}/${graduation}/${sem}`
-      )
-      .then((response) => {
-        console.log("api call : ", response.data);
-        setDataclass(response.data);
-      })
-      .catch((error) => {
+    if (!classid || !academicyear || !graduation || !sem)
+    {
+      setMessage("Please Enter all Fields")
+    } else {
+      try {
+        const response=await axios
+        .get(
+          `/classtimetable-api/classtt-data/${classid}/${academicyear}/${graduation}/${sem}`
+        )
+        if (response.data) {
+          console.log("api call : ", response.data);
+          setDataclass(response.data);
+          setMessage("");
+        }
+        else {
+          setDataclass(null);
+           setMessage("No data found.");
+        }
+        }
+        catch(error) {
+          setDataclass(null);
+        setMessage("Error occurred while fetching data.");
         setDataclass(null);
-        console.log(error);
-      });
-  };
-
+        };
+      }
+    }
 
   const handlechangegraduation = (e) => {
     if (e.target.value === "Btech") setgraduatevalue(1);
@@ -220,7 +233,7 @@ function ClassTimeTable() {
     config: { duration: 1000 },
   });
   return (
-    <animated.div style={props} className="container text-white p-4">
+    <animated.div style={props} className="container text-white p-4 m-1">
       <h1 className="p-2 m-1 text-center">CLASS TIME TABLES</h1>
       <hr />
       <div className="row m-2">
@@ -228,10 +241,10 @@ function ClassTimeTable() {
           <Form.Select value={academicyear} onChange={handlechangeacademicyear}>
             <option>Academic year</option>
             {keys.map((key, index) => (
-                <option key={index} value={key}>
-                  {key}
-                </option>
-              ))}
+              <option key={index} value={key}>
+                {key}
+              </option>
+            ))}
           </Form.Select>
         </div>
         <div className="col-lg-2 col-sm-12 col-md-4 p-3">
@@ -287,18 +300,14 @@ function ClassTimeTable() {
           </Form.Select>
         </div>
 
-        <div
-          className="col-lg-2 col-sm-12 col-md-4 p-3"
-        >
-          <Button
-            className="w-100 btn-success"
-            onClick={handleSearch}
-          >
+        <div className="col-lg-2 col-sm-12 col-md-4 p-3">
+          <Button className="w-100 btn-success" onClick={handleSearch}>
             SEARCH
           </Button>
           {/* <Button className='col-lg-5  btn-danger' onClick={goingback}>GOBACK</Button> */}
         </div>
       </div>
+      {message && <h3>{message}</h3>}
       {displayvalue === 1 && errorvalue == 0 && (
         <div className="row">
           <div className="container m-3" style={{ "overflow-x": "auto" }}>
@@ -348,7 +357,7 @@ function ClassTimeTable() {
           </div>
         </div>
       )}
-      {errorvalue === 1 && <div>no data found</div>}
+      {/* {errorvalue === 1 && <div>no data found</div>} */}
     </animated.div>
   );
 }

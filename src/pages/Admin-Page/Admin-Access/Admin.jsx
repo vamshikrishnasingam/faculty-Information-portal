@@ -145,7 +145,7 @@ function Admin() {
   };
 
   return (
-    <div>
+    <div className="p-1">
       <h2 className="m-1">Welcome, {userDetails.username}!</h2>
       <hr />
       <div className="p-2">
@@ -222,7 +222,7 @@ function Admin() {
                 </div>
               )}
             </div>
-            <div className="col-lg-2 p-4">
+            <div className="col-lg-2 p-4 m-3">
               <Button className="btn btn-success" onClick={handleSaveChanges}>
                 Save Changes
               </Button>

@@ -402,8 +402,8 @@ function History() {
   });
 
   return (
-    <animated.div style={diagonalSlideAnimation}>
-      <div className="container p-4">
+    <animated.div style={diagonalSlideAnimation} className="container p-3 m-1">
+      <div className="container">
         <h1 className="p-2 text-center text-white">HISTORY</h1>
         <hr />
         <div className="container row p-3">

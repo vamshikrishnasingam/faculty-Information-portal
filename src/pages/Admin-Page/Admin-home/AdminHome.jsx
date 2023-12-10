@@ -16,7 +16,7 @@ function AdminHome() {
  });
 
   return (
-    <animated.div style={fadeOutSlideUpAnimation} className="fs-3 text-white container p-4">
+    <animated.div style={fadeOutSlideUpAnimation} className="fs-3 text-white container p-4 m-1">
       {userLoginStatus ? (
         <div className='m-4 p-1'>
           <h1>Welcome!!! {currentUser.username }</h1>

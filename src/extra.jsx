@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { OverlayTrigger, Popover, Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { useSpring, animated } from "react-spring";
+
 const days = ["mon", "tue", "wed", "thu", "fri", "sat"];
 const times = [
   "9-10",
@@ -13,7 +14,6 @@ const times = [
   "2.40-3.40",
   "3.40-4.40",
 ];
-let pegasus = [];
 
 const FacultyTimeTable = () => {
   const [searchId, setSearchId] = useState("");
@@ -24,10 +24,10 @@ const FacultyTimeTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [selectedResult, setSelectedResult] = useState(null);
-  const [pegasus,setpegasus]=useState(null)
+  const [pegasus, setPegasus] = useState(null);
 
   useEffect(() => {
-    const fetchlist = async () => {
+    const fetchList = async () => {
       try {
         const response = await axios.get(
           `/facultytimetable-api/faculty-data-total`
@@ -38,30 +38,33 @@ const FacultyTimeTable = () => {
       }
     };
 
-    fetchlist();
+    fetchList();
   }, []);
 
   const handleSearch = async () => {
-    if (!searchId){
-      setMessage("Please Enter ID")
-    }
-    else {
+    if (!searchId) {
+      setMessage("Please enter the ID");
+    } else {
       try {
+        // Reset data and selectedResult to null before making a new request
+        setData(null);
+        setSelectedResult(null);
+
         const response = await axios.get(
           `/facultytimetable-api/classfaculty-data/${searchId}`
         );
         if (response.data) {
           setData(response.data);
           setSearchTerm("");
-           setMessage("");
+          setMessage("");
         } else {
-          setData(null);
+          setData([]);
           setMessage("No data found for the given ID.");
         }
       } catch (error) {
         console.error("Error:", error);
-        setMessage("Error occurred while fetching data.");
         setData([]);
+        setMessage("Error occurred while fetching data.");
       }
     }
   };
@@ -87,32 +90,45 @@ const FacultyTimeTable = () => {
   }, [year, data, sem]);
 
   const printData = () => {
-    let y = year || Object.keys(data)[Object.keys(data).length - 1];
-    if (y === 'special')
-      y = year || Object.keys(data)[Object.keys(data).length - 2];
-    if (data?.[y]?.[2])
-      setSem(2)
-    const unicorn = [];
-    for (const day of days) {
-      const b = [{ classtype: day }];
-      const l = data[y][sem]?.hasOwnProperty(day);
-      if (l) {
-        for (const time of times) {
-          const a = data[y][sem][day]?.hasOwnProperty(time.replace(/\./g, "_"));
-          if (a) {
-            b.push(data[y][sem][day][time.replace(/\./g, "_")]);
-          } else {
+    if (!data) {
+      setPegasus(null);
+      setMessage("No data found");
+      return;
+    } else {
+      let y = year || Object.keys(data)[Object.keys(data).length - 1];
+      if (y === "special")
+        y = year || Object.keys(data)[Object.keys(data).length - 2];
+      if (!data[y] || !data[y][sem]) {
+        setMessage("No data found");
+        setPegasus(null);
+        return;
+      }
+      if (data?.[y]?.[2]) setSem(2);
+      const unicorn = [];
+      for (const day of days) {
+        const b = [{ classtype: day }];
+        const l = data[y][sem]?.hasOwnProperty(day);
+        if (l) {
+          for (const time of times) {
+            const a = data[y][sem][day]?.hasOwnProperty(
+              time.replace(/\./g, "_")
+            );
+            if (a) {
+              b.push(data[y][sem][day][time.replace(/\./g, "_")]);
+            } else {
+              b.push({ name: "null", roomno: "null", subjectname: "null" });
+            }
+          }
+        } else {
+          for (let j = 0; j < 8; j++) {
             b.push({ name: "null", roomno: "null", subjectname: "null" });
           }
         }
-      } else {
-        for (let j = 0; j < 8; j++) {
-          b.push({ name: "null", roomno: "null", subjectname: "null" });
-        }
+        unicorn.push(b);
+        setMessage("");
       }
-      unicorn.push(b);
+      setPegasus(unicorn);
     }
-    setpegasus(unicorn);
   };
 
   const handleSearchInputChange = (event) => {
@@ -120,12 +136,14 @@ const FacultyTimeTable = () => {
     setSearchTerm(term);
     setSelectedResult(term);
     setSearchId(term);
+    setMessage("");
   };
 
   const handleSelectResult = (result) => {
     setSelectedResult(result);
     setSearchTerm(result.username);
     setSearchId(result.username);
+    setMessage("");
   };
 
   const filteredResults = searchResults.filter(
@@ -144,7 +162,7 @@ const FacultyTimeTable = () => {
   return (
     <animated.div style={slideIn} className="container p-5 m-1 text-white">
       <h3 className="mb-4 text-center">
-        Please enter FacultyID for their Time Tables!!!
+        Please enter Faculty ID for their Time Tables!!!
       </h3>
       <hr />
       <div className="row">
@@ -205,7 +223,6 @@ const FacultyTimeTable = () => {
             </div>
             <div className="col-sm-12 col-lg-3 col-md-6 mx-auto">
               <Form.Select value={sem} onChange={(e) => setSem(e.target.value)}>
-                {console.log(sem)}
                 <option>select sem</option>
                 <option value="1">1</option>
                 <option value="2">2</option>

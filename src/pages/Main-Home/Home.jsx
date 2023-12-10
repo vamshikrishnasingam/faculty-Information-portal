@@ -48,7 +48,7 @@ function Home() {
 
   return (
     <animated.div style={fadeIn}>
-      <div className="p-3">
+      <div className="p-3 m-1">
         <animated.h1
           style={welcomeAnimation}
           className="fw-bold text-center text-white display-5 p-1"

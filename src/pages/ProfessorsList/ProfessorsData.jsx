@@ -13,6 +13,7 @@ function ProfessorsData() {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedResult, setSelectedResult] = useState(null);
   const navigate = useNavigate();
+  const [dv, sdv] = useState(0);
 
   const [currentUser, loginUser, userLoginStatus, loginErr, logoutUser] =
     useContext(loginContext);
@@ -33,7 +34,7 @@ function ProfessorsData() {
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!searchId) {
-      setMessage("Please enter a search criteria.");
+      setMessage("Please enter the ID.");
       setFacultyData([]);
     } else {
       try {
@@ -43,12 +44,14 @@ function ProfessorsData() {
         if (response.data) {
           setFacultyData([response.data]);
           setMessage("");
+          sdv(1);
           setSearchTerm("");
         } else {
           setFacultyData([]);
           setMessage("No data found for the given ID.");
         }
       } catch (error) {
+        sdv(0);
         console.error(error);
         setFacultyData([]);
         setMessage("Error occurred while fetching data.");
@@ -68,12 +71,14 @@ function ProfessorsData() {
         );
         if (response.data.length > 0) {
           setFacultyData(response.data);
+           sdv(1);
           setMessage("");
         } else {
           setFacultyData([]);
           setMessage("No data found for the selected faculty type.");
         }
       } catch (error) {
+         sdv(0);
         console.error(error);
         setFacultyData([]);
         setMessage("Error occurred while fetching data.");
@@ -84,6 +89,8 @@ function ProfessorsData() {
   const handleSearchInputChange = (event) => {
     const term = event.target.value;
     setSearchTerm(term);
+    setSelectedResult(term);
+    setSearchId(term);
   };
 
   const handleSelectResult = (result) => {
@@ -204,7 +211,7 @@ function ProfessorsData() {
       </div>
       <div>
         {message && <h3>{message}</h3>}
-        {facultyData.length > 0 ? (
+        {facultyData.length > 0  && dv===1 ? (
           <div>
             <div className="row">
               <div className="container m-3 history-results" style={{ "overflow-x": "auto" }}>

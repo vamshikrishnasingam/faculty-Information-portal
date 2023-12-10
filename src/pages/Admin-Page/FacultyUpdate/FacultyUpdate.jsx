@@ -9,6 +9,7 @@ const ContactUS = () => {
   const [searchId, setSearchId] = useState("");
   const [facdata, setFacData] = useState(null);
   const [dv, sdv] = useState(0);
+  const [disss,setdissv] = useState(1);
   const [wlv, swlv] = useState(0);
   const [ewlv, sewlv] = useState(0);
   const [selectedSlots, setSelectedSlots] = useState([]);
@@ -23,7 +24,7 @@ const ContactUS = () => {
   const [timevalue, settimevalue] = useState("1");
   const [facultyModalShow, setFacultyModalShow] = useState(false);
   const [selectedFaculty, setSelectedFaculty] = useState([]);
-
+  const [message, setMessage] = useState("");
   const week = ["mon", "tue", "wed", "thu", "fri", "sat"];
   let [, , userLoginStatus, , logoutUser] = useContext(loginContext);
   const times = [
@@ -64,24 +65,34 @@ const ContactUS = () => {
 
   const handleSearch = async () => {
     swlv(0);
-    await axios
-      .get(`/freehours-api/full-data/${searchId}`)
-      .then((response) => {
-        // Handle the successful response here
+    if (!searchId) {
+      setdissv(0)
+      setMessage("Please Enter the Id");
+      setFacData([]);
+    } else {
+      try {
+        const response = await axios.get(
+          `/freehours-api/full-data/${searchId}`
+        );
         if (response.data) {
           setFacData(response.data);
+          setMessage("");
+          setdissv(1);
           setSearchTerm("");
         } else {
           setFacData(null);
+          setSearchTerm("");
+          setMessage("No data found for the given ID.");
         }
         // You can perform any data processing or UI updates here
-      })
-      .catch((error) => {
+      } catch (error) {
         // Handle any errors or exceptions here
         console.error("Error:", error);
         setFacData(null);
         // You can update the UI to show an error message or take any other action
-      });
+        setMessage("Error occurred while fetching data.");
+      }
+    }
   };
 
   const editworkload = () => {
@@ -197,8 +208,9 @@ const ContactUS = () => {
               justifyContent: "space-around",
             }}
           >
-            <h3>Set Time limit for the specified workload</h3>
+            <h3 className="p-2">Set Time limit for the specified workload</h3>
             <select
+              className="p-2"
               value={timevalue === "" ? "select" : timevalue}
               onChange={(e) => {
                 settimevalue(e.target.value);
@@ -218,40 +230,46 @@ const ContactUS = () => {
               justifyContent: "space-around",
             }}
           >
-            <h3>update the same status for multiple faculty</h3>
-            <Button
-              className="btn-secondary"
-              onClick={() => {
-                setModalShow(false);
-                handleSetMultipleFaculty();
-              }}
-            >
-              Update
-            </Button>
+            <h3 className="p-2">update the same status for multiple faculty</h3>
+            <div className="p-2">
+              <Button
+                className="btn-secondary"
+                onClick={() => {
+                  setModalShow(false);
+                  handleSetMultipleFaculty();
+                }}
+              >
+                Update
+              </Button>
+            </div>
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button
-            onClick={() => {
-              setModalShow(false);
-              sewlv(1);
-            }}
-            variant="primary"
-          >
-            {" "}
-            Save{" "}
-          </Button>
-          <Button
-            onClick={() => {
-              setModalShow(false);
-              sewlv(1);
-              settimevalue("1");
-              handleFacultySelection([]);
-            }}
-            variant="secondary"
-          >
-            Cancel
-          </Button>
+          <div className="p-2">
+            <Button
+              onClick={() => {
+                setModalShow(false);
+                sewlv(1);
+              }}
+              variant="primary"
+            >
+              {" "}
+              Save{" "}
+            </Button>
+          </div>
+          <div className="p-2">
+            <Button
+              onClick={() => {
+                setModalShow(false);
+                sewlv(1);
+                settimevalue("1");
+                handleFacultySelection([]);
+              }}
+              variant="secondary"
+            >
+              Cancel
+            </Button>
+          </div>
         </Modal.Footer>
       </Modal>
     );
@@ -279,7 +297,7 @@ const ContactUS = () => {
         <Modal.Body>
           {searchResults.length > 0 ? (
             <div
-              className="container m-6 history-results"
+              className="container m-6 history-results bg-opacity-10"
               style={{ overflowX: "auto" }}
             >
               <table className="w-50 mx-auto">
@@ -389,7 +407,8 @@ const ContactUS = () => {
               </Button>
             </div>
           </div>
-          {dv === 1 && (
+          {message && <h3>{message}</h3>}
+          {(dv === 1 && disss===1) && (
             <div className="container m-3" style={{ "overflow-x": "auto" }}>
               <h3>Fac_Id : {facdata.username}</h3>
               <h3>Name : {facdata.name}</h3>
@@ -454,6 +473,7 @@ const ContactUS = () => {
                                         <input
                                           type="text"
                                           value={newInput}
+                                          className="search-input form-control me-2"
                                           placeholder="Specify Reason"
                                           onChange={(ev) => {
                                             setNewInput(ev.target.value);
@@ -465,7 +485,7 @@ const ContactUS = () => {
                                           }}
                                         />
                                       </div>
-                                      <div>
+                                      <div className="p-1">
                                         <Button
                                           onClick={() => {
                                             setreason({
@@ -484,7 +504,7 @@ const ContactUS = () => {
                                           O
                                         </Button>
                                       </div>
-                                      <div>
+                                      <div className="p-1">
                                         <Button
                                           onClick={() =>
                                             setInputRequiredCell(null)

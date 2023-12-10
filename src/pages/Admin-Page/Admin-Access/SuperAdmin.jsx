@@ -376,10 +376,9 @@ function SuperAdmin() {
         <div className="col-lg-8">
           <h2>User List</h2>
         </div>
-        <div className="col-lg-3">
+        <div className="col-lg-4">
           <Button
-            style={{ width: "12vw" }}
-            className="btn btn-success ms-3"
+            className="btn btn-success ms-3 w-50"
             onClick={() => setShow(true)}
           >
             Add User

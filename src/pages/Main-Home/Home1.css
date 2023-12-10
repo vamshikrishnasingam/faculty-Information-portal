@@ -1,8 +1,16 @@
-.sidebar{
-    position: inline;
-  }
-  .page{
-    position: relative;
-    overflow-y: auto;
-    overflow-x: hidden;
+.sidebar {
+  position: inline;
+}
+.page {
+  position: relative;
+}
+.page::-webkit-scrollbar {
+  width: 0px; /* Adjust the width as needed */
+}
+.page::-webkit-scrollbar-thumb {
+  background-color: transparent; /* Make the thumb transparent */
+}
+
+.page {
+  overflow: overlay; /* Enable overlay scrolling */
 }

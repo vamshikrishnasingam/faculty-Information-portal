@@ -4,6 +4,8 @@ import { useSpring, animated } from "react-spring";
 import NavigationBar from "../components/Navbar/NavigationBar";
 import Footer from "../components/Footer/Footer";
 import "./RootLayout.css";
+import { SpinnerDotted } from "spinners-react";
+
 
 function RouteLayout() {
   const [designData, setDesignData] = useState(null);
@@ -37,26 +39,29 @@ function RouteLayout() {
     <animated.div>
       {loading ? (
         // Show loader while data is being fetched
-        <div className="loader-container">
-          <div className="loading-dots">
-            <div className="loading-dot"></div>
-            <div className="loading-dot"></div>
-            <div className="loading-dot"></div>
-          </div>
+        // <div className="loader-container">
+        //   <div className="loading-dots">
+        //     <div className="loading-dot"></div>
+        //     <div className="loading-dot"></div>
+        //     <div className="loading-dot"></div>
+        //   </div>
+        // </div>
+        <div className="containerloading text-center">
+          <SpinnerDotted speed={140} thickness={300} enabled={true} />
         </div>
       ) : (
         // Render content once data is loaded
         <div className="content-container rot">
           <NavigationBar />
-          <div>
+          <div className="page">
             {/* Render your components based on designData */}
             <Outlet />
           </div>
+          <div className="footer-container">
+            <Footer />
+          </div>
         </div>
       )}
-      <div className="footer-container">
-        <Footer />
-      </div>
     </animated.div>
   );
 }

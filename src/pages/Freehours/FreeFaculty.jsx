@@ -294,7 +294,7 @@ function FreeFaculty() {
         {truevalue === "1" &&
           facultyvalue === "1" &&
           freeFacultyInfo.length > 0 && (
-            <div>
+            <div className="history-results">
               <div className="row">
                 <h3 className="text-primary p-2 text-center">
                   Total faculty available :

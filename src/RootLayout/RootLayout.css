@@ -1,28 +1,19 @@
-
-/* Defining the animation keyframes */
-/* @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-} */
-
-/* Applying the animation to an element */
-/* .rot{
-    animation: fadeIn 1s ease-in;
-} */
-
+.containerloading {
+  width: 100%; /* Set a width that suits your layout */
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .sidebar{
     position: inline;
   }
   .page{
-    height: 105vh;
+    height: 76.8vh;
     width: 100vw;
     position: relative;
+    overflow: hidden;
     overflow-y: auto;
     overflow-x: hidden;
   }

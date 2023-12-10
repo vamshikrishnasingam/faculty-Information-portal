@@ -5,7 +5,7 @@
     /* background: linear-gradient(-225deg, #7742B2 0%, #F180FF 52%, #FD8BD9 100%); */
     background-color: #50d8d7;
     background-image: linear-gradient(316deg, #50d8d7 0%, #923993 74%);
-    opacity: 70%;
+    opacity: 0.9;
 }
 .collapse-nav{
     text-align: justify;
@@ -22,6 +22,6 @@
     transition: transform 0.3s ease;
 }
 .btn:hover {
-    background-color: #923993;
+    background-color: darkgreen;
     transform: translateY(-10px);
 }
