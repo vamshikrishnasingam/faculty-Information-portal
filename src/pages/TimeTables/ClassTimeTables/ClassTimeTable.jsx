@@ -29,6 +29,12 @@ function ClassTimeTable() {
   const [semester, setsemester] = useState("");
   const [keys, setkeys] = useState([])
   const [message, setMessage] = useState("");
+  const [academicyearError, setAcademicyearError] = useState("");
+  const [graduationError, setGraduationError] = useState("");
+  const [yearError, setYearError] = useState("");
+  const [branchError, setBranchError] = useState("");
+  const [semesterError, setSemesterError] = useState("");
+  const [secError, setSecError] = useState("");
 
   let mainKeys = [];
   let columnKeys = [];
@@ -120,24 +126,93 @@ function ClassTimeTable() {
 
   const handlechangeacademicyear = (e) => {
     setacademicyear(e.target.value);
+    setAcademicyearError("");
+  };
+
+  const handlechangegraduation = (e) => {
+    if (e.target.value === "Btech") setgraduatevalue(1);
+    else setgraduatevalue(0);
+    setgraduation(e.target.value);
+    setGraduationError("");
   };
 
   const handlechangeyear = (e) => {
     setyear(e.target.value);
     setcheckid(e.target.value);
+    setYearError("");
   };
 
   const handlechangebranch = (e) => {
     setbranch(e.target.value);
-  };
-
-  const handlechangesec = (e) => {
-    setsec(e.target.value);
+    setBranchError("");
   };
 
   const handlechangesem = (e) => {
     setsemester(e.target.value);
+    setSemesterError("");
   };
+
+  const handlechangesec = (e) => {
+    setsec(e.target.value);
+    setSecError("");
+  };
+
+  const handleSearch = async () => {
+    setAcademicyearError("");
+    setGraduationError("");
+    setYearError("");
+    setBranchError("");
+    setSemesterError("");
+    setSecError("");
+
+    let isValid = true;
+
+    if (!academicyear) {
+      setAcademicyearError("Please select Academic year");
+      isValid = false;
+    }
+    if (!graduation) {
+      setGraduationError("Please select Course");
+      isValid = false;
+    }
+    if (!year) {
+      setYearError("Please select Year");
+      isValid = false;
+    }
+    if (!branch) {
+      setBranchError("Please select Branch");
+      isValid = false;
+    }
+    if (!semester) {
+      setSemesterError("Please select Semester");
+      isValid = false;
+    }
+    if (!sec) {
+      setSecError("Please select Section");
+      isValid = false;
+    }
+
+    if (isValid) {
+      try {
+        const response = await axios.get(
+          `/classtimetable-api/classtt-data/${classid}/${academicyear}/${graduation}/${sem}`
+        );
+
+        if (response.data) {
+          console.log("api call : ", response.data);
+          setDataclass(response.data);
+          setMessage("");
+        } else {
+          setDataclass(null);
+          setMessage("No data found.");
+        }
+      } catch (error) {
+        setDataclass(null);
+        setMessage("Error occurred while fetching data.");
+      }
+    }
+  };
+
 
   useEffect(() => {
     const handlechanges = () => {
@@ -182,40 +257,6 @@ function ClassTimeTable() {
     setphoenix(unicorn);
   };
 
-  const handleSearch = async () => {
-    if (!classid || !academicyear || !graduation || !sem)
-    {
-      setMessage("Please Enter all Fields")
-    } else {
-      try {
-        const response=await axios
-        .get(
-          `/classtimetable-api/classtt-data/${classid}/${academicyear}/${graduation}/${sem}`
-        )
-        if (response.data) {
-          console.log("api call : ", response.data);
-          setDataclass(response.data);
-          setMessage("");
-        }
-        else {
-          setDataclass(null);
-           setMessage("No data found.");
-        }
-        }
-        catch(error) {
-          setDataclass(null);
-        setMessage("Error occurred while fetching data.");
-        setDataclass(null);
-        };
-      }
-    }
-
-  const handlechangegraduation = (e) => {
-    if (e.target.value === "Btech") setgraduatevalue(1);
-    else setgraduatevalue(0);
-    setgraduation(e.target.value);
-  };
-
   const goingback = () => {
     if (userLoginStatus) navigate("/adminpage");
     else navigate("/");
@@ -238,26 +279,28 @@ function ClassTimeTable() {
       <hr />
       <div className="row m-2">
         <div className="col-lg-2 col-sm-12 col-md-4 p-3">
-          <Form.Select value={academicyear} onChange={handlechangeacademicyear}>
-            <option>Academic year</option>
-            {keys.map((key, index) => (
+          <Form.Select value={academicyear} onChange={handlechangeacademicyear} isInvalid={!!academicyearError}>
+          <option>Academic year</option>
+          {keys.map((key, index) => (
               <option key={index} value={key}>
                 {key}
               </option>
             ))}
-          </Form.Select>
+          <Form.Control.Feedback type="invalid">{academicyearError}</Form.Control.Feedback>
+        </Form.Select>
         </div>
         <div className="col-lg-2 col-sm-12 col-md-4 p-3">
-          <Form.Select value={graduation} onChange={handlechangegraduation}>
-            <option>select course</option>
-            <option value="Btech">UG</option>
+          <Form.Select value={graduation} onChange={handlechangegraduation} isInvalid={!!graduationError}>
+          <option>select course</option>
+          <option value="Btech">UG</option>
             <option value="Mtech">PG</option>
-          </Form.Select>
+          <Form.Control.Feedback type="invalid">{graduationError}</Form.Control.Feedback>
+        </Form.Select>
         </div>
         <div className="col-lg-2 col-sm-12 col-md-4 p-3">
-          <Form.Select value={year} onChange={handlechangeyear}>
-            <option>select year</option>
-            <option value="1">I</option>
+          <Form.Select value={year} onChange={handlechangeyear} isInvalid={!!yearError}>
+          <option>select year</option>
+          <option value="1">I</option>
             <option value="2">II</option>
             {graduatevalue === 1 && (
               <>
@@ -265,12 +308,13 @@ function ClassTimeTable() {
                 <option value="4">IV</option>
               </>
             )}
-          </Form.Select>
+          <Form.Control.Feedback type="invalid">{yearError}</Form.Control.Feedback>
+        </Form.Select>
         </div>
         <div className="col-lg-2 col-sm-12 col-md-4 p-3">
-          <Form.Select value={branch} onChange={handlechangebranch}>
-            <option>select branch</option>
-            <option value="aiml">AIML</option>
+          <Form.Select value={branch} onChange={handlechangebranch} isInvalid={!!branchError}>
+          <option>select branch</option>
+          <option value="aiml">AIML</option>
             <option value="cse">CSE</option>
             <option value="csbs">CSBS</option>
             <option value="it">IT</option>
@@ -281,30 +325,31 @@ function ClassTimeTable() {
             <option value="eie">EIE</option>
             <option value="civil">CIVIL</option>
             <option value="mech">MECH</option>
-          </Form.Select>
+          <Form.Control.Feedback type="invalid">{branchError}</Form.Control.Feedback>
+        </Form.Select>
         </div>
         <div className="col-lg-2 col-sm-12 col-md-4 p-3">
-          <Form.Select value={semester} onChange={handlechangesem}>
-            <option>select sem</option>
-            <option value="1">1</option>
+          <Form.Select value={semester} onChange={handlechangesem} isInvalid={!!semesterError}>
+          <option>select sem</option>
+          <option value="1">1</option>
             <option value="2">2</option>
-          </Form.Select>
+          <Form.Control.Feedback type="invalid">{semesterError}</Form.Control.Feedback>
+        </Form.Select>
         </div>
         <div className="col-lg-2 col-sm-12 col-md-4 p-3">
-          <Form.Select value={sec} onChange={handlechangesec}>
-            <option>select section</option>
-            <option value="1">A</option>
+          <Form.Select value={sec} onChange={handlechangesec} isInvalid={!!secError}>
+          <option>select section</option>
+          <option value="1">A</option>
             <option value="2">B</option>
             <option value="3">C</option>
             <option value="4">D</option>
-          </Form.Select>
+          <Form.Control.Feedback type="invalid">{secError}</Form.Control.Feedback>
+        </Form.Select>
         </div>
-
         <div className="col-lg-2 col-sm-12 col-md-4 p-3">
           <Button className="w-100 btn-success" onClick={handleSearch}>
             SEARCH
           </Button>
-          {/* <Button className='col-lg-5  btn-danger' onClick={goingback}>GOBACK</Button> */}
         </div>
       </div>
       {message && <h3>{message}</h3>}

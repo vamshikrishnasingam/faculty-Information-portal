@@ -142,11 +142,15 @@ freehoursapp.get(
             if (!d[time].every((opt) => years.includes(opt))) {
               value = false;
             }
+            if(years[0]==='0')
+            value=false;
           }
           if (events?.[time]) {
             if (!years.includes(events[time])) {
               value = false;
             }
+            if(years[0]==='0')
+            value=false;
           }
         });
         console.log(ele.username, d, events, value)

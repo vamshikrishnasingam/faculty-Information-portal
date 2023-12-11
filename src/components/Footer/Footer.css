@@ -1,8 +1,10 @@
 footer {
     padding: 20px;
     text-align: center;
-     background-color: #50d8d7;
-    background-image: linear-gradient(-316deg, #50d8d7 0%, #923993 74%);
-    opacity: 70%;
+    background-color:teal;
+     background-image: linear-gradient(-135deg, #3eb2b2 10%, #7f2981 40%);
+     /* background-image: url("/public/media/87399.jpg"); */
+
+    opacity: 1;
     color:azure;
   }

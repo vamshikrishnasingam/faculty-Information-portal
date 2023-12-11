@@ -153,6 +153,15 @@ function FreeFaculty() {
     }
     console.log(parts);
 
+      if (selectedOptions.length === 0) {
+        // If the list is empty, add '0' to it
+        setSelectedOptions(['0']);
+      } else if (selectedOptions.includes('0') && selectedOptions.length > 1) {
+        // If '0' is already in the list and there are other elements, remove '0'
+        const updatedOptions = selectedOptions.filter((option) => option !== '0');
+        setSelectedOptions(updatedOptions);
+      }
+    console.log(selectedOptions)
     try {
       const response = await axios
         .get(`/freehours-api/freehours-get/${date}/${parts}/${selectedOptions}`)
@@ -303,7 +312,7 @@ function FreeFaculty() {
                   </span>
                   <Button
                     onClick={handleDownload}
-                    className="p-3 btn-secondary"
+                    className="p-3 btn-success"
                   >
                     Download
                   </Button>
