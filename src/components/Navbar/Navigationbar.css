@@ -3,8 +3,8 @@
     /* background-color: #82001a; */
     /* background-image: url("/public/media/navbg2.jpg"); */
     /* background: linear-gradient(-225deg, #7742B2 0%, #F180FF 52%, #FD8BD9 100%); */
-    background-color:teal;
-    background-image: linear-gradient(-316deg, #3eb2b2 10%, #7f2981 40%);
+    /* background-color:teal;
+    background-image: linear-gradient(-316deg, #3eb2b2 10%, #7f2981 40%); */
     /* background-image: url("/public/media/87399.jpg"); */
     opacity:1;
 }
@@ -23,6 +23,11 @@
     transition: transform 0.3s ease;
 }
 .btn:hover {
+    border: 1px solid white;
     background-color:teal;
     transform: translateY(-4px);
+}
+.btn:active {
+  transition: 0.3s;
+  transform: scale(0.93);
 }
