@@ -14,8 +14,7 @@ function NavigationBar() {
     config: { duration: 500 },
   });
 
-  let [, , userLoginStatus, , logoutUser] =
-    useContext(loginContext);
+  let [, , userLoginStatus, , logoutUser] = useContext(loginContext);
 
   return (
     <animated.div style={animationProps}>
@@ -26,52 +25,45 @@ function NavigationBar() {
           expand={expand}
           className="nav-bar sticky-top p-2"
         >
-          <Container fluid className="bg bg-secondary bg-opacity-50">
-            <div className="bg bg-secondary bg-opacity-50 d-flex ">
-              <div className="m-3">
-                {userLoginStatus ? (
-                  <NavLink
-                    to="/adminpage"
-                    className="text-decoration-none text-white"
-                  >
-                    <img src="media/home.png" alt="" width="40" height="40" />
-                  </NavLink>
-                ) : (
-                  <NavLink to="/" className="text-decoration-none text-white">
-                    <img
-                      src="media/home.png"
-                      alt="logo"
-                      width="40"
-                      height="40"
-                    />
-                  </NavLink>
-                )}
-              </div>
-              <Navbar.Brand>
-                {userLoginStatus ? (
-                  <NavLink
-                    to="/adminpage"
-                    className="text-decoration-none text-white fs-1"
-                  >
-                    VNRVJIET
-                  </NavLink>
-                ) : (
-                  <NavLink
-                    to="/"
-                    className="text-decoration-none text-white fs-1 p-1"
-                  >
-                    VNRVJIET
-                  </NavLink>
-                )}
-              </Navbar.Brand>
+          <Container fluid>
+            <div className="m-3">
+              {userLoginStatus ? (
+                <NavLink
+                  to="/adminpage"
+                  className="text-decoration-none text-white"
+                >
+                  <img src="media/home.png" alt="" width="40" height="40" />
+                </NavLink>
+              ) : (
+                <NavLink to="/" className="text-decoration-none text-white">
+                  <img src="media/home.png" alt="logo" width="40" height="40" />
+                </NavLink>
+              )}
             </div>
+            <Navbar.Brand>
+              {userLoginStatus ? (
+                <NavLink
+                  to="/adminpage"
+                  className="text-decoration-none text-white fs-1"
+                >
+                  VNRVJIET
+                </NavLink>
+              ) : (
+                <NavLink
+                  to="/"
+                  className="text-decoration-none text-white fs-1"
+                >
+                  VNRVJIET
+                </NavLink>
+              )}
+            </Navbar.Brand>
             <Navbar.Toggle />
             <Navbar.Collapse className="collapse-nav">
               <Nav className="ms-auto p-3">
                 {userLoginStatus ? (
                   <></>
                 ) : (
-                  <div className="bg bg-secondary bg-opacity-50 p-2">
+                  <div>
                     <NavLink
                       to="/"
                       className="fa nav-link text-white btn btn-success m-2"
@@ -82,19 +74,19 @@ function NavigationBar() {
                 )}
                 {userLoginStatus ? (
                   <>
-                    <div className="bg bg-secondary bg-opacity-50 p-1">
+                    <div>
                       <NavLink
                         to="/adminpage"
-                        className="fa text-white nav-link btn   m-2"
+                        className="fa text-white nav-link btn btn-success m-2"
                       >
                         <i className="fa fa-sign-in fa-fw "></i>
                         ADMINPAGE
                       </NavLink>
                     </div>
-                    <div className="bg bg-secondary bg-opacity-50">
+                    <div>
                       <NavLink
                         to="/admin-login"
-                        className="fa text-white nav-link btn  p-1  m-2"
+                        className="fa text-white nav-link btn btn-success m-2"
                         onClick={logoutUser}
                       >
                         <i className="fa fa-sign-in fa-fw "></i>
@@ -103,12 +95,24 @@ function NavigationBar() {
                     </div>
                   </>
                 ) : (
-                  <div className="bg bg-secondary bg-opacity-50 p-2">
+                  <div>
                     <NavLink
                       to="/admin-login"
                       className="fa text-white nav-link btn btn-success m-2"
                     >
                       <i className="fa fa-user fa-fw "></i>ADMIN-LOGIN
+                    </NavLink>
+                  </div>
+                )}
+                {userLoginStatus ? (
+                  <></>
+                ) : (
+                  <div>
+                    <NavLink
+                      to="/contactus"
+                      className="fa nav-link text-white btn btn-success m-2"
+                    >
+                      <i className="fa fa-home fa-fw"></i>CONTACT US
                     </NavLink>
                   </div>
                 )}

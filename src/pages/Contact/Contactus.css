@@ -1,0 +1,46 @@
+/* ContactUsForm.css */
+
+.custom-container {
+  max-width: 600px;
+  margin: 50px auto;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+.custom-heading {
+  color: #333;
+}
+
+.custom-form {
+  display: grid;
+  gap: 20px;
+}
+
+.custom-label {
+  font-weight: bold;
+}
+
+.custom-input,
+.custom-textarea {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.custom-textarea {
+  resize: vertical;
+}
+
+.custom-submit {
+  background-color: #4caf50;
+  color: #fff;
+  cursor: pointer;
+}
+
+.custom-submit:hover {
+  background-color: #45a049;
+}

@@ -22,6 +22,7 @@ import AdminAccess from './pages/Admin-Page/Admin-Access/AdminAccess';
 import ResetPassword from './pages/loginPage/ResetPassword/ResetPassword';
 import History from './pages/History/History';
 import SideNav from './components/SideNav/SideNav';
+import Contactus from "./pages/Contact/Contactus";
 import Home1 from './pages/Main-Home/Home1';
 function App() {
   
@@ -175,6 +176,10 @@ function App() {
         {
           path: "/classtt",
           element: <ClassTimeTable />,
+        },
+        {
+          path: "/contactus",
+          element: <Contactus/>,
         },
         {
           path: "/reset-password",

@@ -23,7 +23,7 @@ const fadeInScaleUpAnimation = useSpring({
   
   return (
     <animated.div>
-      <div className="d-flex">
+      <div className="d-flex bd1">
         <div className="sidebar">
           <SideNav/>
         </div>
