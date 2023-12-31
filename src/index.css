@@ -3,10 +3,11 @@
 body {
   background-image: url("/public/media/bodyBackground2.png");
   background-size: cover;
-  margin: 0;
   font-family: "Barlow Condensed", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-box-reflect: right;
+
 }
 
 code {

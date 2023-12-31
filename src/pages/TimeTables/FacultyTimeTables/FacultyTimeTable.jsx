@@ -25,6 +25,7 @@ const FacultyTimeTable = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedResult, setSelectedResult] = useState(null);
   const [pegasus,setpegasus]=useState(null)
+  const [searchClicked, setSearchClicked] = useState(false); // New state variable
 
   useEffect(() => {
     const fetchlist = async () => {
@@ -42,6 +43,7 @@ const FacultyTimeTable = () => {
   }, []);
 
   const handleSearch = async () => {
+    setSearchClicked(true); // Set searchClicked to true when search button is clicked
     if (!searchId){
       setMessage("Please Enter ID")
     }
@@ -152,7 +154,9 @@ const FacultyTimeTable = () => {
           <div className="search-bar-container">
             <input
               type="text"
-              className="search-input form-control me-2"
+              className={`search-input form-control me-2 ${
+                searchClicked && !searchId ? "is-invalid" : ""
+              }`}
               value={searchTerm}
               onChange={handleSearchInputChange}
               placeholder="Enter faculty ID"
@@ -185,7 +189,6 @@ const FacultyTimeTable = () => {
           </Button>
         </div>
       </div>
-      {message && <h3>{message}</h3>}
       {data && pegasus && pegasus.length > 0 && (
         <div className="table-container">
           <div className="row mx-auto">
@@ -248,9 +251,11 @@ const FacultyTimeTable = () => {
                                 </p>
                               </div>
                             </OverlayTrigger>
+                            {console.log("keys : ",Object.keys(data).slice(4))}
                             {data?.["special"]?.[row[0].classtype]?.[
                               times[cellIndex - 1].replace(/\./g, "_")
-                            ] && (
+                            ] && 
+                            (
                               <p className="text-danger">{`[${
                                 data?.["special"]?.[row[0].classtype]?.[
                                   times[cellIndex - 1].replace(/\./g, "_")

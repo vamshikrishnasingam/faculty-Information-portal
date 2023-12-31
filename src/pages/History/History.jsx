@@ -36,6 +36,10 @@ function History() {
   const [downloaddata, setdownloaddata] = useState([]);
   const [filterbranches, setbranchesfilter] = useState("")
   const [DisplayData, setDisplayData] = useState([]);
+  const [academicyearError, setAcademicyearError] = useState("");
+  const [semesterError, setSemesterError] = useState("");
+  const [factypeError, setFactypeError] = useState('');
+  const [filterbranchesError, setFilterbranchesError] = useState('');
   const branchesList = ['aiml', 'cse', 'csbs', 'civil', 'ds', 'aids', 'ece', 'eee', 'eie', 'it', 'mech'];
   const filterList = ['aiml', 'cse', 'csbs', 'civil', 'ds', 'aids', 'ece', 'eee', 'eie', 'it', 'mech'];
   const factypes = ['PROF &HOD', 'PROFESSOR', 'ASST. PROF', 'ASSOC.PROF'];
@@ -43,26 +47,26 @@ function History() {
   const seclist = ['1', '2', '3', '4']
 
   useEffect(() => {
-    if (type === "") {
+    if (type === "" || sem === "" || academicyear === "") {
       setclassvalue(0)
       setfacvalue(0)
     }
-    if (type === "class") {
+    else if (type === "class") {
       setclassvalue(1)
       setfacvalue(0)
     }
-    if (type === 'faculty') {
+    else if (type === 'faculty') {
       setclassvalue(0)
       setfacvalue(1)
     }
-  }, [type])
+  }, [type, sem, academicyear])
   useEffect(() => {
     if (classtt.hasOwnProperty('returnarray')) {
       sctt(classtt.returnarray)
       setad(classtt.fa)
       setnad(classtt.nfa)
     }
-    else{
+    else {
       sctt([])
       setad([])
       setnad([])
@@ -126,6 +130,8 @@ function History() {
   };
   const handlechangesem = (e) => {
     setsem(e.target.value)
+    setSemesterError("");
+
   }
   const handlechangetype = (e) => {
     settype(e.target.value)
@@ -133,6 +139,7 @@ function History() {
   }
   const handlechangeacademicyear = (e) => {
     setacademicyear(e.target.value)
+    setAcademicyearError("");
   }
   const handleDownloadclass = async () => {
     let classkeys = []
@@ -163,6 +170,7 @@ function History() {
       // Add a sheet to the workbook
       const headers = [[`CLASS : ${sheetName}`], [`SEMESTER : ${sem}`], [`COURSE : ${graduation}`], [`ACADEMIC YEAR : ${academicyear}`], , []]; // Add your extra headers here
       sheetData.unshift(...headers);
+      sheetData.shift([]);
       const ws = XLSX.utils.aoa_to_sheet(sheetData);
       XLSX.utils.book_append_sheet(wb, ws, sheetName);
     }
@@ -204,8 +212,20 @@ function History() {
     sortFacultyData();
   }, [selectedRows]);
   useEffect(() => {
+    setAcademicyearError("");
+    setSemesterError("");
+    let isValid = true;
 
-  })
+    if (!academicyear) {
+      setAcademicyearError("Please select Academic year");
+      isValid = false;
+    }
+    if (!sem) {
+      setSemesterError("Please select Semester");
+      isValid = false;
+    }
+
+  }, [type])
   useEffect(() => {
     handleTypeFilter();
   }, [filterbranches])
@@ -245,7 +265,7 @@ function History() {
   const handleSelectedFaculty = async () => {
     const wb = XLSX.utils.book_new();
     const sheetData = [];
-    const times = ["9-10", "10-11", "11-12", "12-1", "12.40-1.40", "1.40-2.40", "2.40-3.40", "3.40-4.40"];
+    const times = ["9-10", "10-11", "11-12", "12-1", "12_40-1_40", "1_40-2_40", "2_40-3_40", "3_40-4_40"];
     const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
     for (const key in sortedfacultyData) {
       let a = [];
@@ -274,6 +294,8 @@ function History() {
       let headers = [[`USERNAME : ${sortedfacultyData[key].username}`], [`NAME : ${sortedfacultyData[key].name}`], []];
       sheetfacultyData.unshift(...headers);
       sheetData.push(...sheetfacultyData);
+      let emptyarray = [[], []]
+      sheetData.push(...emptyarray)
     }
     const ws = XLSX.utils.aoa_to_sheet(sheetData);
     XLSX.utils.book_append_sheet(wb, ws, "timetables");
@@ -328,13 +350,14 @@ function History() {
       item.facultytype.toLowerCase().includes(searchTerm.toLowerCase())
   );
   const handlechangefactype = (e) => {
-    const optionId = e.target.id;
-    const isChecked = e.target.checked;
+    const { optionId, isChecked } = e.target;
+    const isValid = isChecked;
     if (optionId === 'selectAll') {
       handleToggleAlltypes(isChecked);
-
+      setFactypeError('');
     } else {
       settypes((prevtypes) => {
+        setFactypeError(isValid ? '' : 'Please select at least one faculty type.');
         if (isChecked && !prevtypes.includes(optionId)) {
           return [...prevtypes, optionId];
         } else if (!isChecked) {
@@ -395,7 +418,7 @@ function History() {
   const handleToggleAlltypes = (isChecked) => {
     settypes(isChecked ? [...factypes] : []);
   };
-   const diagonalSlideAnimation = useSpring({
+  const diagonalSlideAnimation = useSpring({
     to: { transform: "translateX(10px) translateY(10px)" },
     from: { transform: "translateX(-5px) translateY(-5px)" },
     config: { duration: 400 },
@@ -410,18 +433,20 @@ function History() {
           <div className="col-lg-4 col-sm-12 col-md-4 p-3">
             <Form.Select
               value={academicyear}
-              onChange={handlechangeacademicyear}
+              onChange={handlechangeacademicyear} isInvalid={!!academicyearError}
             >
               <option>Academic year</option>
               <option value="2023-2024">2023-2024</option>
               <option value="2024-2025">2024-2025</option>
+              <Form.Control.Feedback type="invalid">{academicyearError}</Form.Control.Feedback>
             </Form.Select>
           </div>
           <div className="col-lg-4 col-sm-12 col-md-4 p-3">
-            <Form.Select value={sem} onChange={handlechangesem}>
+            <Form.Select value={sem} onChange={handlechangesem} isInvalid={!!semesterError}>
               <option>select sem</option>
               <option value="1">1</option>
               <option value="2">2</option>
+              <Form.Control.Feedback type="invalid">{semesterError}</Form.Control.Feedback>
             </Form.Select>
           </div>
           <div className="col-lg-4 col-sm-12 col-md-4 p-3">
@@ -565,7 +590,7 @@ function History() {
                     className="container m-3 history-results"
                     style={{ "overflow-x": "auto" }}
                   >
-                    {dv === 1 && (
+                    {dv === 1 ? (
                       <div>
                         <table>
                           <thead>
@@ -596,32 +621,9 @@ function History() {
                           </tbody>
                         </table>
                       </div>
-                    )}
-                    {dv === 0 && (
-                      <div>
-                        <table>
-                          <thead>
-                            <tr>
-                              <th style={{ width: "40%", padding: "8px" }}>
-                                Academic Year
-                              </th>
-                              <th style={{ width: "20%", padding: "8px" }}>
-                                Course
-                              </th>
-                              <th style={{ width: "20%", padding: "8px" }}>
-                                Semester
-                              </th>
-                              <th style={{ width: "20%", padding: "8px" }}>
-                                Class
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <div>
-                              <td></td>
-                            </div>
-                          </tbody>
-                        </table>
+                    ) : (
+                      <div className="border p-4 border-4 border-white text-white text-center container" style={{width : "50%" , overflowY: "auto", fontSize: "2rem"}}>
+                        No data found
                       </div>
                     )}
                   </div>
@@ -634,7 +636,7 @@ function History() {
                     className="container m-3 history-results"
                     style={{ "overflow-x": "auto" }}
                   >
-                    {ndv === 1 && (
+                    {ndv === 1 ? (
                       <div style={{ "overflow-y": "auto" }}>
                         <table style={{ width: "100%" }}>
                           <thead>
@@ -665,32 +667,9 @@ function History() {
                           </tbody>
                         </table>
                       </div>
-                    )}
-                    {ndv === 0 && (
-                      <div style={{ overflowY: "auto" }}>
-                        <table style={{ width: "100%" }}>
-                          <thead>
-                            <tr>
-                              <th style={{ width: "40%", padding: "8px" }}>
-                                Academic Year
-                              </th>
-                              <th style={{ width: "20%", padding: "8px" }}>
-                                Course
-                              </th>
-                              <th style={{ width: "20%", padding: "8px" }}>
-                                Semester
-                              </th>
-                              <th style={{ width: "20%", padding: "8px" }}>
-                                Class
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <div>
-                              <td></td>
-                            </div>
-                          </tbody>
-                        </table>
+                    ) : (
+                      <div className='border p-4 border-4 border-white text-white text-center container' style={{width : "50%" , overflowY: "auto", fontSize: "2rem"}}>
+                        No data found
                       </div>
                     )}
                   </div>
@@ -718,18 +697,20 @@ function History() {
                         <Form.Check
                           id="selectAll"
                           label="Select All"
-                          onChange={(e) => handlechangefactype(e)}
+                          onChange={handlechangefactype}
                           checked={factypearray.length === factypes.length}
+                          isInvalid={factypeError !== ''}
                         />
                         {factypes.map((type) => (
                           <Form.Check
                             key={type}
                             id={type}
                             label={type.toUpperCase()}
-                            onChange={(e) => handlechangefactype(e)}
+                            onChange={handlechangefactype}
                             checked={factypearray.includes(type)}
                           />
                         ))}
+                        <Form.Control.Feedback type="invalid">{factypeError}</Form.Control.Feedback>
                       </div>
                     </Form>
                   </Dropdown.Menu>
@@ -758,20 +739,20 @@ function History() {
                           <Form.Check
                             id="selectAll"
                             label="Select All"
-                            onChange={(e) => handlechangefilter(e)}
-                            checked={
-                              filterbranches.length === filterList.length
-                            }
+                            onChange={handlechangefilter}
+                            checked={filterbranches.length === filterList.length}
+                            isInvalid={filterbranchesError !== ''}
                           />
                           {filterList.map((filter) => (
                             <Form.Check
                               key={filter}
                               id={filter}
                               label={filter.toUpperCase()}
-                              onChange={(e) => handlechangefilter(e)}
+                              onChange={handlechangefilter}
                               checked={filterbranches.includes(filter)}
                             />
                           ))}
+                          <Form.Control.Feedback type="invalid">{filterbranchesError}</Form.Control.Feedback>
                         </div>
                       </Form>
                     </Dropdown.Menu>
