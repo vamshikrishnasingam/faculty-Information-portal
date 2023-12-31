@@ -14,8 +14,7 @@ function NavigationBar() {
     config: { duration: 500 },
   });
 
-  let [, , userLoginStatus, , logoutUser] =
-    useContext(loginContext);
+  let [, , userLoginStatus, , logoutUser] = useContext(loginContext);
 
   return (
     <animated.div style={animationProps}>
@@ -50,7 +49,10 @@ function NavigationBar() {
                   VNRVJIET
                 </NavLink>
               ) : (
-                <NavLink to="/" className="text-decoration-none text-white fs-1">
+                <NavLink
+                  to="/"
+                  className="text-decoration-none text-white fs-1"
+                >
                   VNRVJIET
                 </NavLink>
               )}
@@ -99,6 +101,18 @@ function NavigationBar() {
                       className="fa text-white nav-link btn btn-success m-2"
                     >
                       <i className="fa fa-user fa-fw "></i>ADMIN-LOGIN
+                    </NavLink>
+                  </div>
+                )}
+                {userLoginStatus ? (
+                  <></>
+                ) : (
+                  <div>
+                    <NavLink
+                      to="/contactus"
+                      className="fa nav-link text-white btn btn-success m-2"
+                    >
+                      <i className="fa fa-home fa-fw"></i>CONTACT US
                     </NavLink>
                   </div>
                 )}

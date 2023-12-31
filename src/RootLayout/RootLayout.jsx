@@ -52,14 +52,17 @@ function RouteLayout() {
       ) : (
         // Render content once data is loaded
         <div className="content-container rot">
-          <NavigationBar />
+          <div>
+              <NavigationBar />
+
+          </div>
           <div className="page">
             {/* Render your components based on designData */}
             <Outlet />
           </div>
-          <div className="footer-container">
+          {/* <div className="footer-container">
             <Footer />
-          </div>
+          </div> */}
         </div>
       )}
     </animated.div>

@@ -14,3 +14,9 @@
 .page {
   overflow: overlay; /* Enable overlay scrolling */
 }
+
+/* .bd1{
+  background-image: url("/public/media/bodyBackground3.jpg");
+  background-size: cover;
+  margin: 0;
+} */
