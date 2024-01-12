@@ -10,16 +10,48 @@ classfacultyApp.get("/classfaculty-data/:id", expressAsyncHandler(async (req, re
     res.json(matchedfaculty)
 }))
 
+classfacultyApp.get("/delete_data/:academicyear/:graduation/:semester", expressAsyncHandler(async (req, res) => {
+    const acad = req.params.academicyear;
+    const grad = req.params.graduation;
+    const sem = req.params.semester;
+    const classTimeTableObj = req.app.get("classTimeTableObj")
+    classtt = await classTimeTableObj.find({}).toArray()
+    for (const element of classtt) {
+        key = Object.keys(element)[1];
+        yearkey = key[0];
+        semkey = `${yearkey}-${sem}`;
+        // const result = await classTimeTableObj.updateMany(
+        //     { $unset: { [`${key}.${acad}.${grad}.${semkey}`]: 1 } }
+        //   );
+    }
+    const facultyTimeTableObj = req.app.get("facultyTimeTableObj");
+    factt = await facultyTimeTableObj.find({}).toArray();
+    for (const element of factt) {
+        const key = element._id;  // Assuming _id is a valid ObjectId
+        // const p = await facultyTimeTableObj.updateOne(
+        //     { _id: key },
+        //     { $unset: { [`${acad}.${sem}`]: 1 } }
+        // );
+    }
+    const freeHoursObj = req.app.get("freeHoursObj");
+    freehrs = await freeHoursObj.find({}).toArray();
+    console.log(freehrs)
+    for (const element of freehrs) {
+        const key = element._id;  // Assuming _id is a valid ObjectId
+        console.log('first')
+        const p = await freeHoursObj.deleteOne(
+            { _id: key }
+        );
+        console.log(p)
+    }
 
-
+}))
 function nestedPropertyExists(obj, keys) {
     return keys.reduce((acc, curr) => acc && acc[curr], obj) !== undefined;
 }
-
 function getNestedValue(obj, keys) {
     return keys.reduce((acc, curr) => acc && acc[curr], obj);
 }
-
 classfacultyApp.get("/classtt-data/:keys/:mainkey", expressAsyncHandler(async (req, res) => {
     const classFacultyObj = req.app.get("classFacultyObj");
     const fa = [];
@@ -89,7 +121,7 @@ classfacultyApp.post("/classtt-insert", expressAsyncHandler(async (req, res) => 
                 [key]: classinfo,
             },
         };
-        await classFacultyObj.updateOne({ _id}, updateObj);
+        await classFacultyObj.updateOne({ _id }, updateObj);
     } catch (error) {
     }
 

@@ -2,17 +2,42 @@ import React, { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
 import axios from "axios";
 import { useSpring, animated } from 'react-spring'
-import { Button } from "react-bootstrap";
+import { OverlayTrigger, Popover, Form, Button } from "react-bootstrap";
+
 
 function ExcelUploader() {
   const [file, setFile] = useState(null);
   const [list, setList] = useState(null);
   const [table, setTable] = useState([]);
   const [faclist, setFacList] = useState([]);
+  const [delval, setdelvalue] = useState(0)
+  const [graduation, setgraduation] = useState("");
+  const [semester, setsemester] = useState("");
+  const [academicyear, setacademicyear] = useState("");
+  const [academicyearError, setAcademicyearError] = useState("");
+  const [graduationError, setGraduationError] = useState("");
+  const [semesterError, setSemesterError] = useState("");
+  const [keys, setkeys] = useState([])
   let len;
   let sheetcount = 0;
   let tabledata = [];
 
+  useEffect(()=>{
+    const fetchkeys=async()=>{
+      await axios
+      .get(
+        `/classtimetable-api/academicyearkeys`
+      )
+      .then((response) => {
+        setkeys(response.data);
+        console.log('keys : ',response.data)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    }
+    fetchkeys();
+  },[])
   const fadeOutSlideUpAnimation = useSpring({
     to: async (next) => {
       await next({ opacity: 1, transform: "translateY(-10px)" });
@@ -20,7 +45,6 @@ function ExcelUploader() {
     from: { opacity: 0, transform: "translateY(20px)" },
     config: { duration: 700 },
   });
-
   const updatedata = async (dt1, dt2) => {
     const obj = {};
     const dtp = JSON.parse(JSON.stringify(dt2));
@@ -51,7 +75,6 @@ function ExcelUploader() {
         console.log("err in user login:", err);
       });
   };
-
   const listupdate = async () => {
     await axios
       .post("http://localhost:5000/facultylist-api/facultydata", faclist)
@@ -62,17 +85,44 @@ function ExcelUploader() {
         console.log("err in user login:", err);
       });
   };
-
-  const handleReset=async()=>{
-    let response=await axios
-    .delete("http://localhost:5000/facultytimetable-api/reset")
-    .then((response) => {
-      console.log("Updated data is reset: ");
-    })
-    .catch((err) => {
-      console.log("err in resetting:", err);
-    });
+  const handleReset = async () => {
+    let response = await axios
+      .delete("http://localhost:5000/facultytimetable-api/reset")
+      .then((response) => {
+        console.log("Updated data is reset: ");
+      })
+      .catch((err) => {
+        console.log("err in resetting:", err);
+      });
   }
+  const handleDelete = async () => {
+    setAcademicyearError("");
+    setGraduationError("");
+    setSemesterError("");
+
+    let isValid = true;
+
+    if (!academicyear) {
+      setAcademicyearError("Please select Academic year");
+      isValid = false;
+    }
+    if (!graduation) {
+      setGraduationError("Please select Course");
+      isValid = false;
+    }
+    if (!semester) {
+      setSemesterError("Please select Semester");
+      isValid = false;
+    }
+
+    if (isValid) {
+        await axios.get(`/classfaculty-api/delete_data/${academicyear}/${graduation}/${semester}`)
+      .then((response) => {
+      })
+      .catch((error) => {
+      });
+    }
+  };
 
   useEffect(() => {
     dataupdate();
@@ -152,6 +202,21 @@ function ExcelUploader() {
     };
     reader.readAsBinaryString(selectedFile);
   };
+
+  const handlechangegraduation = (e) => {
+    setgraduation(e.target.value);
+    setGraduationError("");
+  };
+  const handlechangesem = (e) => {
+    setsemester(e.target.value);
+    setSemesterError("");
+  };
+  const handlechangeacademicyear = (e) => {
+    setacademicyear(e.target.value);
+    setAcademicyearError("");
+  };
+
+
   return (
     <animated.div style={fadeOutSlideUpAnimation} className="row">
       <div className="col-sm-12 col-lg-6 col-md-6">
@@ -162,6 +227,44 @@ function ExcelUploader() {
         <h1>Inser the faculty list</h1>
         <div className="row ">
           <input type="file" accept=".xlsx" onChange={handleListUpload} />
+        </div>
+        <h1> Delete the list inserted</h1>
+        <div className="row ">
+        <div className="col-lg-2 col-sm-12 col-md-4 p-3">
+          <Form.Select value={academicyear} onChange={handlechangeacademicyear} isInvalid={!!academicyearError}>
+          <option>Academic year</option>
+          {keys.map((key, index) => (
+              <option key={index} value={key}>
+                {key}
+              </option>
+            ))}
+          <Form.Control.Feedback type="invalid">{academicyearError}</Form.Control.Feedback>
+        </Form.Select>
+        </div>
+          <div className="col-lg-2 col-sm-12 col-md-4 p-3">
+            <Form.Select value={graduation} onChange={handlechangegraduation} isInvalid={!!graduationError}>
+              <option>select course</option>
+              <option value="Btech">UG</option>
+              <option value="Mtech">PG</option>
+              <Form.Control.Feedback type="invalid">{graduationError}</Form.Control.Feedback>
+            </Form.Select>
+          </div>
+          <div className="col-lg-2 col-sm-12 col-md-4 p-3">
+          <Form.Select value={semester} onChange={handlechangesem} isInvalid={!!semesterError}>
+          <option>select sem</option>
+          <option value="1">1</option>
+            <option value="2">2</option>
+          <Form.Control.Feedback type="invalid">{semesterError}</Form.Control.Feedback>
+        </Form.Select>
+        </div>
+          <div className="p-2">
+            <Button
+              variant="secondary"
+              className="col-sm-3 col-lg-3 col-md-4"
+              onClick={handleDelete}>
+              Delete data
+            </Button>
+          </div>
         </div>
       </div>
       <div className="col-sm-12 col-lg-6 col-md-6">
