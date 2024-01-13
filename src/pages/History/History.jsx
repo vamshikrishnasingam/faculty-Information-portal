@@ -40,12 +40,29 @@ function History() {
   const [semesterError, setSemesterError] = useState("");
   const [factypeError, setFactypeError] = useState('');
   const [filterbranchesError, setFilterbranchesError] = useState('');
+  const [keys,setkeys]=useState([]);
   const branchesList = ['aiml', 'cse', 'csbs', 'civil', 'ds', 'aids', 'ece', 'eee', 'eie', 'it', 'mech'];
   const filterList = ['aiml', 'cse', 'csbs', 'civil', 'ds', 'aids', 'ece', 'eee', 'eie', 'it', 'mech'];
   const factypes = ['PROF &HOD', 'PROFESSOR', 'ASST. PROF', 'ASSOC.PROF'];
   const yearlist = ['1', '2', '3', '4']
   const seclist = ['1', '2', '3', '4']
 
+  useEffect(()=>{
+    const fetchkeys=async()=>{
+      await axios
+      .get(
+        `/classtimetable-api/academicyearkeys`
+      )
+      .then((response) => {
+        setkeys(response.data);
+        console.log('keys : ',response.data)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    }
+    fetchkeys();
+  },[])
   useEffect(() => {
     if (type === "" || sem === "" || academicyear === "") {
       setclassvalue(0)
@@ -436,8 +453,11 @@ function History() {
               onChange={handlechangeacademicyear} isInvalid={!!academicyearError}
             >
               <option>Academic year</option>
-              <option value="2023-2024">2023-2024</option>
-              <option value="2024-2025">2024-2025</option>
+              {keys.map((key, index) => (
+              <option key={index} value={key}>
+                {key}
+              </option>
+            ))}
               <Form.Control.Feedback type="invalid">{academicyearError}</Form.Control.Feedback>
             </Form.Select>
           </div>
