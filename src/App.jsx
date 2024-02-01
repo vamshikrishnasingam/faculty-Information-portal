@@ -24,7 +24,9 @@ import History from './pages/History/History';
 import SideNav from './components/SideNav/SideNav';
 import Contactus from "./pages/Contact/Contactus";
 import Home1 from './pages/Main-Home/Home1';
+import SVSSPK from './RootLayout/SVSSPK';
 function App() {
+
   
   const router = createBrowserRouter([
     {
@@ -66,6 +68,10 @@ function App() {
         {
           path: "/admin-login",
           element: <AdminLogin />,
+        },
+        {
+          path: "/svsspk",
+          element: <SVSSPK/>,
         },
         {
           path: "/faculty-login",
@@ -179,7 +185,7 @@ function App() {
         },
         {
           path: "/contactus",
-          element: <Contactus/>,
+          element: <Contactus />,
         },
         {
           path: "/reset-password",

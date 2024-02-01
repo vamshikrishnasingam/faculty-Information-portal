@@ -6,7 +6,7 @@ body {
   font-family: "Barlow Condensed", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
+  
 }
 
 code {
@@ -64,8 +64,8 @@ code {
 }
 
 tbody {
-  background-color: #50d8d7;
-  background-image: linear-gradient(316deg, #50d8d7 0%, #923993 74%);
+  color: black !important;
+  font-weight: bolder;
 }
 
 td,
@@ -82,9 +82,14 @@ tr:nth-child(odd) {
 	background-color: #50d8d7;
     background-image: linear-gradient(316deg, #50d8d7 0%, #923993 74%);
 } */
-
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+tr:nth-child(odd) {
+  background-color: #ddd;
+}
 td:hover {
-  background-color: var(--link-color);
+  background-color:#71b280;
 }
 
 th {
@@ -191,13 +196,11 @@ hr {
   /* Add any other styles for the popover with labs */
 }
 
-
-
 body::-webkit-scrollbar {
   width: 0px; /* Adjust the width as needed */
 }
 body::-webkit-scrollbar-thumb {
-  background-color: transparent; 
+  background-color: transparent;
 }
 
 body {
