@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { Dropdown } from "react-bootstrap";
@@ -9,14 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { loginContext } from "../../contexts/loginContext";
 import { useSpring, animated } from "react-spring";
 function FreeFaculty() {
-  let [currentUser, loginUser, userLoginStatus, loginErr, logoutUser] =
-    useContext(loginContext);
+  let [currentUser, loginUser, userLoginStatus, loginErr, logoutUser] = useContext(loginContext);
   let navigate = useNavigate();
-  let {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
   const [searchTime1, setSearchTime1] = useState("");
   const [searchTime2, setSearchTime2] = useState("");
   const [freeFaculty, setFreeFaculty] = useState("");
@@ -24,11 +18,17 @@ function FreeFaculty() {
   const [facultyvalue, setFacultyValue] = useState("");
   const [freeFacultyInfo, setFreeFacultyInfo] = useState("");
   const [date, setSelectedOption] = useState("");
-  const handleSelect = (selectedOptions) => {
-    console.log("Selected options:", selectedOptions);
-  };
+  const [dateError, setDateError] = useState("");
+  const [st1error, setst1error] = useState("");
+  const [st2error, setst2error] = useState("");
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [selectedOptionsError, setSelectedOptionsError] = useState("");
+  const initialRender = useRef(true);
+
+
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
+    setDateError("");
   };
 
   const handleDownload = () => {
@@ -50,7 +50,6 @@ function FreeFaculty() {
     URL.revokeObjectURL(url);
   };
 
-  const [selectedOptions, setSelectedOptions] = useState([]);
   const getdata = async () => {
     let array = [];
     setFreeFacultyInfo(array);
@@ -70,13 +69,16 @@ function FreeFaculty() {
       setFacultyValue("1");
       setFreeFacultyInfo(array);
     } else setFacultyValue("0");
-    handleSearch();
+    console.log(freeFacultyInfo)
   };
-  const handleSearchTime = async () => {
-    setSearchTime1(searchTime1);
-    setSearchTime2(searchTime2);
-    getdata();
-  };
+  useEffect(()=>{
+    if(freeFacultyInfo.length)
+    setFacultyValue('1')
+  else{
+    setFacultyValue('0')
+  }
+
+  },[freeFacultyInfo])
   const handleSearch = async () => {
     // Function to subtract minutes from a given time
     function adjustTime(time, minutes) {
@@ -84,18 +86,14 @@ function FreeFaculty() {
       const totalMinutes = parseInt(hour) * 60 + parseInt(minute) + minutes;
       const newHour = Math.floor(totalMinutes / 60);
       const newMinute = totalMinutes % 60;
-
       // Format the result
       const formattedHour = String(newHour).padStart(2, "0");
       const formattedMinute = String(newMinute).padStart(2, "0");
-
       return `${formattedHour}.${formattedMinute}`;
     }
 
     let dummysearchTime1 = adjustTime(searchTime1, -20); // 20 minutes earlier
     let dummysearchTime2 = adjustTime(searchTime2, 20); // 20 minutes later
-    console.log(dummysearchTime1, dummysearchTime2);
-
     const start = dummysearchTime1;
     const end = dummysearchTime2;
     const [startHour, startMinute = "00"] = start.split(".");
@@ -152,38 +150,89 @@ function FreeFaculty() {
       currentHour += 1;
     }
     console.log(parts);
-
-      if (selectedOptions.length === 0) {
-        // If the list is empty, add '0' to it
-        setSelectedOptions(['0']);
-      } else if (selectedOptions.includes('0') && selectedOptions.length > 1) {
-        // If '0' is already in the list and there are other elements, remove '0'
-        const updatedOptions = selectedOptions.filter((option) => option !== '0');
-        setSelectedOptions(updatedOptions);
-      }
+    // if (selectedOptions.length === 0) {
+    //   // If the list is empty, add '0' to it
+    //   setSelectedOptions(['0']);
+    // } else if (selectedOptions.includes('0') && selectedOptions.length > 1) {
+    //   // If '0' is already in the list and there are other elements, remove '0'
+    //   const updatedOptions = selectedOptions.filter((option) => option !== '0');
+    //   setSelectedOptions(updatedOptions);
+    // }
+    function hrtomin(time){
+      const [hours1, minutes1="0"] = time.split('.').map(Number);
+      return parseInt(hours1)*60+parseInt(minutes1)
+    }
     console.log(selectedOptions)
-    try {
-      const response = await axios
-        .get(`/freehours-api/freehours-get/${date}/${parts}/${selectedOptions}`)
-        .then((response) => {
-          console.log("Success:", response.data);
-          setFreeFaculty(response.data);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          setFreeFaculty(null);
-        });
-    } catch (error) {
-      console.log(error);
+    setDateError("");
+    setst1error("");
+    setst2error("");
+    setSelectedOptionsError("");
+    let isvalid = true;
+    if (date.trim() === "") {
+      setDateError("Please select a week");
+      isvalid = false;
+    }
+    if (searchTime1.length === 0) {
+      setst1error("please enter beginning time");
+      isvalid = false;
+    }
+    if (searchTime2.length === 0) {
+      setst2error("please enter ending time");
+      isvalid = false;
+    }
+    if(hrtomin(searchTime1)>24*60)
+    {
+      setst1error('please enter correct time')
+      isvalid=false;
+    }
+    if(hrtomin(searchTime2)>24*60)
+    {
+      setst2error('please enter correct time')
+      isvalid=false;
+    }
+    if (!selectedOptions.length) {
+      setSelectedOptionsError("please select any one option");
+      isvalid = false;
+    }
+    if(hrtomin(searchTime2)<=hrtomin(searchTime1))
+    {
+      setst2error("enter time in 24 hour format")
+      isvalid = false;
+    }
+
+    if (isvalid) {
+      try {
+        await axios
+          .get(`/freehours-api/freehours-get/${date}/${parts}/${selectedOptions}`)
+          .then((response) => {
+            console.log("Success:", response.data);
+            setFreeFaculty(response.data);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            setFreeFaculty(null);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    else{
+      setFreeFaculty(null)
     }
   };
+  useEffect(()=>{
+    if (initialRender.current) {
+      initialRender.current = false;
+      return;
+    }
+    getdata();
+  },[freeFaculty])
   useEffect(() => {
+    
+    if(date && selectedOptions.length && searchTime1!=="" && searchTime2!=="")
     handleSearch();
   }, [selectedOptions, searchTime1, searchTime2, date]);
-  const goingback = () => {
-    if (userLoginStatus) navigate("/adminpage");
-    else navigate("/");
-  };
+
   const handleyearchange = (event) => {
     const optionId = event.target.id;
     const isChecked = event.target.checked;
@@ -209,11 +258,12 @@ function FreeFaculty() {
       <h1 className="p-2 m-1 text-center text-white">FREE FACULTY</h1>
       <hr />
       <div className="row p-3 m-4">
-        <div className="col-lg-3 col-md-6 col-sm-12 p-3">
+        <div className="col-lg-2 col-md-6 col-sm-12 p-1">
           <Form.Select
             className="p-3"
             value={date}
             onChange={handleOptionChange}
+            isInvalid={!!dateError}
           >
             <option>-- Select day--</option>
             <option value="mon">monday</option>
@@ -222,40 +272,54 @@ function FreeFaculty() {
             <option value="thu">thursday</option>
             <option value="fri">friday</option>
             <option value="sat">saturday</option>
+            <Form.Control.Feedback type="invalid">{dateError}</Form.Control.Feedback>
           </Form.Select>
+          {
+            dateError && (
+              <div className="invalid-feedback">{dateError}</div>
+            )
+          }
         </div>
-        <div className="form-floating  col-lg-3 col-md-6 p-3">
+        <div className="form-floating  col-lg-2 col-md-6 p-1">
           <FloatingLabel
             controlId="floatingInput"
             label="Enter the starting time"
             value={searchTime1}
             onChange={(e) => setSearchTime1(e.target.value)}
+            isInvalid={st1error}
+            style={{ borderRadius: '7px', border: st1error ? '2px solid #dc3545' : '1px solid #ced4da' }}
           >
             <Form.Control
               type="text"
               placeholder="Enter the starting time"
-              {...register("starting time", {
-                required: { value: "true", message: "* input is required" },
-              })}
             />
           </FloatingLabel>
+          {st1error && (    
+            <div className="text-danger">{st1error}</div>
+          )}
         </div>
-        <div className="col-lg-3 col-md-6 p-3">
+        <div className="form-floating col-lg-2 col-md-6 p-1">
           <FloatingLabel
             controlId="floatingInput"
             label="Enter the ending time"
             value={searchTime2}
+            isInvalid={!!st2error}
             onChange={(e) => setSearchTime2(e.target.value)}
+            style={{ borderRadius: '7px', border: st2error ? '2px solid #dc3545' : '1px solid #ced4da' }}
           >
             <Form.Control type="text" placeholder="Enter the ending time" />
           </FloatingLabel>
+          {st2error && (    
+            <div className="text-danger">{st2error}</div>
+          )}
         </div>
-        <div className="col-lg-3 col-md-6 p-3">
+        <div className="col-lg-2 col-md-6 p-1">
           <Dropdown className="w-100">
             <Dropdown.Toggle
-              className="border border-secondary border-opacity-25 bg-white w-100 p-3"
+              className={`bg-white w-100 p-3`}
               variant=""
               id="dropdown-basic"
+              style={{ borderRadius: '7px', border: selectedOptionsError ? '2px solid #dc3545' : '1px solid #ced4da' }}
             >
               Examination Years
             </Dropdown.Toggle>
@@ -282,18 +346,27 @@ function FreeFaculty() {
                     label="IV Year"
                     onChange={handleyearchange}
                   />
+                  <Form.Check
+                    id="0"
+                    label="Others"
+                    onChange={handleyearchange}
+                  />
                 </div>
               </Form>
             </Dropdown.Menu>
+             {selectedOptionsError && (    
+            <div className="text-danger">{selectedOptionsError}</div>
+          )}
           </Dropdown>
         </div>
-        <div className="col-lg-2 col-md-6 col-sm-6 p-3">
+        <div className="col-lg-2 col-md-6 col-sm-6 text-end">
           <Button
-            onClick={handleSearchTime}
+            onClick={handleSearch}
             className="p-3 w-100 bg-success border-success"
           >
             Search
           </Button>
+        </div>
         </div>
         {truevalue === "0" && facultyvalue === "0" && (
           <div className="text-center text-danger">
@@ -338,7 +411,6 @@ function FreeFaculty() {
               </table>
             </div>
           )}
-      </div>
     </animated.div>
   );
 }

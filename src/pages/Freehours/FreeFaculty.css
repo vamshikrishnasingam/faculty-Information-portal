@@ -30,3 +30,12 @@
 .dropdown-content label:hover {
   background-color: #ddd;
 }
+ .error{
+  border-radius: 7px;
+  border-color: red;
+  border :2px ;
+ }
+ .noerror{
+  border-color: white;
+  border: 1px;
+ }
