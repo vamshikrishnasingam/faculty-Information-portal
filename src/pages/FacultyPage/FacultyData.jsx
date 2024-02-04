@@ -25,6 +25,7 @@ function FacultyData() {
             <Outlet />
           </div>
         </>
+
         :
         <div className='container col-sm-10 col-lg-6 p-5 border bg-secondary bg-opacity-10'>
           <h1 className='display-1 text-danger'>You are Logged Out</h1>
