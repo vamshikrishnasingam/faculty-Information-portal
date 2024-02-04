@@ -9,7 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { loginContext } from "../../contexts/loginContext";
 import { useSpring, animated } from "react-spring";
 function FreeFaculty() {
-  let [currentUser, loginUser, userLoginStatus, loginErr, logoutUser] = useContext(loginContext);
+  let [currentUser, loginUser, userLoginStatus, loginErr, logoutUser] =
+    useContext(loginContext);
   let navigate = useNavigate();
   const [searchTime1, setSearchTime1] = useState("");
   const [searchTime2, setSearchTime2] = useState("");
@@ -24,7 +25,6 @@ function FreeFaculty() {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [selectedOptionsError, setSelectedOptionsError] = useState("");
   const initialRender = useRef(true);
-
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
@@ -69,16 +69,14 @@ function FreeFaculty() {
       setFacultyValue("1");
       setFreeFacultyInfo(array);
     } else setFacultyValue("0");
-    console.log(freeFacultyInfo)
+    console.log(freeFacultyInfo);
   };
-  useEffect(()=>{
-    if(freeFacultyInfo.length)
-    setFacultyValue('1')
-  else{
-    setFacultyValue('0')
-  }
-
-  },[freeFacultyInfo])
+  useEffect(() => {
+    if (freeFacultyInfo.length) setFacultyValue("1");
+    else {
+      setFacultyValue("0");
+    }
+  }, [freeFacultyInfo]);
   const handleSearch = async () => {
     // Function to subtract minutes from a given time
     function adjustTime(time, minutes) {
@@ -158,11 +156,11 @@ function FreeFaculty() {
     //   const updatedOptions = selectedOptions.filter((option) => option !== '0');
     //   setSelectedOptions(updatedOptions);
     // }
-    function hrtomin(time){
-      const [hours1, minutes1="0"] = time.split('.').map(Number);
-      return parseInt(hours1)*60+parseInt(minutes1)
+    function hrtomin(time) {
+      const [hours1, minutes1 = "0"] = time.split(".").map(Number);
+      return parseInt(hours1) * 60 + parseInt(minutes1);
     }
-    console.log(selectedOptions)
+    console.log(selectedOptions);
     setDateError("");
     setst1error("");
     setst2error("");
@@ -180,30 +178,29 @@ function FreeFaculty() {
       setst2error("please enter ending time");
       isvalid = false;
     }
-    if(hrtomin(searchTime1)>24*60)
-    {
-      setst1error('please enter correct time')
-      isvalid=false;
+    if (hrtomin(searchTime1) > 24 * 60) {
+      setst1error("please enter correct time");
+      isvalid = false;
     }
-    if(hrtomin(searchTime2)>24*60)
-    {
-      setst2error('please enter correct time')
-      isvalid=false;
+    if (hrtomin(searchTime2) > 24 * 60) {
+      setst2error("please enter correct time");
+      isvalid = false;
     }
     if (!selectedOptions.length) {
       setSelectedOptionsError("please select any one option");
       isvalid = false;
     }
-    if(hrtomin(searchTime2)<=hrtomin(searchTime1))
-    {
-      setst2error("enter time in 24 hour format")
+    if (hrtomin(searchTime2) <= hrtomin(searchTime1)) {
+      setst2error("enter time in 24 hour format");
       isvalid = false;
     }
 
     if (isvalid) {
       try {
         await axios
-          .get(`/freehours-api/freehours-get/${date}/${parts}/${selectedOptions}`)
+          .get(
+            `/freehours-api/freehours-get/${date}/${parts}/${selectedOptions}`
+          )
           .then((response) => {
             console.log("Success:", response.data);
             setFreeFaculty(response.data);
@@ -215,22 +212,25 @@ function FreeFaculty() {
       } catch (error) {
         console.log(error);
       }
-    }
-    else{
-      setFreeFaculty(null)
+    } else {
+      setFreeFaculty(null);
     }
   };
-  useEffect(()=>{
+  useEffect(() => {
     if (initialRender.current) {
       initialRender.current = false;
       return;
     }
     getdata();
-  },[freeFaculty])
+  }, [freeFaculty]);
   useEffect(() => {
-    
-    if(date && selectedOptions.length && searchTime1!=="" && searchTime2!=="")
-    handleSearch();
+    if (
+      date &&
+      selectedOptions.length &&
+      searchTime1 !== "" &&
+      searchTime2 !== ""
+    )
+      handleSearch();
   }, [selectedOptions, searchTime1, searchTime2, date]);
 
   const handleyearchange = (event) => {
@@ -272,13 +272,11 @@ function FreeFaculty() {
             <option value="thu">thursday</option>
             <option value="fri">friday</option>
             <option value="sat">saturday</option>
-            <Form.Control.Feedback type="invalid">{dateError}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              {dateError}
+            </Form.Control.Feedback>
           </Form.Select>
-          {
-            dateError && (
-              <div className="invalid-feedback">{dateError}</div>
-            )
-          }
+          {dateError && <div className="invalid-feedback">{dateError}</div>}
         </div>
         <div className="form-floating  col-lg-2 col-md-6 p-1">
           <FloatingLabel
@@ -287,16 +285,14 @@ function FreeFaculty() {
             value={searchTime1}
             onChange={(e) => setSearchTime1(e.target.value)}
             isInvalid={st1error}
-            style={{ borderRadius: '7px', border: st1error ? '2px solid #dc3545' : '1px solid #ced4da' }}
+            style={{
+              borderRadius: "7px",
+              border: st1error ? "2px solid #dc3545" : "1px solid #ced4da",
+            }}
           >
-            <Form.Control
-              type="text"
-              placeholder="Enter the starting time"
-            />
+            <Form.Control type="text" placeholder="Enter the starting time" />
           </FloatingLabel>
-          {st1error && (    
-            <div className="text-danger">{st1error}</div>
-          )}
+          {st1error && <div className="text-danger">{st1error}</div>}
         </div>
         <div className="form-floating col-lg-2 col-md-6 p-1">
           <FloatingLabel
@@ -305,13 +301,14 @@ function FreeFaculty() {
             value={searchTime2}
             isInvalid={!!st2error}
             onChange={(e) => setSearchTime2(e.target.value)}
-            style={{ borderRadius: '7px', border: st2error ? '2px solid #dc3545' : '1px solid #ced4da' }}
+            style={{
+              borderRadius: "7px",
+              border: st2error ? "2px solid #dc3545" : "1px solid #ced4da",
+            }}
           >
             <Form.Control type="text" placeholder="Enter the ending time" />
           </FloatingLabel>
-          {st2error && (    
-            <div className="text-danger">{st2error}</div>
-          )}
+          {st2error && <div className="text-danger">{st2error}</div>}
         </div>
         <div className="col-lg-2 col-md-6 p-1">
           <Dropdown className="w-100">
@@ -319,7 +316,12 @@ function FreeFaculty() {
               className={`bg-white w-100 p-3`}
               variant=""
               id="dropdown-basic"
-              style={{ borderRadius: '7px', border: selectedOptionsError ? '2px solid #dc3545' : '1px solid #ced4da' }}
+              style={{
+                borderRadius: "7px",
+                border: selectedOptionsError
+                  ? "2px solid #dc3545"
+                  : "1px solid #ced4da",
+              }}
             >
               Examination Years
             </Dropdown.Toggle>
@@ -354,63 +356,60 @@ function FreeFaculty() {
                 </div>
               </Form>
             </Dropdown.Menu>
-             {selectedOptionsError && (    
-            <div className="text-danger">{selectedOptionsError}</div>
-          )}
+            {selectedOptionsError && (
+              <div className="text-danger">{selectedOptionsError}</div>
+            )}
           </Dropdown>
         </div>
         <div className="col-lg-2 col-md-6 col-sm-6 text-end">
           <Button
             onClick={handleSearch}
-            className="p-3 w-100 bg-success border-success"
+            className="p-3 m-1 w-100 bg-success border-success"
           >
             Search
           </Button>
         </div>
+      </div>
+      {truevalue === "0" && facultyvalue === "0" && (
+        <div className="text-center text-danger">
+          <h1>Enter Correct Timings.....!!</h1>
         </div>
-        {truevalue === "0" && facultyvalue === "0" && (
-          <div className="text-center text-danger">
-            <h1>Enter Correct Timings.....!!</h1>
+      )}
+      {truevalue === "1" &&
+        facultyvalue === "1" &&
+        freeFacultyInfo.length > 0 && (
+          <div>
+            <div className="row">
+              <h3 className="text-primary p-2 text-center">
+                Total faculty available :
+                <span className="text-success text-right p-3 mx-auto">
+                  {freeFacultyInfo.length}
+                </span>
+                <Button onClick={handleDownload} className="p-3 btn-success">
+                  Download
+                </Button>
+              </h3>
+            </div>
+            <table className="m-4 mx-auto">
+              <thead className="text-dark">
+                <tr>
+                  <th>faculty-id</th>
+                  <th>faculty-name</th>
+                  <th>faculty-type</th>
+                </tr>
+              </thead>
+              <tbody>
+                {freeFacultyInfo.map((row) => (
+                  <tr key={row.username}>
+                    <td>{row.username}</td>
+                    <td>{row.name}</td>
+                    <td>{row.facultytype}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
-        {truevalue === "1" &&
-          facultyvalue === "1" &&
-          freeFacultyInfo.length > 0 && (
-            <div className="history-results">
-              <div className="row">
-                <h3 className="text-primary p-2 text-center">
-                  Total faculty available :
-                  <span className="text-success text-right p-3 mx-auto">
-                    {freeFacultyInfo.length}
-                  </span>
-                  <Button
-                    onClick={handleDownload}
-                    className="p-3 btn-success"
-                  >
-                    Download
-                  </Button>
-                </h3>
-              </div>
-              <table className="m-4 mx-auto">
-                <thead className="text-dark">
-                  <tr>
-                    <th>faculty-id</th>
-                    <th>faculty-name</th>
-                    <th>faculty-type</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {freeFacultyInfo.map((row) => (
-                    <tr key={row.username}>
-                      <td>{row.username}</td>
-                      <td>{row.name}</td>
-                      <td>{row.facultytype}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
     </animated.div>
   );
 }

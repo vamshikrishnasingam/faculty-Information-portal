@@ -1,43 +1,40 @@
 import React, { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
 import axios from "axios";
-import { useSpring, animated } from 'react-spring'
+import { useSpring, animated } from "react-spring";
 import { OverlayTrigger, Popover, Form, Button } from "react-bootstrap";
-
 
 function ExcelUploader() {
   const [file, setFile] = useState(null);
   const [list, setList] = useState(null);
   const [table, setTable] = useState([]);
   const [faclist, setFacList] = useState([]);
-  const [delval, setdelvalue] = useState(0)
+  const [delval, setdelvalue] = useState(0);
   const [graduation, setgraduation] = useState("");
   const [semester, setsemester] = useState("");
   const [academicyear, setacademicyear] = useState("");
   const [academicyearError, setAcademicyearError] = useState("");
   const [graduationError, setGraduationError] = useState("");
   const [semesterError, setSemesterError] = useState("");
-  const [keys, setkeys] = useState([])
+  const [keys, setkeys] = useState([]);
   let len;
   let sheetcount = 0;
   let tabledata = [];
 
-  useEffect(()=>{
-    const fetchkeys=async()=>{
+  useEffect(() => {
+    const fetchkeys = async () => {
       await axios
-      .get(
-        `/classtimetable-api/academicyearkeys`
-      )
-      .then((response) => {
-        setkeys(response.data);
-        console.log('keys : ',response.data)
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    }
+        .get(`/classtimetable-api/academicyearkeys`)
+        .then((response) => {
+          setkeys(response.data);
+          console.log("keys : ", response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
     fetchkeys();
-  },[])
+  }, []);
   const fadeOutSlideUpAnimation = useSpring({
     to: async (next) => {
       await next({ opacity: 1, transform: "translateY(-10px)" });
@@ -50,12 +47,11 @@ function ExcelUploader() {
     const dtp = JSON.parse(JSON.stringify(dt2));
     for (let i = 0; i < dt2.length; i++) {
       for (let j = 0; j < dt2[i].length; j++) {
-        if (dt2[i][j] === -1)
-          dtp[i][j] = dtp[i][j - 1]
+        if (dt2[i][j] === -1) dtp[i][j] = dtp[i][j - 1];
       }
     }
-    obj['dt1'] = dt1
-    obj['dt2'] = dtp
+    obj["dt1"] = dt1;
+    obj["dt2"] = dtp;
     await axios
       .post("http://localhost:5000/classfaculty-api/classtt-insert", obj)
       .then((response) => {
@@ -64,7 +60,7 @@ function ExcelUploader() {
       .catch((err) => {
         console.log("err in user login:", err);
       });
-  }
+  };
   const dataupdate = async () => {
     await axios
       .post("http://localhost:5000/classtimetable-api/class-insert", table)
@@ -94,7 +90,7 @@ function ExcelUploader() {
       .catch((err) => {
         console.log("err in resetting:", err);
       });
-  }
+  };
   const handleDelete = async () => {
     setAcademicyearError("");
     setGraduationError("");
@@ -116,11 +112,12 @@ function ExcelUploader() {
     }
 
     if (isValid) {
-        await axios.get(`/classfaculty-api/delete_data/${academicyear}/${graduation}/${semester}`)
-      .then((response) => {
-      })
-      .catch((error) => {
-      });
+      await axios
+        .get(
+          `/classfaculty-api/delete_data/${academicyear}/${graduation}/${semester}`
+        )
+        .then((response) => {})
+        .catch((error) => {});
     }
   };
 
@@ -216,7 +213,6 @@ function ExcelUploader() {
     setAcademicyearError("");
   };
 
-
   return (
     <animated.div style={fadeOutSlideUpAnimation} className="row">
       <div className="col-sm-12 col-lg-6 col-md-6">
@@ -230,38 +226,57 @@ function ExcelUploader() {
         </div>
         <h1> Delete the list inserted</h1>
         <div className="row ">
-        <div className="col-lg-2 col-sm-12 col-md-4 p-3">
-          <Form.Select value={academicyear} onChange={handlechangeacademicyear} isInvalid={!!academicyearError}>
-          <option>Academic year</option>
-          {keys.map((key, index) => (
-              <option key={index} value={key}>
-                {key}
-              </option>
-            ))}
-          <Form.Control.Feedback type="invalid">{academicyearError}</Form.Control.Feedback>
-        </Form.Select>
-        </div>
-          <div className="col-lg-2 col-sm-12 col-md-4 p-3">
-            <Form.Select value={graduation} onChange={handlechangegraduation} isInvalid={!!graduationError}>
+          <div className="col-lg-4 col-sm-12 col-md-4 p-3">
+            <Form.Select
+              value={academicyear}
+              onChange={handlechangeacademicyear}
+              isInvalid={!!academicyearError}
+            >
+              <option>Academic year</option>
+              {keys.map((key, index) => (
+                <option key={index} value={key}>
+                  {key}
+                </option>
+              ))}
+              <Form.Control.Feedback type="invalid">
+                {academicyearError}
+              </Form.Control.Feedback>
+            </Form.Select>
+          </div>
+          <div className="col-lg-4 col-sm-12 col-md-4 p-3">
+            <Form.Select
+              value={graduation}
+              onChange={handlechangegraduation}
+              isInvalid={!!graduationError}
+            >
               <option>select course</option>
               <option value="Btech">UG</option>
               <option value="Mtech">PG</option>
-              <Form.Control.Feedback type="invalid">{graduationError}</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">
+                {graduationError}
+              </Form.Control.Feedback>
             </Form.Select>
           </div>
-          <div className="col-lg-2 col-sm-12 col-md-4 p-3">
-          <Form.Select value={semester} onChange={handlechangesem} isInvalid={!!semesterError}>
-          <option>select sem</option>
-          <option value="1">1</option>
-            <option value="2">2</option>
-          <Form.Control.Feedback type="invalid">{semesterError}</Form.Control.Feedback>
-        </Form.Select>
-        </div>
+          <div className="col-lg-4 col-sm-12 col-md-4 p-3">
+            <Form.Select
+              value={semester}
+              onChange={handlechangesem}
+              isInvalid={!!semesterError}
+            >
+              <option>select sem</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <Form.Control.Feedback type="invalid">
+                {semesterError}
+              </Form.Control.Feedback>
+            </Form.Select>
+          </div>
           <div className="p-2">
             <Button
               variant="secondary"
               className="col-sm-3 col-lg-3 col-md-4"
-              onClick={handleDelete}>
+              onClick={handleDelete}
+            >
               Delete data
             </Button>
           </div>

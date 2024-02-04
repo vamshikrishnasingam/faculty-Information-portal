@@ -9,7 +9,7 @@ import { SpinnerDotted } from "spinners-react";
 
 function RouteLayout() {
   const [designData, setDesignData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {

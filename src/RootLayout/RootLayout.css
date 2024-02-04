@@ -6,18 +6,18 @@
   justify-content: center;
 }
 
-.sidebar{
-    position: inline;
-  }
-  .page{
-    height: 80vh;
-    width: 100vw;
-    position: relative;
-    overflow: hidden;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-  /* Loading.css */
+.sidebar {
+  position: inline;
+}
+.page {
+  height: 83vh;
+  width: 100vw;
+  position: relative;
+  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+/* Loading.css */
 .loader-container {
   display: flex;
   align-items: center;

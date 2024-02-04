@@ -1,5 +1,5 @@
-.admin1{
-    height:76.8vh;
+.admin1 {
+  height: max-content;
 }
 .admin1::-webkit-scrollbar {
   width: 0px; /* Adjust the width as needed */

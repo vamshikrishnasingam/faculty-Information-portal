@@ -25,8 +25,8 @@ function History() {
   const [dv, setavailabledv] = useState(0)
   const [ndv, setnonavailabledv] = useState(0)
   const [filtervlaue, setfilter] = useState(0);
-  const [factypearray, settypes] = useState("");
-  const [facultyData, setFacultyData] = useState([]);
+  const [factypearray, settypes] = useState([]);
+  const [facultyData, setFacultyData] = useState([]);//etw4ye
   const [sortedfacultyData, setSortedFacultyData] = useState([]);
   const [message, setMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
