@@ -62,7 +62,7 @@ freehoursapp.post("/fac-update", expressAsyncHandler(async (req, res) => {
 
         if (timevalue.toUpperCase() !== 'SEM') {
           // Schedule the deletion of the data after the specified time
-          const times = parseInt(timevalue, 10) * 60 * 1000;
+          const times = parseInt(timevalue, 10) * 60 * 1000 * 60 *24 ;
           schedule.scheduleJob(new Date(Date.now() + times), async () => {
             const deleteResult1 = await freeHoursObj.updateOne(
               { username: username.trim() },

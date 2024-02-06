@@ -13,19 +13,18 @@ const times = [
   "2.40-3.40",
   "3.40-4.40",
 ];
-let pegasus = [];
 
 const FacultyTimeTable = () => {
   const [searchId, setSearchId] = useState("");
-  const [data, setData] = useState(null);
+  const [data, setData] = useState({});
   const [year, setYear] = useState("");
-  const [sem, setSem] = useState(1);
+  const [sem, setSem] = useState("1");
   const [message, setMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [selectedResult, setSelectedResult] = useState(null);
-  const [pegasus,setpegasus]=useState(null)
-  const [searchClicked, setSearchClicked] = useState(false); // New state variable
+  const [pegasus, setpegasus] = useState([])
+  const [searchClicked, setSearchClicked] = useState(false);
 
   useEffect(() => {
     const fetchlist = async () => {
@@ -43,8 +42,8 @@ const FacultyTimeTable = () => {
   }, []);
 
   const handleSearch = async () => {
-    setSearchClicked(true); // Set searchClicked to true when search button is clicked
-    if (!searchId){
+    setSearchClicked(true); 
+    if (!searchId) {
       setMessage("Please Enter ID")
     }
     else {
@@ -52,10 +51,11 @@ const FacultyTimeTable = () => {
         const response = await axios.get(
           `/facultytimetable-api/classfaculty-data/${searchId}`
         );
+        console.log(response.data)
         if (response.data) {
           setData(response.data);
           setSearchTerm("");
-           setMessage("");
+          setMessage("");
         } else {
           setData(null);
           setMessage("No data found for the given ID.");
@@ -68,10 +68,6 @@ const FacultyTimeTable = () => {
     }
   };
 
-  useEffect(() => {
-    if (year !== "") handleSearch();
-  }, [sem, year]);
-
   const MyPopoverContent = (cell) => (
     <Popover id="popover-basic">
       <Popover.Body>
@@ -83,17 +79,17 @@ const FacultyTimeTable = () => {
   );
 
   useEffect(() => {
-    if (data) {
+    if (Object.keys(data).length) {
       printData();
     }
-  }, [year, data, sem]);
+  }, [data, sem, year]);
 
   const printData = () => {
     let y = year || Object.keys(data)[Object.keys(data).length - 1];
     if (y === 'special')
       y = year || Object.keys(data)[Object.keys(data).length - 2];
-    if (data?.[y]?.[2])
-      setSem(2)
+    console.log('print data called')
+    console.log(y)
     const unicorn = [];
     for (const day of days) {
       const b = [{ classtype: day }];
@@ -114,6 +110,7 @@ const FacultyTimeTable = () => {
       }
       unicorn.push(b);
     }
+    console.log('unicorn : ',unicorn)
     setpegasus(unicorn);
   };
 
@@ -154,9 +151,8 @@ const FacultyTimeTable = () => {
           <div className="search-bar-container">
             <input
               type="text"
-              className={`search-input form-control me-2 ${
-                searchClicked && !searchId ? "is-invalid" : ""
-              }`}
+              className={`search-input form-control me-2 ${searchClicked && !searchId ? "is-invalid" : ""
+                }`}
               value={searchTerm}
               onChange={handleSearchInputChange}
               placeholder="Enter faculty ID"
@@ -166,9 +162,8 @@ const FacultyTimeTable = () => {
                 {filteredResults.map((user) => (
                   <div
                     key={user._id.$oid}
-                    className={`search-result-item ${
-                      selectedResult === user ? "selected" : ""
-                    }`}
+                    className={`search-result-item ${selectedResult === user ? "selected" : ""
+                      }`}
                     value={user.username}
                     onClick={() => handleSelectResult(user)}
                   >
@@ -208,7 +203,6 @@ const FacultyTimeTable = () => {
             </div>
             <div className="col-sm-12 col-lg-3 col-md-6 mx-auto">
               <Form.Select value={sem} onChange={(e) => setSem(e.target.value)}>
-                {console.log(sem)}
                 <option>select sem</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -232,9 +226,9 @@ const FacultyTimeTable = () => {
                       {cell &&
                         Object.keys(cell).length > 0 &&
                         (cellIndex === 0 ||
-                        (cell["subject"] &&
-                          (cell["subject"].toUpperCase().includes("OE") ||
-                            cell["subject"].toUpperCase().includes("PE"))) ? (
+                          (cell["subject"] &&
+                            (cell["subject"].toUpperCase().includes("OE") ||
+                              cell["subject"].toUpperCase().includes("PE"))) ? (
                           <div className="cell-content">
                             <p>{cell.classtype}</p>
                           </div>
@@ -251,17 +245,15 @@ const FacultyTimeTable = () => {
                                 </p>
                               </div>
                             </OverlayTrigger>
-                            {console.log("keys : ",Object.keys(data).slice(4))}
                             {data?.["special"]?.[row[0].classtype]?.[
                               times[cellIndex - 1].replace(/\./g, "_")
-                            ] && 
-                            (
-                              <p className="text-danger">{`[${
-                                data?.["special"]?.[row[0].classtype]?.[
+                            ] &&
+                              (
+                                <p className="text-danger">{`[${data?.["special"]?.[row[0].classtype]?.[
                                   times[cellIndex - 1].replace(/\./g, "_")
                                 ]
-                              }]`}</p>
-                            )}
+                                  }]`}</p>
+                              )}
                           </div>
                         ))}
                     </td>

@@ -17,9 +17,9 @@ classtimetableApp.get('/classtt-data/:classid/:year/:graduation/:sem', async (re
 
 classtimetableApp.get('/academicyearkeys', async (req, res) => {
     const classTimeTableObj = req.app.get("classTimeTableObj")
-    key='4cse1'
+    key = '4cse1'
     let matchedclass = await classTimeTableObj.findOne({ [key]: { $exists: true } })
-    keys=Object.keys(matchedclass[key])
+    keys = Object.keys(matchedclass[key])
     console.log(keys)
     res.json(keys)
 })
@@ -43,7 +43,7 @@ const freehrs = async (year, day, time, dat, freeHoursObj) => {
         const timingsKey = `${day.trim()}.${time.replace(/\./g, '_').trim()}`;
         const existingData = await freeHoursObj.findOne({ username: ele.trim() });
 
-         if (existingData) {
+        if (existingData) {
             const updateObj = {
                 $addToSet: { [timingsKey]: year }
             };
@@ -57,7 +57,7 @@ const fun = async (year, day, timings, fac, facttobj, sem) => {
     console.log(fac)
     const ids = fac.username.split('/');
     const names = fac.name.split('/');
-    
+
     let faccopy = {
         classtype: fac.classtype.trim(),
         subject: fac.subject.trim(),
@@ -99,134 +99,138 @@ classtimetableApp.post("/class-insert", expressAsyncHandler(async (req, res) => 
     const classTimeTableObj = req.app.get("classTimeTableObj")
     const facultyTimeTableObj = req.app.get("facultyTimeTableObj")
     const freeHoursObj = req.app.get("freeHoursObj")
-    newUser.forEach(async (item, index) => {
-        const sheetname = item.sheetname.trim();
-        const sheetData = item.data;
-        const semdetails = sheetData[0]
-        const classinfo = sheetData[1]
-        const facultyinfo = sheetData[2]
-        const classarray = {}
-        const p = []
-        semdetails.forEach(element => {
-            const x = element[0].split(':');
-            x[0] = x[0].trim()
-            x[1] = x[1].trim()
-            p.push(x)
-        })
-        const sem = p[0][1].split('-')[1]
-        const facultydata = {};
-        for (let j = 1; j < facultyinfo.length; j++) {
-            const f = {}
+    try {
+        for (const item of newUser) {
+            const sheetname = item.sheetname.trim();
+            const sheetData = item.data;
+            const semdetails = sheetData[0]
+            const classinfo = sheetData[1]
+            const facultyinfo = sheetData[2]
+            const classarray = {}
+            const p = []
+            semdetails.forEach(element => {
+                const x = element[0].split(':');
+                x[0] = x[0].trim()
+                x[1] = x[1].trim()
+                p.push(x)
+            })
+            const sem = p[0][1].split('-')[1]
+            const facultydata = {};
+            for (let j = 1; j < facultyinfo.length; j++) {
+                const f = {}
 
-            for (let i = 1; i < 4; i++) {
-                f[facultyinfo[0][i]] = facultyinfo[j][i].toString().toUpperCase().trim()
+                for (let i = 1; i < 4; i++) {
+                    f[facultyinfo[0][i]] = facultyinfo[j][i].toString().toUpperCase().trim()
+                }
+                facultydata[facultyinfo[j][0].toUpperCase()] = f
             }
-            facultydata[facultyinfo[j][0].toUpperCase()] = f
-        }
-        console.log(sheetname)
-        const classdata = {};
-        for (let i = 1; i < 7; i++) {
-            const day = classinfo[i][0].trim();
-            const obj = {};
-            for (let j = 1; j < 7; j++) {
-                const timings = classinfo[0][j].trim();
-                if (classinfo[i][j] === -1)
-                    classinfo[i][j] = classinfo[i][j - 1]
-                const sub = classinfo[i][j].trim()
-                //if sub is lab
-                if (sub.toUpperCase().includes('LAB')) {
-                    let x = sub.split('/')
-                    x[0] = x[0].trim()
-                    if (!x[0].toUpperCase().includes('LAB'))
-                        x[0] = x[0] + ' LAB'
-                    //if sub is 2 labs
-                    if (x.length > 1) {
-                        x[1] = x[1].trim()
-                        if (!x[1].toUpperCase().includes('LAB'))
-                            x[1] = x[1] + ' LAB'
-                        const arr = [x[1].toUpperCase(), x[0].toUpperCase()]
-                        const insertobj = { 'subject': sub.toUpperCase() }
-                        let i = 0;
-                        arr.forEach(ele => {
-                            const d = facultydata[ele]
-                            if (d) {
-                                const insertobj1 = d
-                                insertobj['lab' + String.fromCharCode(65 + i)] = insertobj1
-                                insertobj1['subject'] = ele
-                                const fac = insertobj1
-                                fac['class'] = sheetname
-                                fac['classtype'] = 'Lab'
-                                freehrs(sheetname[0], day, timings, fac, freeHoursObj)
-                                fun(p[2][1], day, timings, fac, facultyTimeTableObj, sem)
-                                i += 1;
-                            }
-                        })
-                        obj[timings] = insertobj
-                    }
-                    //if it is a single lab
-                    else {
-                        const d = facultydata[x[0].toUpperCase()]
-                        const insertobj = d
-                        insertobj['subject'] = x[0].toUpperCase()
-                        const fac = insertobj
-                        fac['classtype'] = 'Lab'
-                        fac['class'] = sheetname
-                        freehrs(sheetname[0], day, timings, fac, freeHoursObj)
-                        fun(p[2][1], day, timings, fac, facultyTimeTableObj, sem)
-                        obj[timings] = insertobj
+            console.log(sheetname)
+            const classdata = {};
+            for (let i = 1; i < 7; i++) {
+                const day = classinfo[i][0].trim();
+                const obj = {};
+                for (let j = 1; j < 7; j++) {
+                    const timings = classinfo[0][j].trim();
+                    if (classinfo[i][j] === -1)
+                        classinfo[i][j] = classinfo[i][j - 1]
+                    const sub = classinfo[i][j].trim()
+                    //if sub is lab
+                    if (sub.toUpperCase().includes('LAB')) {
+                        let x = sub.split('/')
+                        x[0] = x[0].trim()
+                        if (!x[0].toUpperCase().includes('LAB'))
+                            x[0] = x[0] + ' LAB'
+                        //if sub is 2 labs
+                        if (x.length > 1) {
+                            x[1] = x[1].trim()
+                            if (!x[1].toUpperCase().includes('LAB'))
+                                x[1] = x[1] + ' LAB'
+                            const arr = [x[1].toUpperCase(), x[0].toUpperCase()]
+                            const insertobj = { 'subject': sub.toUpperCase() }
+                            let i = 0;
+                            arr.forEach(ele => {
+                                const d = facultydata[ele]
+                                if (d) {
+                                    const insertobj1 = d
+                                    insertobj['lab' + String.fromCharCode(65 + i)] = insertobj1
+                                    insertobj1['subject'] = ele
+                                    const fac = insertobj1
+                                    fac['class'] = sheetname
+                                    fac['classtype'] = 'Lab'
+                                    freehrs(sheetname[0], day, timings, fac, freeHoursObj)
+                                    fun(p[2][1], day, timings, fac, facultyTimeTableObj, sem)
+                                    i += 1;
+                                }
+                            })
+                            obj[timings] = insertobj
+                        }
+                        //if it is a single lab
+                        else {
+                            const d = facultydata[x[0].toUpperCase()]
+                            const insertobj = d
+                            insertobj['subject'] = x[0].toUpperCase()
+                            const fac = insertobj
+                            fac['classtype'] = 'Lab'
+                            fac['class'] = sheetname
+                            freehrs(sheetname[0], day, timings, fac, freeHoursObj)
+                            fun(p[2][1], day, timings, fac, facultyTimeTableObj, sem)
+                            obj[timings] = insertobj
 
+                        }
+                    }
+                    //if sub is not lab
+                    else {
+                        const d = facultydata[sub.toUpperCase()]
+                        if (d) {
+                            const insertobj = d
+                            insertobj['subject'] = sub.toUpperCase()
+                            const fac = insertobj
+                            fac['classtype'] = 'Class'
+                            if (sub.toUpperCase().includes("PROJECT"))
+                                fac['classtype'] = 'Project'
+                            fac['class'] = sheetname
+                            obj[timings] = insertobj
+                            freehrs(sheetname[0], day, timings, fac, freeHoursObj)
+                            fun(p[2][1], day, timings, fac, facultyTimeTableObj, sem)
+                        }
+                        else {
+                            const insertobj = {}
+                            insertobj['subject'] = sub.toUpperCase()
+                            obj[timings] = insertobj
+
+                        }
                     }
                 }
-                //if sub is not lab
-                else {
-                    const d = facultydata[sub.toUpperCase()]
-                    if (d) {
-                        const insertobj = d
-                        insertobj['subject'] = sub.toUpperCase()
-                        const fac = insertobj
-                        fac['classtype'] = 'Class'
-                        if (sub.toUpperCase().includes("PROJECT"))
-                            fac['classtype'] = 'Project'
-                        fac['class'] = sheetname
-                        obj[timings] = insertobj
-                        freehrs(sheetname[0], day, timings, fac, freeHoursObj)
-                        fun(p[2][1], day, timings, fac, facultyTimeTableObj, sem)
-                    }
-                    else {
-                        const insertobj = {}
-                        insertobj['subject'] = sub.toUpperCase()
-                        obj[timings] = insertobj
-
-                    }
-                }
+                classdata[day] = obj;
             }
-            classdata[day] = obj;
-        }
-        const key3 = {}
-        key3[p[0][1]] = classdata
-        const key2 = {}
-        key2[p[1][1]] = key3
-        classarray[p[2][1]] = key2;
-        const classtimetable = {};
-        classtimetable[sheetname] = classarray;
-        const query = { [sheetname]: { $exists: true } };
-        let existk1 = await classTimeTableObj.findOne(query);
-        if (existk1) {
-            const idofata = Object.keys(existk1)[0];
-            const id = existk1[idofata];
-            const updateObj = {
-                $set: {
-                    [`${sheetname}.${p[2][1]}.${p[1][1]}.${p[0][1]}`]: classdata,
-                },
-            };
-            let a = await classTimeTableObj.updateOne({ _id: id }, updateObj);
+            const key3 = {}
+            key3[p[0][1]] = classdata
+            const key2 = {}
+            key2[p[1][1]] = key3
+            classarray[p[2][1]] = key2;
+            const classtimetable = {};
+            classtimetable[sheetname] = classarray;
+            const query = { [sheetname]: { $exists: true } };
+            let existk1 = await classTimeTableObj.findOne(query);
+            if (existk1) {
+                const idofata = Object.keys(existk1)[0];
+                const id = existk1[idofata];
+                const updateObj = {
+                    $set: {
+                        [`${sheetname}.${p[2][1]}.${p[1][1]}.${p[0][1]}`]: classdata,
+                    },
+                };
+                let a = await classTimeTableObj.updateOne({ _id: id }, updateObj);
 
-        }
-        else {
-            let a = await classTimeTableObj.insertOne(classtimetable);
-        }
-    });
-    res.status(201).send({ message: "User Created", payload: req.body })
+            }
+            else {
+                let a = await classTimeTableObj.insertOne(classtimetable);
+            }
+        };
+    } catch (error) {
+    res.status(500).send({ error: "An internal server error occurred" });
+}
+res.status(201).send({ message: "User Created", payload: req.body })
 }))
 
 module.exports = classtimetableApp;

@@ -8,7 +8,7 @@ import { useSpring, animated } from "react-spring";
 
 function History() {
 
-  const [years, setSelectedYears] = useState("")
+  const [years, setSelectedYears] = useState([])
   const [factype, setfactype] = useState("");
   const [classtt, setclasstt] = useState([])
   const [availabledata, setad] = useState([])
@@ -16,8 +16,8 @@ function History() {
   const [classtimetables, sctt] = useState([])
   const [graduation, setgraduation] = useState("")
   const [academicyear, setacademicyear] = useState("")
-  const [branches, setbranches] = useState("")
-  const [secs, setsecs] = useState("")
+  const [branches, setbranches] = useState([])
+  const [secs, setsecs] = useState([])
   const [sem, setsem] = useState("")
   const [type, settype] = useState("")
   const [classvalue, setclassvalue] = useState(0)
@@ -34,7 +34,7 @@ function History() {
   const [selectedResult, setSelectedResult] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
   const [downloaddata, setdownloaddata] = useState([]);
-  const [filterbranches, setbranchesfilter] = useState("")
+  const [filterbranches, setbranchesfilter] = useState([])
   const [DisplayData, setDisplayData] = useState([]);
   const [academicyearError, setAcademicyearError] = useState("");
   const [semesterError, setSemesterError] = useState("");
@@ -367,14 +367,14 @@ function History() {
       item.facultytype.toLowerCase().includes(searchTerm.toLowerCase())
   );
   const handlechangefactype = (e) => {
-    const { optionId, isChecked } = e.target;
-    const isValid = isChecked;
+    const optionId = e.target.id;
+    const isChecked = e.target.checked;
     if (optionId === 'selectAll') {
       handleToggleAlltypes(isChecked);
       setFactypeError('');
     } else {
       settypes((prevtypes) => {
-        setFactypeError(isValid ? '' : 'Please select at least one faculty type.');
+        setFactypeError(isChecked ? '' : 'Please select at least one faculty type.');
         if (isChecked && !prevtypes.includes(optionId)) {
           return [...prevtypes, optionId];
         } else if (!isChecked) {
@@ -610,7 +610,7 @@ function History() {
                     className="container m-3 history-results"
                     style={{ "overflow-x": "auto" }}
                   >
-                    {dv === 1 ? (
+                    {dv === 1 && (
                       <div>
                         <table>
                           <thead>
@@ -641,11 +641,13 @@ function History() {
                           </tbody>
                         </table>
                       </div>
-                    ) : (
-                      <div className="border p-4 border-4 border-white text-white text-center container" style={{width : "50%" , overflowY: "auto", fontSize: "2rem"}}>
-                        No data found
-                      </div>
-                    )}
+                    ) 
+                    // : (
+                    //   <div className="border p-4 border-4 border-white text-white text-center container" style={{width : "50%" , overflowY: "auto", fontSize: "2rem"}}>
+                    //     No data found
+                    //   </div>
+                    // )
+                    }
                   </div>
                 </div>
                 <div className="col-sm-12 col-lg-6 col-md-12">
@@ -656,7 +658,7 @@ function History() {
                     className="container m-3 history-results"
                     style={{ "overflow-x": "auto" }}
                   >
-                    {ndv === 1 ? (
+                    {ndv === 1 && (
                       <div style={{ "overflow-y": "auto" }}>
                         <table style={{ width: "100%" }}>
                           <thead>
@@ -686,12 +688,13 @@ function History() {
                             ))}
                           </tbody>
                         </table>
-                      </div>
-                    ) : (
-                      <div className='border p-4 border-4 border-white text-white text-center container' style={{width : "50%" , overflowY: "auto", fontSize: "2rem"}}>
-                        No data found
-                      </div>
-                    )}
+                      </div>)
+                    // ) : (
+                    //   <div className='border p-4 border-4 border-white text-white text-center container' style={{width : "50%" , overflowY: "auto", fontSize: "2rem"}}>
+                    //     No data found
+                    //   </div>
+                    // )
+                  }
                   </div>
                 </div>
               </div>
@@ -725,7 +728,7 @@ function History() {
                           <Form.Check
                             key={type}
                             id={type}
-                            label={type.toUpperCase()}
+                            label={type}
                             onChange={handlechangefactype}
                             checked={factypearray.includes(type)}
                           />

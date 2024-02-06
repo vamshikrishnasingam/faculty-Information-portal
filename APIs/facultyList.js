@@ -10,33 +10,37 @@ userApp.post("/facultydata", expressAsyncHandler(async (req, res) => {
     const facultyListObj = req.app.get("facultyListObj");
     const facultyTimeTableObj = req.app.get("facultyTimeTableObj");
     const freeHoursObj = req.app.get("freeHoursObj");
-
-    for (const element of newUser) {
-        // faculty_list
-        let a = await facultyListObj.findOne({ username: element.username });
-        if (!a) {
-            await facultyListObj.insertOne(element);
-        } else {
-            await facultyListObj.updateOne({ username: element.username }, { $set: element });
+    console.log(newUser)
+    try {
+        for (const element of newUser) {
+            // faculty_list
+            let a = await facultyListObj.findOne({ username: element.username });
+            if (!a) {
+                await facultyListObj.insertOne(element);
+            } else {
+                await facultyListObj.updateOne({ username: element.username }, { $set: element });
+            }
+    
+            // faculty_time_table
+            a = await facultyTimeTableObj.findOne({ username: element.username });
+            if (!a) {
+                await facultyTimeTableObj.insertOne(element);
+            } else {
+                await facultyTimeTableObj.updateOne({ username: element.username }, { $set: element });
+            }
+    
+            // free_hours
+            a = await freeHoursObj.findOne({ username: element.username });
+            if (!a) {
+                await freeHoursObj.insertOne(element);
+            } else {
+                await freeHoursObj.updateOne({ username: element.username }, { $set: element });
+            }
         }
-
-        // faculty_time_table
-        a = await facultyTimeTableObj.findOne({ username: element.username });
-        if (!a) {
-            await facultyTimeTableObj.insertOne(element);
-        } else {
-            await facultyTimeTableObj.updateOne({ username: element.username }, { $set: element });
-        }
-
-        // free_hours
-        a = await freeHoursObj.findOne({ username: element.username });
-        if (!a) {
-            await freeHoursObj.insertOne(element);
-        } else {
-            await freeHoursObj.updateOne({ username: element.username }, { $set: element });
-        }
+    } catch (error) {
+        res.status(500).send({ message: "error in inserting"});
     }
-
+    console.log('endi rane bdaha')
     res.status(201).send({ message: "User Created", payload: req.body });
 }));
 

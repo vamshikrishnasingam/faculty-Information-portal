@@ -20,25 +20,26 @@ classfacultyApp.get("/delete_data/:academicyear/:graduation/:semester", expressA
         key = Object.keys(element)[1];
         yearkey = key[0];
         semkey = `${yearkey}-${sem}`;
-        // const result = await classTimeTableObj.updateMany(
-        //     { $unset: { [`${key}.${acad}.${grad}.${semkey}`]: 1 } }
-        //   );
+        const query = {};
+        query[`${key}.${acad}.${grad}.${semkey}`] = { $exists: true };
+        const update = { $unset: { [`${key}.${acad}.${grad}.${semkey}`]: 1 } };
+        // Use query instead of filter
+        const result = await classTimeTableObj.updateOne(query, update);
     }
     const facultyTimeTableObj = req.app.get("facultyTimeTableObj");
     factt = await facultyTimeTableObj.find({}).toArray();
     for (const element of factt) {
-        const key = element._id;  // Assuming _id is a valid ObjectId
-        // const p = await facultyTimeTableObj.updateOne(
-        //     { _id: key },
-        //     { $unset: { [`${acad}.${sem}`]: 1 } }
-        // );
+        const key = element._id; 
+        const query = { _id: key };
+        const update = { $unset: { [`${acad}.${sem}`]: 1 } };
+        const result = await facultyTimeTableObj.updateOne(query, update);
+        console.log(result);
     }
     const freeHoursObj = req.app.get("freeHoursObj");
     freehrs = await freeHoursObj.find({}).toArray();
     console.log(freehrs)
     for (const element of freehrs) {
         const key = element._id;  // Assuming _id is a valid ObjectId
-        console.log('first')
         const p = await freeHoursObj.deleteOne(
             { _id: key }
         );

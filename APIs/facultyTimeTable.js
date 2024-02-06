@@ -38,7 +38,8 @@ facultytimetableApp.get(
 facultytimetableApp.delete(
     "/reset",
     expressAsyncHandler(async (req, res) => {
-      const facultyTimeTableObj = req.app.get("facultyTimeTableObj");
+      try {
+        const facultyTimeTableObj = req.app.get("facultyTimeTableObj");
       const freeHoursObj=req.app.get("freeHoursObj")
       const keyToRemove = "special"; // Replace with your specific key
       const updateQuery = {
@@ -51,6 +52,9 @@ facultytimetableApp.delete(
       };
       a=await facultyTimeTableObj.updateMany({}, updateQuery, updateOptions);
       const result = await freeHoursObj.updateMany({}, updateQuery, updateOptions);
+      } catch (error) {
+        res.status(500).send({ error: "An internal server error occurred" });
+      }
       res.json(result);
     })
   );

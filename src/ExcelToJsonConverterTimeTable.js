@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
 import axios from "axios";
 import { useSpring, animated } from "react-spring";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { OverlayTrigger, Popover, Form, Button } from "react-bootstrap";
 
 function ExcelUploader() {
@@ -56,9 +58,11 @@ function ExcelUploader() {
       .post("http://localhost:5000/classfaculty-api/classtt-insert", obj)
       .then((response) => {
         console.log("insertion into classtimtable api is success : ");
+        
       })
       .catch((err) => {
         console.log("err in user login:", err);
+        
       });
   };
   const dataupdate = async () => {
@@ -66,9 +70,29 @@ function ExcelUploader() {
       .post("http://localhost:5000/classtimetable-api/class-insert", table)
       .then((response) => {
         console.log("insertion into classtimtable api is success : ");
+        toast.success('successfully inserted', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       })
       .catch((err) => {
         console.log("err in user login:", err);
+        toast.error('failed to insert', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       });
   };
   const listupdate = async () => {
@@ -76,9 +100,29 @@ function ExcelUploader() {
       .post("http://localhost:5000/facultylist-api/facultydata", faclist)
       .then((response) => {
         console.log("insertion into classtimtable api is success : ");
+        toast.success('successfully inserted', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       })
       .catch((err) => {
         console.log("err in user login:", err);
+        toast.error('failed to insert', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       });
   };
   const handleReset = async () => {
@@ -86,9 +130,29 @@ function ExcelUploader() {
       .delete("http://localhost:5000/facultytimetable-api/reset")
       .then((response) => {
         console.log("Updated data is reset: ");
+        toast.success('successfull reset', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       })
       .catch((err) => {
         console.log("err in resetting:", err);
+        toast.error('failed reset', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       });
   };
   const handleDelete = async () => {
@@ -116,20 +180,45 @@ function ExcelUploader() {
         .get(
           `/classfaculty-api/delete_data/${academicyear}/${graduation}/${semester}`
         )
-        .then((response) => {})
-        .catch((error) => {});
+        .then((response) => {
+          toast.success('successfully deleted', {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        })
+        .catch((error) => {
+          toast.error('failed to delete', {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        });
     }
   };
 
   useEffect(() => {
+    if(table.length>0)
     dataupdate();
   }, [table]);
 
   useEffect(() => {
+    if(faclist.length>0)
     listupdate();
   }, [faclist]);
 
   const handleListUpload = (e) => {
+   try {
     const selectedFile = e.target.files[0];
     setList(selectedFile);
     const reader = new FileReader();
@@ -159,10 +248,24 @@ function ExcelUploader() {
         setFacList(dataArray);
       });
     };
-    reader.readAsBinaryString(selectedFile);
+    reader.readAsBinaryString(selectedFile);  
+  } catch (error) {
+    console.log(error)
+    toast.error('errors in the list inserted', {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+   }
   };
 
   const handleFileUpload = (e) => {
+   try {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
     const reader = new FileReader();
@@ -198,6 +301,18 @@ function ExcelUploader() {
       });
     };
     reader.readAsBinaryString(selectedFile);
+  } catch (error) {
+    toast.error('errors in the file uploaded', {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+   }   
   };
 
   const handlechangegraduation = (e) => {
@@ -215,6 +330,7 @@ function ExcelUploader() {
 
   return (
     <animated.div style={fadeOutSlideUpAnimation} className="row">
+            <ToastContainer />
       <div className="col-sm-12 col-lg-6 col-md-6">
         <h1>Insert the class Data</h1>
         <div className="row ">
