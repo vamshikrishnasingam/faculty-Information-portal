@@ -89,6 +89,11 @@ function FreeFaculty() {
       const formattedMinute = String(newMinute).padStart(2, "0");
       return `${formattedHour}.${formattedMinute}`;
     }
+    //function to change format of time
+    function hrtomin(time) {
+      const [hours1, minutes1 = "0"] = time.split(".").map(Number);
+      return parseInt(hours1) * 60 + parseInt(minutes1);
+    }
 
     let dummysearchTime1 = adjustTime(searchTime1, -20); // 20 minutes earlier
     let dummysearchTime2 = adjustTime(searchTime2, 20); // 20 minutes later
@@ -147,20 +152,6 @@ function FreeFaculty() {
       parts.push(partString);
       currentHour += 1;
     }
-    console.log(parts);
-    // if (selectedOptions.length === 0) {
-    //   // If the list is empty, add '0' to it
-    //   setSelectedOptions(['0']);
-    // } else if (selectedOptions.includes('0') && selectedOptions.length > 1) {
-    //   // If '0' is already in the list and there are other elements, remove '0'
-    //   const updatedOptions = selectedOptions.filter((option) => option !== '0');
-    //   setSelectedOptions(updatedOptions);
-    // }
-    function hrtomin(time) {
-      const [hours1, minutes1 = "0"] = time.split(".").map(Number);
-      return parseInt(hours1) * 60 + parseInt(minutes1);
-    }
-    console.log(selectedOptions);
     setDateError("");
     setst1error("");
     setst2error("");

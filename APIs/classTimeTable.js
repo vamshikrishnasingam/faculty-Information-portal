@@ -19,9 +19,14 @@ classtimetableApp.get('/academicyearkeys', async (req, res) => {
     const classTimeTableObj = req.app.get("classTimeTableObj")
     key = '4cse1'
     let matchedclass = await classTimeTableObj.findOne({ [key]: { $exists: true } })
-    keys = Object.keys(matchedclass[key])
+    try {
+        keys = Object.keys(matchedclass[key])
     console.log(keys)
     res.json(keys)
+    } catch (error) {
+        console.log('wait')   
+    }
+    
 })
 
 const freehrs = async (year, day, time, dat, freeHoursObj) => {

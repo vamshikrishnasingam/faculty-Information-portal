@@ -129,11 +129,8 @@ freehoursapp.get(
       const y = req.params.year;
       const times = t.split(",").map((year) => year.replace(/\./g, '_'));
       const years = y.split(",");
-      console.log(years)
       let array = [];
       let barray = [];
-      console.log(times)
-      console.log('hihi')
       doc.forEach((ele) => {
         let value = true;
         const d = ele[day];
@@ -155,15 +152,12 @@ freehoursapp.get(
             value=false;
           }
         });
-        console.log(ele.username, d, events, value)
-        console.log('-------')
         if (value === true) {
           array.push(ele.username);
         } else {
           barray.push(ele.username);
         }
       });
-      console.log(array)
       // Check array length instead of truthiness
       if (array.length > 0) {
         res.json(array);

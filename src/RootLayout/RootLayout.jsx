@@ -5,6 +5,7 @@ import NavigationBar from "../components/Navbar/NavigationBar";
 import Footer from "../components/Footer/Footer";
 import "./RootLayout.css";
 import { SpinnerDotted } from "spinners-react";
+import { ToastContainer } from "react-toastify";
 
 
 function RouteLayout() {
@@ -53,7 +54,7 @@ function RouteLayout() {
         // Render content once data is loaded
         <div className="content-container rot">
           <div>
-              <NavigationBar />
+              <NavigationBar/>
 
           </div>
           <div className="page">

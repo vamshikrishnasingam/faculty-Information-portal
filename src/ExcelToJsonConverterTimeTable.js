@@ -131,7 +131,7 @@ function ExcelUploader() {
       .then((response) => {
         console.log("Updated data is reset: ");
         toast.success('successfull reset', {
-          position: "top-center",
+          position: toast.POSITION.TOP_RIGHT,
           autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: true,
@@ -329,8 +329,9 @@ function ExcelUploader() {
   };
 
   return (
+    <>
+    <ToastContainer />
     <animated.div style={fadeOutSlideUpAnimation} className="row">
-            <ToastContainer />
       <div className="col-sm-12 col-lg-6 col-md-6">
         <h1>Insert the class Data</h1>
         <div className="row ">
@@ -410,7 +411,7 @@ function ExcelUploader() {
           </Button>
         </div>
       </div>
-    </animated.div>
+    </animated.div></>
   );
 }
 
